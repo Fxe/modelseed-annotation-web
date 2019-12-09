@@ -1,0 +1,71 @@
+.btn-seed-sm {
+            padding: 2px 2px;
+            font-size: 10px;
+        }
+        
+        .btn-seed-md {
+            padding: 2px 4px;
+            font-size: 10px;
+        }
+.buttonBar {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+   }
+
+      .e-subsystem {
+          font-style: italic;
+          font-weight: bold;
+      }
+
+   .button {
+    border-radius: 4px;
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    margin: 0em;
+    font: 400 11px system-ui;
+   }
+   .e-block {
+     display: inline-block;
+   }
+   .label-annotation-source {
+    background-color:black;
+   }
+   
+   .label-annotation-evi {
+     color: #000;
+    background-color:darkolivegreen;
+   }
+
+      .label-annotation-evi > a:link { color: #ffffff; }
+      .label-annotation-evi > a:visited { color: #ffffff; }
+      .label-annotation-evi > a:hover { color: #ffffff; }
+      .label-annotation-evi > a:active { color: #ffffff; }
+
+   .label {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    font-size: x-small;
+}
+
+#map_container{
+          /* background-color: black; */
+          flex-grow : 1;
+          height: 100%;
+      }

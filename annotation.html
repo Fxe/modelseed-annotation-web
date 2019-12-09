@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <!-- Specify the style for the GUI -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <link rel="stylesheet" href="builder.css" />
+
+  <style>
+
+   .axis path,
+   .axis line {
+     fill: none;
+     stroke: #000;
+     shape-rendering: crispEdges;
+   }
+
+   .bar {
+     fill: steelblue;
+   }
+
+   .x.axis path {
+     display: none;
+   }
+
+   .e-tooltip {
+     display: -webkit-flex;
+     flex-direction: column;
+     box-sizing: border-box;
+     width: 520px;
+     height: 375px;
+     border-radius: 2px;
+     border: 1px solid rgb(181, 135, 135);
+     padding: 1.5%; background-color: rgb(255, 255, 255);
+     text-align: left; font-size: 16px; font-family: sans-serif; color: rgb(17, 17, 17); box-shadow: rgba(0, 0, 0, 0.4) 4px 6px 20px 0px; position: relative; z-index: 3; touch-action: none;
+   }
+
+
+  </style>
+
+  <meta charset="utf-8"/>
+  <body>
+      <div>
+          <input id="text-rxn" type="text"><button onclick="server_render_tooltip($('#text-rxn').val(), $('#render-container'))">load</button>
+      </div>
+    <div class="escher-container">
+      
+      <div class="e-tooltip">
+        <div class="e-block">
+          <button class="button">K00200</button>: enzymerase
+        </div>
+        <div class="e-block">
+          <button class="button">K00260</button>: very very very very very very very very very very very very very very very very very very very very very very very very very very very looooooooooooooooongase
+        </div>
+        <div class="e-block">
+        <input type="checkbox" checked> <span class="e-subsystem" data-toggle="tooltip" title="Andrei Pyrimidine_utilization"> annotation1 with a very long text that overflows the screennnnnnnnnn !!!!!!!</span>
+        <span class="label label-annotation-source">RAST 232</span>
+        <span class="label label-annotation-source">RAST2 112</span>
+        <span class="label label-annotation-source">AnyOtherAnnotationSource</span>
+        
+        <br>
+
+        <span class="label label-annotation-evi"><button>K01111</button> </span>
+        <span class="label label-annotation-evi">GramNeg</span>
+        <span class="label label-annotation-evi">GramNegV2</span>
+        <span class="label label-annotation-evi">iJO1366</span>
+      </div>
+      <div class="e-block">
+        <input type="checkbox"> annotation2 with ec number <a href="#">1.1.1.1</a> RAST RAST1<br>
+        KEGG GramNeg GramNegV2
+      </div>
+        <div class="buttonBar">
+         <button class="button">b1</button>
+         <button class="button">b2</button>
+         <button class="button">b3</button>
+        </div>
+      </div>
+      
+    </div>
+    <div class="escher-container">
+      <div id="render-container" class="e-tooltip"></div>
+    </div>
+    
+    <div>
+      modal panel to switch / manage stuff!
+    </div>
+  </body>
+    
+  <!-- Escher requires D3.js -->
+  <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script> -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="escher.js"></script>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/annotation.js"></script>
+  <script>
+
+    var mock_data1 = {
+        "annotation example" : {
+            "hits":[{"score":0,"source":"source1"}]
+        }
+    }
+    var mock_data2 = {"Catalase":{"hits":[{"score":2,"source":["KEGG","K03781"]}],"id":"87bfc278bef359dc012a1fa26db94c6dbef973bc7dd84ed7ffb34a2e615c6711","sources":{"KBASE_RAST":[1,1,["RSP_0903@GCF_000012905.2"]],"RAST2":[1,3,["RSP_2380@GCF_000012905.2","RSP_2779@GCF_000012905.2","RSP_0903@GCF_000012905.2"]]},"subsystems":{}},"Catalase (EC 1.11.1.6)":{"hits":[{"score":89,"source":["KEGG","K03781"]},{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":"0f0baf6c5ab08a43edc4938235eb43ab467d0965684f39c7793ce70a1e63508a","sources":{"KBASE_RAST":[109,204,["TBIS_RS01195@GCF_000092645.1","HDEN_RS02580@GCF_000143145.1","HDEN_RS12420@GCF_000143145.1","HDEN_RS12910@GCF_000143145.1","NOCA_RS23460@GCF_000015265.1","VSVS12_RS15530@GCF_001685465.1","UL81_RS00860@GCF_000980815.1","SUDEN_RS06920@GCF_000012965.1","SAVERM_RS02235@GCF_000009765.2","SAVERM_RS07385@GCF_000009765.2"]]},"subsystems":{"patric":["Photorespiration (oxidative C2 cycle)","CO2 fixation"]}},"Catalase domain protein":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"fbdfc02f6f64b358342c288b336317019f4f87dfbaeb71bf07b3318ef0f058b6","sources":{},"subsystems":{}},"catalase":{"hits":[{"score":66,"source":["KEGG","K03781"]}],"id":"ae66fd8d151b59cab21c73424497f485e090d019ee95acb28404fbc19ffd43c0","sources":{"RAST2":[94,138,["TBIS_RS01195@GCF_000092645.1","HDEN_RS02580@GCF_000143145.1","HDEN_RS12420@GCF_000143145.1","HDEN_RS12910@GCF_000143145.1","NOCA_RS23460@GCF_000015265.1","VSVS12_RS15530@GCF_001685465.1","UL81_RS00860@GCF_000980815.1","SUDEN_RS06920@GCF_000012965.1","SAVERM_RS10660@GCF_000009765.2","SAVERM_RS15845@GCF_000009765.2"]]},"subsystems":{}},"catalase (EC 1.11.1.6)":{"hits":[{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":"c3ef78c147a5436de402db78643140582544aacaa0460b431dec3a161b9f2c2a","sources":{},"subsystems":{}},"catalase C":{"hits":[{"score":2,"source":["KEGG","K03781"]}],"id":"17c239ee486fc9d7efd431d9a85fc28b6c7fee15f037a4fb461e74a322cb74cf","sources":{},"subsystems":{}},"catalase C protein":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"2bf068887d7fee2c9260dadb860b2130720604881af9f0fdc09e3aed73d78643","sources":{},"subsystems":{}},"catalase HPII":{"hits":[{"score":3,"source":["KEGG","K03781"]}],"id":"7531962cea60a1f9be44e03b8c323b4dc80474511f428951d87739a9091092aa","sources":{"RAST2":[36,39,["SAVERM_RS02235@GCF_000009765.2","BEN76_RS06250@GCF_001953195.1","TM49_RS18850@GCF_000960975.1","dqs_RS19285@GCF_001682385.1","UZ73_RS02455@GCF_000967305.2","VARPA_RS02670@GCF_000184745.1","VARPA_RS15075@GCF_000184745.1","GDIA_RS02965@GCF_000021325.1","MIM_RS04350@GCF_000521505.1","CACI_RS17300@GCF_000024025.1"]]},"subsystems":{}},"catalase HPII KatB":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"38a9115a6c18792217181836f43622af213603159d8379dda5b5800f8176c787","sources":{},"subsystems":{}},"catalase HPII, heme d-containing":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"245cc106f0f5ddafc3dd3035709edf92a27ef2a2fb8b959d60a8b6f3ba67a2d4","sources":{},"subsystems":{}},"catalase KatA":{"hits":[{"score":2,"source":["KEGG","K03781"]}],"id":"777f89236f7be1b4f4a553b7c642ecd7da8a68205c7073892e12dba72b85f82a","sources":{"RAST2":[1,2,["MSMEG_3486@GCF_000015005.1","MSMEG_6232@GCF_000015005.1"]]},"subsystems":{}},"catalase X":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"a27cf4a5c6b4f10d8d9d3f79d0810385070a5be7b0c94dd2fc603f92c308a471","sources":{},"subsystems":{}},"catalase hydroperoxidase HPII(III) protein":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"5450c2d7199a219b09196bcc3eed1e44b494bc12e803ee891f56351ff615f633","sources":{},"subsystems":{}},"catalase precursor":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"4f0bcc437f03b6a1d635f6e0974bf45328ae57adb46771b59cb2d3779bd268b6","sources":{},"subsystems":{}},"catalase-2":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"9360f2c2a16f5c101112f056dc34173b91d0f5cc9af610a45e4d9ce5a907cf96","sources":{},"subsystems":{}},"catalase-like peroxidase":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"8e9333b4f9aa33e7bb7507946cf14e3915ffb72e5e01da785321f74735c8c47a","sources":{},"subsystems":{}},"catalase-like protein":{"hits":[{"score":2,"source":["KEGG","K03781"]}],"id":"97635d51c2cbc96ddcee43bbb0dd346c6df35310179d27649eeed13d1f6cf182","sources":{"RAST2":[1,1,["HP0485@GCF_000008525.1"]]},"subsystems":{}},"catalase/peroxidase":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"f7ce8625509e7bcc486efcc8a42c2d340616ecc3f69ddd482cb39e1fc34ba3c4","sources":{},"subsystems":{}},"hydroperoxidase":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"93958e94cd06c60df18b407512c32e1cfa3b1414207b8f5ee1a920db7f52de51","sources":{"RAST2":[5,5,["A2T55_RS05890@GCF_001606005.1","MPHLCCUG_RS12155@GCF_001583415.1","SKP52_RS14275@GCF_000803645.1","AOA12_RS15590@GCF_001314225.1","AOA14_RS01375@GCF_001610975.1"]]},"subsystems":{}},"hydroperoxidase HPII(III) (catalase) KatA":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"251efce871f428d77e10e380f207c143e11b832c09947559e2dc2bd80cf5f2e6","sources":{},"subsystems":{}},"hydroperoxidase II":{"hits":[{"score":12,"source":["KEGG","K03781"]}],"id":"800e57a362861a9fc6b8891e01ef9e3532e1308b3e50050776c23cd45b696430","sources":{"RAST2":[1,1,["Psyr_0280@GCF_000012245.1"]]},"subsystems":{}},"hypothetical protein":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"f5154df170624b95211d6af98084a48c6572db20a050adff9e5c768b322b2971","sources":{"KBASE_RAST":[239,180819,["MCRO_RS00015@GCF_000025845.1","MCRO_RS00025@GCF_000025845.1","MCRO_RS00050@GCF_000025845.1","MCRO_RS00075@GCF_000025845.1","MCRO_RS00100@GCF_000025845.1","MCRO_RS00110@GCF_000025845.1","MCRO_RS00115@GCF_000025845.1","MCRO_RS00140@GCF_000025845.1","MCRO_RS00150@GCF_000025845.1","MCRO_RS00155@GCF_000025845.1"]],"RAST2":[239,230453,["MCRO_RS00025@GCF_000025845.1","MCRO_RS00110@GCF_000025845.1","MCRO_RS00135@GCF_000025845.1","MCRO_RS00150@GCF_000025845.1","MCRO_RS00155@GCF_000025845.1","MCRO_RS00160@GCF_000025845.1","MCRO_RS00170@GCF_000025845.1","MCRO_RS00175@GCF_000025845.1","MCRO_RS03970@GCF_000025845.1","MCRO_RS00230@GCF_000025845.1"]]},"subsystems":{}},"sulfur regulated plasmid-encoded protein":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"d46db23f7745bfebeebcfa2f60264ef08df14cd61dbf7380d767ba51637cdbb6","sources":{"RAST2":[1,1,["bll0292@GCF_000011365.1"]]},"subsystems":{}},"vegetative catalase":{"hits":[{"score":1,"source":["KEGG","K03781"]}],"id":"dfa48086c5f3a7ebb4d2d6ae4cd05faf130bc279b093eb6f2a8227864a5059a3","sources":{},"subsystems":{}}}
+
+
+    
+
+    
+    $(function() {
+      console.log('start')
+      render_tooltip({'seed.reaction' : ['rxn00002', 'rxn00003']}, mock_data2, $("#render-container"))
+      $('[data-toggle="tooltip"]').tooltip(); 
+    })
+  </script>
+</html>

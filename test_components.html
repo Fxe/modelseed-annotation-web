@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <link rel="stylesheet" href="css/solid.min.css" />
+    <link rel="stylesheet" href="css/regular.min.css" />
+    <link rel="stylesheet" href="css/seed.css" />
+    <style>
+        .switch-toggle {
+  width: 10em;
+}
+
+        .report-table tbody:hover td {
+          background:#CCC;
+          cursor:pointer;
+        }
+
+.switch-toggle label:not(.disabled) {
+  cursor: pointer;
+}
+        
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+*{
+  margin:0px;
+  padding:0px;
+}
+html{
+  
+}
+
+        .border_test {
+            border: 1px solid black;
+        }
+.wrapper {
+  margin: 100px 0;
+  background: #497dd0;
+}
+.toggle_radio{
+  position: relative;
+  background: rgba(255,255,255,.1);
+  margin: 4px auto;
+  overflow: hidden;
+  padding: 0 !important;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  position: relative;
+  height: 26px;
+  width: 518px;
+}
+.toggle_radio > * {
+  float: left;
+}
+.toggle_radio input[type=radio]{
+  display: none;
+  /*position: fixed;*/
+}
+.toggle_radio label{
+  font: 90%/1.618 "Source Sans Pro";
+  color: rgba(255,255,255,.9);
+  z-index: 0;
+  display: block;
+  width: 100px;
+  height: 20px;
+  margin: 3px 3px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  cursor: pointer;
+  z-index: 1;
+  /*background: rgba(0,0,0,.1);*/
+  text-align: center;
+  /*margin: 0 2px;*/
+  /*background: blue;*/ /*make it blue*/
+}
+.toggle_option_slider{
+  /*display: none;*/
+  /*background: red;*/
+  width: 100px;
+  height: 20px;
+  position: absolute;
+  top: 3px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  -webkit-transition: all .4s ease;
+  -moz-transition: all .4s ease;
+  -o-transition: all .4s ease;
+  -ms-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+#first_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 3px;
+}
+#second_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 109px;
+}
+#third_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 215px;
+}
+#a_toggle:checked ~ .toggle_option_slider{
+  background: rgba(255,255,255,.3);
+  left: 325px;
+}
+        
+        
+        .glyphicon {
+            -moz-osx-font-smoothing:grayscale;
+            -webkit-font-smoothing:antialiased;
+            display:inline-block;
+            font-style:normal;
+            font-variant:normal;
+            text-rendering:auto;
+            line-height:1;
+            font-family:"Font Awesome 5 Free";
+            font-weight:900;
+        }
+        .glyphicon-ok:before {
+            content:"\f00c"
+        }
+        
+        .glyphicon-plus-sign:before {
+            content:"\f067"
+        }
+        
+        .glyphicon-minus-sign:before {
+            content:"\f068"
+        }
+        
+        .glyphicon-resize-full:before {
+            content:"\f337"
+        }
+    </style>
+</head>
+    check-circle
+    <span class="dropdown-button-icon glyphicon glyphicon-ok">!!</span>
+    <i class="fas fa-check">glyphicon-ok</i>
+    <i class="fas fa-times">glyphicon-remove</i>
+    <i class="fas fa-times-circle">glyphicon-remove</i>
+    
+    <i class="fas fa-plus">glyphicon-plus-sign</i>
+    <i class="fas fa-minus">glyphicon-minus-sign</i>
+    <i class="fas fa-arrows-alt-h">glyphicon-resize-full</i>
+    
+    <i class="fas fa-arrows-alt">glyphicon-move</i>
+    <i class="fas fa-mouse-pointer">glyphicon-hand-up</i>
+    <i class="fas fa-wrench">glyphicon-plus</i>
+    <i class="fas fa-undo">glyphicon-repeat</i>
+    <i class="fas fa-font">glyphicon-font</i>
+    
+    <i class="fas fa-arrow-left">glyphicon-arrow-left</i>
+    <i class="fas fa-arrow-right">glyphicon-arrow-right</i>
+    <i class="fas fa-arrow-up">glyphicon-arrow-up</i>
+    <i class="fas fa-arrow-down">glyphicon-arrow-down</i>   
+    
+    <div class="container">
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-secondary active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked> Active
+  </label>
+  <label class="btn btn-seed-sm btn-danger">
+    <input type="radio" name="options" id="option2" autocomplete="off"> Radio
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"> Radio
+  </label>
+  <label class="btn btn-seed-sm btn-success">
+    <input type="radio" name="options" id="option3" autocomplete="off"> Radio
+  </label>
+</div>
+GCF_000146045.2 (YAL038W or YOR347C) {'YAL038W', 'YOR347C'}
+YAL038W pyruvate kinase CDC19 cluster308
+YOR347C pyruvate kinase PYK2 cluster308
+GCF_000182925.2 NCU06075 {'NCU06075'}
+NCU06075 pyruvate kinase cluster308
+GCF_000226395.1 ( Pc18g06000 ) {'Pc18g06000'}
+Pc18g06000 hypothetical protein cluster308
+    
+<div id="test_tooltip1" class="border_test">
+    Test Tooltip 1
+</div>
+        
+    <p></p>
+
+<div id="test_tooltip2" class="border_test">
+    Test Tooltip 2
+</div>
+        
+    <p></p>
+        
+<div id="test_tooltip3" class="border_test">
+    Test Tooltip 3
+</div>
+        
+    <p></p>
+        
+<div id="test_tooltip4" class="border_test">
+    Test Tooltip 4
+</div>
+        
+    <p></p>
+        
+<div id="test_tooltip5" class="border_test">
+    Test Tooltip 5
+</div>
+        
+    <p></p>
+        
+<div class="border_test">
+    <div><span class="badge badge-success">GCF_000146045.2</span> Saccharomyces cerevisiae S288c</div>
+    <div>iMM904 : (<span style="color:red">YAL038W</span> and <span style="color:teal">YOR347C</span>)</div>
+    <div>iTO11111 : (<span style="color:teal">YOR347C</span>)</div>
+    <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> <span class="badge badge-danger">YAL038W</span>
+     pyruvate kinase CDC19
+        </div>
+    
+    <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> <span class="badge badge-info">YOR347C</span>
+     pyruvate kinase PYK2
+        </div>
+    
+    <div><span class="badge badge-success">GCF_000182925.2</span> Neurospora crassa OR74A</div>
+    <div>iJDZ836 : <span style="color:teal">NCU06075</span></div>
+    
+    <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label></div> <span class="badge badge-info">NCU06075</span> pyruvate kinase
+        </div>
+    
+    <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label></div> <span class="badge badge-danger">NCU02111</span> pyruvate kinase other
+        </div>
+    
+
+    <div><span class="badge badge-success">GCF_000226395.1</span> Penicillium rubens Wisconsin 54-1255</div>
+    <div>iAL1006 : ( Pc18g06000 )</div>
+    
+    <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> <span class="badge badge-info">Pc18g06000</span>
+     hypothetical protein
+        </div>
+    
+    <span class="badge badge-info">cluster 308</span>
+    <span class="badge badge-danger">cluster 121</span>
+</div>
+        
+        <p></p>
+        <!-- tool_tip example3 -->
+        
+<div class="border_test" style="width : 500px">
+    <table class="table table-striped">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col"></th>
+            <th scope="col"><span class="badge badge-info">cluster 308</span></th>
+            <th scope="col"><span class="badge badge-danger">cluster 121</span></th>
+        </tr>
+            </thead>
+        
+<tr>
+            <td><span class="badge badge-success">GCF_000146045.2</span><br>Saccharomyces cerevisiae S288c</td>
+            <td><div><span class="badge badge-info">YOR347C</span> pyruvate kinase PYK2</div>
+                <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> 
+        </div>
+            </td>
+            <td>
+                <div><span class="badge badge-danger">YAL038W</span> pyruvate kinase CDC19</div>
+                <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> 
+        </div>
+            </td>
+        </tr>
+        
+<tr>
+            <td></td>
+            <td><div><span class="badge badge-info">YAL038W</span> pyruvate kinase CDC19</div>
+                <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> 
+        </div>
+            </td>
+            <td>
+            </td>
+        </tr>
+        
+        <tr>
+            <td><span class="badge badge-success">GCF_000182925.2</span><br>Neurospora crassa OR74A</td>
+            <td><div><span class="badge badge-info">NCU06075</span> pyruvate kinase</div>
+                <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> 
+        </div>
+            </td>
+            <td>
+                <div><span class="badge badge-danger">NCU02111</span> pyruvate kinase other</div>
+                <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> 
+        </div>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="badge badge-success">GCF_000226395.1</span><br>Penicillium rubens Wisconsin 54-1255</td>
+            <td><div><span class="badge badge-info">Pc18g06000</span>
+     hypothetical protein</div>
+                <div>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked><i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off"><i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off"><i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off"><i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off"><i class="fas fa-question"></i>
+  </label>
+    </div> 
+        </div>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+      <br/>
+
+      <div class="border_test report-table">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">ModelSEED</th>
+              <th scope="col"></th>
+              <th scope="col">iMM904</th>
+              <th scope="col">iJDZ</th>
+              <th scope="col">iAL</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td rowspan="2">
+              <a href="javascript:window.open('http://modelseed.org/biochem/compounds/cpd00027','blank')" target="">cpd00027</a>
+              Edit
+            </td>
+            <td>c</td>
+            <td>M_33434</td>
+            <td>M_sdsd</td>
+            <td>M_sdsd</td>
+          </tr>
+          <tr>
+            <td>m</td>
+            <td>M_33434</td>
+            <td>M_sdsd</td>
+            <td>M_sdsd</td>
+          </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td rowspan="2">
+                <a href="http://modelseed.org/biochem/compounds/cpd00111" target="_blank">cpd00111</a>
+                Edit
+              </td>
+              <td>c</td>
+              <td>M_33434</td>
+              <td>M_sdsd</td>
+              <td>M_sdsd</td>
+            </tr>
+            <tr>
+              <td>m</td>
+              <td>M_33434</td>
+              <td>M_sdsd</td>
+              <td>M_sdsd</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td rowspan="2">
+                <select>
+                  <option value="cpd00222" selected>cpd00222</option>
+                  <option value="cpd00223" selected>cpd00223</option>
+                  <option value="cpd00224" selected>cpd00224</option>
+                </select>
+              </td>
+              <td>c</td>
+              <td>M_33434</td>
+              <td>M_sdsd</td>
+              <td>M_sdsd</td>
+            </tr>
+            <tr>
+              <td>m</td>
+              <td>M_33434</td>
+              <td>M_sdsd</td>
+              <td>M_sdsd</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+<i class="far fa-star"></i>
+<i class="fas fa-ban"></i>
+<i class="fas fa-question"></i>
+
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-seed-sm btn-warning active">
+    <input type="radio" name="options" id="option1" autocomplete="off" checked>
+    <i class="fas fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option2" autocomplete="off">
+    <i class="fas fa-star-half-alt"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option3" autocomplete="off">
+    <i class="far fa-star"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option4" autocomplete="off">
+    <i class="fas fa-ban"></i>
+  </label>
+  <label class="btn btn-seed-sm btn-warning">
+    <input type="radio" name="options" id="option5" autocomplete="off">
+    <i class="fas fa-question"></i>
+  </label>
+</div>
+
+<i class="fas fa-star-half"></i>
+<i class="far fa-star-half"></i>
+
+<div class="switch-toggle switch-3 switch-candy">
+    <input id="on" name="state-d" type="radio" checked="">
+    <label for="on" onclick="">ON</label>
+
+    <input id="na" name="state-d" type="radio" disabled checked="checked">
+        <label for="na" onclick="">N/A</label>
+
+    <input id="off" name="state-d" type="radio">
+    <label for="off" onclick="">OFF</label>
+
+    <a></a>
+</div>
+
+<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+    <button type="button" class="btn btn-secondary">1</button>
+    <button type="button" class="btn btn-secondary">2</button>
+    <button type="button" class="btn btn-secondary">3</button>
+    <button type="button" class="btn btn-secondary">4</button>
+  </div>
+  <div class="btn-group mr-2" role="group" aria-label="Second group">
+    <button type="button" class="btn btn-secondary">5</button>
+    <button type="button" class="btn btn-secondary">6</button>
+    <button type="button" class="btn btn-secondary">7</button>
+  </div>
+  <div class="btn-group" role="group" aria-label="Third group">
+    <button type="button" class="btn btn-secondary">8</button>
+  </div>
+</div>
+
+
+
+<div class="wrapper">
+  <div class="toggle_radio">
+    <input type="radio" class="toggle_option" id="first_toggle" name="toggle_option">
+    <input type="radio" checked class="toggle_option" id="second_toggle" name="toggle_option">
+    <input type="radio" class="toggle_option" id="third_toggle" name="toggle_option">
+    <input type="radio" class="toggle_option" id="a_toggle" name="toggle_option">
+    <label for="first_toggle"><p>First Button</p></label>
+    <label for="second_toggle"><p>Second Button</p></label>
+    <label for="third_toggle"><p>Third Button</p></label>
+    <label for="a_toggle"><p>Another Button</p></label>
+    <div class="toggle_option_slider"></div>
+  </div>
+</div>
+
+<button>Toggle</button>
+<p>Hello</p>
+<p style="display: none">Good Bye 1</p>
+<p style="display: none">Good Bye 2</p>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="modal_comment_label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width: 500px">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Comment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label id="modal_label_reaction">rxn00148: ATP + Pyruvate <=> ADP + Phosphoenolpyruvate + H+</label>
+          <br>
+          <label id="modal_label" for="text_comment">Star YAL038W: pyruvate kinase CDC19</label>
+          <textarea class="form-control rounded-0" id="text_comment" rows="6"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/chroma.min.js"></script>
+<script src="js/popper.min.js"></script>    
+<script src="js/bootstrap.min.js"></script>
+<script src="js/annotation.js"></script>
+<script src="js/tooltip_ortholog.js"></script>
+<script src="js/merge_report.js"></script>
+<script>
+$( "button" ).click(function() {
+  $( "p" ).toggle();
+});
+$(function() {
+    
+    console.log('!')
+    
+    e = {"Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551086,"sources":{},"subsystems":{}},"Pyruvate kinase (EC 2.7.1.40)":{"hits":[{"score":146,"source":["KEGG","K00873"]},{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":2280,"sources":{"BETA_RAST":[1306,1558,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","PCC7424_RS11540@GCF_000021825.1","MPOP_RS23010@GCF_000019945.1"]],"KBASE_RAST":[1408,1715,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","TKV_RS08220@GCF_000763575.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","COPRO5265_RS04105@GCF_000020945.1"]]},"subsystems":{"Entner-Doudoroff Pathway":{},"Glycolysis and Gluconeogenesis":{},"Glycolysis and Gluconeogenesis, including Archaeal enzymes":{},"Pyruvate metabolism I: anaplerotic reactions, PEP":{}}},"Pyruvate kinase (EC 2.7.1.40) / Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551047,"sources":{"BETA_RAST":[247,254,["DESCA_RS08745@GCF_000214435.1","TRESU_RS02515@GCF_000195275.1","PCC7424_RS16950@GCF_000021825.1","LDB_RS03675@GCF_000056065.1","WANG_RS03905@GCF_000214785.1","SYNPCC7002_RS08305@GCF_000019485.1","A361_RS22205@GCF_000294775.2","NTHER_RS02900@GCF_000020005.1","AUO94_RS02205@GCF_001465835.2","SGLY_RS08835@GCF_000190635.1"]]},"subsystems":{}},"Pyruvate kinase family protein":{"hits":[{"score":4,"source":["KEGG","K00873"]}],"id":400511,"sources":{"BETA_RAST":[92,92,["RPE_RS15350@GCF_000014825.1","GTNG_RS15315@GCF_000015745.1","THEOS_RS11820@GCF_000309885.1","CDOO_RS12485@GCF_000767055.1","B842_RS12400@GCF_000819445.1","CKROP_RS00580@GCF_000023145.1","JI59_RS22370@GCF_000767465.1","CYAGR_RS04985@GCF_000316515.1","MFUMSOLV_RS01890@GCF_000953475.1","CE_RS13615@GCF_000011305.1"]],"KBASE_RAST":[81,81,["RPE_RS15350@GCF_000014825.1","AO081_RS23665@GCF_001308105.1","AZF01_RS00330@GCF_001578105.1","H924_RS12380@GCF_000344785.1","TERTU_RS08180@GCF_000023025.1","TOLA_RS06570@GCF_000023065.1","THEOS_RS11820@GCF_000309885.1","CCE_RS03345@GCF_000017845.1","B842_RS12400@GCF_000819445.1","A605_RS13465@GCF_000341345.1"]]},"subsystems":{}},"galacturonokinase (EC 2.7.1.44)":{"hits":[{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":5544954,"sources":{},"subsystems":{}}}
+  
+  
+  
+  render_tooltip({'seed.reaction' : ['rxn00148']}, e, $('#test_tooltip1'), {})
+  
+  e = {'orthologs': {
+           'cluster308' : {
+               'GCF_000146045.2': {
+                   'YAL038W': 'pyruvate kinase CDC19',
+                   'YOR347C': 'pyruvate kinase PYK2'},
+               'GCF_000226395.1': {
+                   'Pc18g06000': 'hypothetical protein'},
+               'GCF_000182925.2': {
+                   'NCU06075': 'pyruvate kinase'}}},
+       'genomes': {
+           'GCF_000146045.2': {
+               'name': 'Saccharomyces cerevisiae S288c',
+               'source': {
+                   'iMM904': [
+                       {
+                           'gpr': '(YAL038W or YOR347C)',
+                           'genes': {
+                               'YAL038W': {
+                                   'ortholog_id': 'cluster308',
+                                   'function': 'pyruvate kinase CDC19'},
+                               'YOR347C': {'ortholog_id': 'cluster308',
+        'function': 'pyruvate kinase PYK2'}}}]}},
+  'GCF_000182925.2': {'name': 'Neurospora crassa OR74A',
+   'source': {'iJDZ836': [{'gpr': 'NCU06075',
+      'genes': {'NCU06075': {'ortholog_id': 'cluster308',
+        'function': 'pyruvate kinase'}}}]}},
+  'GCF_000226395.1': {'name': 'Penicillium rubens Wisconsin 54-1255',
+   'source': {'iAL1006': [{'gpr': '( Pc18g06000 )',
+      'genes': {'Pc18g06000': {'ortholog_id': 'cluster308',
+        'function': 'hypothetical protein'}}}]}}}}
+  
+  render_tooltip_ortholog({'seed.reaction' : ['rxn00148']}, e, $('#test_tooltip2'), {})
+    
+  e = {'gene_reaction': {'GCF_000146045.2': {'YAL038W': ['r_0962'],
+   'YOR347C': ['r_0962']},
+  'GCF_000226395.1': {'Pc18g06000': ['R_r0016']},
+  'GCF_000182925.2': {'NCU06075': ['PEPDEPHOS__45__RXN__45__R2L']},
+  'GCF_000277815.2': {'EHEL_090610': []},
+  'GCF_000143185.1': {'SCHCODRAFT_73013': []}},
+ 'orthologs': {'cluster614': {'GCF_000146045.2': {'YAL038W': 'pyruvate kinase CDC19',
+    'YOR347C': 'pyruvate kinase PYK2'},
+   'GCF_000226395.1': {'Pc18g06000': 'hypothetical protein'},
+   'GCF_000182925.2': {'NCU06075': 'pyruvate kinase'},
+   'GCF_000277815.2': {'EHEL_090610': '?'},
+   'GCF_000143185.1': {'SCHCODRAFT_73013': '?'}}},
+ 'genomes': {'GCF_000146045.2': 
+             {'name': 'Saccharomyces cerevisiae S288c',
+              'source': {'iMM904': [{'rxn_id': 'R_PYK',
+      'gpr': '(YAL038W or YOR347C)',
+      'genes': {'YOR347C': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase PYK2'},
+       'YAL038W': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase CDC19'}}}],
+    'iTO977': [{'rxn_id': 'R_CDC19',
+      'gpr': '(YAL038W or YOR347C)',
+      'genes': {'YOR347C': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase PYK2'},
+       'YAL038W': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase CDC19'}}}],
+    'yeast_6.06': [{'rxn_id': 'r_0962',
+      'gpr': '(YOR347C OR YAL038W)',
+      'genes': {'YOR347C': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase PYK2'},
+       'YAL038W': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase CDC19'}}}],
+    'yeast_7.6': [{'rxn_id': 'r_0962',
+      'gpr': '(YAL038W OR YOR347C)',
+      'genes': {'YOR347C': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase PYK2'},
+       'YAL038W': {'ortholog_id': 'cluster614',
+        'function': 'pyruvate kinase CDC19'}}}]}},
+  'GCF_000226395.1': {'name': 'Penicillium rubens Wisconsin 54-1255',
+   'source': {'iAL1006': [{'rxn_id': 'R_r0016',
+      'gpr': '( Pc18g06000 )',
+      'genes': {'Pc18g06000': {'ortholog_id': 'cluster614',
+        'function': 'hypothetical protein'}}}]}},
+  'GCF_000182925.2': {'name': 'Neurospora crassa OR74A',
+   'source': {'iJDZ836': []}}}}
+  
+  render_tooltip_ortholog({'seed.reaction' : ['rxn00148']}, e, $('#test_tooltip3'), {})
+  
+  e = {'id': 'cpd00027',
+ 'abbreviation': 'glc-D',
+ 'name': 'D-Glucose',
+ 'formula': 'C6H12O6',
+ 'mass': '180.0',
+ 'source': 'Primary Database',
+ 'inchikey': 'WQZGKKKJIJFFOK-GASJEMHNSA-N',
+ 'charge': 0,
+ 'is_core': 1,
+ 'is_obsolete': 0,
+ 'linked_compound': '',
+ 'is_cofactor': 0,
+ 'deltag': -102.13,
+ 'deltagerr': 0.16,
+ 'pka': '8:15.28;12:13.87;10:14.69;6:13.03;11:11.61',
+ 'pkb': '12:-3.73;10:-3.51;11:-4.26;3:-4.09;6:-3.49;8:-2.9',
+ 'abstract_compound': '',
+ 'comprised_of': '',
+ 'aliases': 'Name: D-(+)-Glucose; D-Glucopyranose; D-Glucose; Dextrose; Glucopyranose; Glucose; Grape sugar|AlgaGEM: S_D_45_Glucose_c; S_Glucose_c; S_Glucose_ext_b; S_Glucose_p|AraGEM: S_D_45_Glucose_c|BiGG: glc__D|KEGG: C00031; C00293|MetaCyc: Glucopyranose',
+ 'smiles': 'OC[C@H]1OC(O)[C@H](O)[C@@H](O)[C@@H]1O'}
+  
+  e = {
+      'models' : ['model1', 'model2', 'model3'],
+      'records' : [
+          {
+              'model_data' : {
+                  'c' : {
+                      'model1' : ['M_cpd1_c', 'M_cpd1_dup_c'],
+                      'model2' : ['M_zpd1_cyt'],
+                      'model3' : ['M_ccc1_cytosol'],
+                  },
+                  'm' : {
+                      'model1' : ['M_cpd1_m'],
+                      'model2' : ['M_zpd1_mit'],
+                      'model3' : ['M_ccc1_mitss'],
+                  }
+              },
+              'database' : {
+                  'seed.compound': ['cpd00001', 'cpd00002']
+              }
+          }
+      ]
+  }
+  render_report(e, $('#test_tooltip4'))
+    
+  e = {'models': ['iJDZ836', 'iMM904', 'iAL1006'],
+ 'records': [{'model_data': {'c': {'iJDZ836': ['M_2__45__KETOGLUTARATE'],
+     'iMM904': ['M_akg_c'],
+     'iAL1006': ['M_AKG']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_GLT'],
+     'iMM904': ['M_glu__L_c'],
+     'iAL1006': ['M_GLU']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_3php_c'],
+     'iAL1006': ['M_PHP'],
+     'iJDZ836': ['M_3__45__P__45__HYDROXYPYRUVATE']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_WATER'],
+     'iMM904': ['M_h2o_c'],
+     'iAL1006': ['M_H2O']}},
+   'database': {'seed.compound' : ['cpd00001']}},
+  {'model_data': {'c': {'iMM904': ['M_pser__L_c'],
+     'iJDZ836': ['M_3__45__P__45__SERINE'],
+     'iAL1006': ['M_3PSER']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_Pi'],
+     'iAL1006': ['M_PI'],
+     'iMM904': ['M_pi_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_SER'],
+     'iAL1006': ['M_SER'],
+     'iMM904': ['M_ser__L_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_nad_c'],
+     'iAL1006': ['M_NAD'],
+     'iJDZ836': ['M_NAD']}},
+   'database': {}},
+  {'model_data': {'c': {'iAL1006': ['M_3PG'],
+     'iMM904': ['M_3pg_c'],
+     'iJDZ836': ['M_G3P']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_nadh_c'],
+     'iAL1006': ['M_NADH'],
+     'iJDZ836': ['M_NADH']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_h_c'], 'iJDZ836': ['M_PROTON']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_GLY'],
+     'iAL1006': ['M_GLY'],
+     'iMM904': ['M_gly_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iAL1006': ['M_2PG'],
+     'iMM904': ['M_2pg_c'],
+     'iJDZ836': ['M_2__45__PG']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_h2o_c'],
+     'iJDZ836': ['M_WATER'],
+     'iAL1006': ['M_H2O']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_pep_c'],
+     'iJDZ836': ['M_PHOSPHO__45__ENOL__45__PYRUVATE'],
+     'iAL1006': ['M_PEP']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_ACETYLSERINE'],
+     'iAL1006': ['M_ASER'],
+     'iMM904': ['M_acser_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iAL1006': ['M_COA'],
+     'iJDZ836': ['M_CO__45__A'],
+     'iMM904': ['M_coa_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iAL1006': ['M_ACCOA'],
+     'iJDZ836': ['M_ACETYL__45__COA'],
+     'iMM904': ['M_accoa_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iAL1006': ['M_AC'],
+     'iMM904': ['M_ac_c'],
+     'iJDZ836': ['M_ACET']}},
+   'database': {}},
+  {'model_data': {'c': {'iAL1006': ['M_CYS'],
+     'iJDZ836': ['M_CYS'],
+     'iMM904': ['M_cys__L_c']}},
+   'database': {}},
+  {'model_data': {'c': {'iMM904': ['M_h2s_c'],
+     'iAL1006': ['M_H2S'],
+     'iJDZ836': ['M_HS']}},
+   'database': {}},
+  {'model_data': {'c': {'iJDZ836': ['M_PROTON'], 'iMM904': ['M_h_c']}},
+   'database': {}}]}
+    
+  render_report(e, $('#test_tooltip5'))
+})
+</script>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="utf-8"/>
+  <!-- Specify the style for the GUI -->
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+    
+  <style>
+      html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+      #map_container{
+          /* background-color: black; */
+          flex-grow : 1;
+          height: 100%;
+      }
+   .axis path,
+   .axis line {
+     fill: none;
+     stroke: #000;
+     shape-rendering: crispEdges;
+   }
+
+   .bar {
+     fill: steelblue;
+   }
+
+   .x.axis path {
+     display: none;
+   }
+      
+      .wutt {
+          display: flex;
+  flex-flow: column;
+  height: 100%;
+      }
+    
+    
+  .demo-droppable {
+    background: #08c;
+    color: #fff;
+    padding: 100px 0;
+    text-align: center;
+  }
+  .demo-droppable.dragover {
+    background: #00CC71;
+  }
+
+  </style>
+
+  
+  <body>
+    <div class="container-fluid wutt">
+      <div id="top_bar">
+          <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-bars"> </i> Settings</button>
+          User: <span id="label_user" class="badge badge-primary">loading...</span>
+          Genome Set: <span id="label_genome_set" class="badge badge-primary">none</span>
+          Template: <span id="label_target_template" class="badge badge-primary">loading...</span>
+          Server: <span id="label_server_status" class="badge badge-danger">offline</span>
+          Database: <span id="label_database_status" class="badge badge-danger">offline</span>
+          Cloud: <span id="label_cloud_status" class="badge badge-danger">offline</span>
+          Biochemistry: <span id="label_model" class="badge badge-danger">bio7</span>
+          Map: <span id="label_map" class="badge badge-danger">example_map</span>
+          <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_data_load"><i class="fas fa-bars"> </i> Load Data</button>
+          <button type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> Edit </button>
+        
+          Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
+      </div>
+      <div id="map_container">Loading map ...</div>
+    </div>
+<!-- Modal Map Select-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog mw-100 w-75" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Metabolic Maps</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+    <button type="button" class="btn btn-primary" onclick="test()">test</button>
+            <table id="table-escher-maps" class="table table-sm">
+              <thead class="thead-light">
+                  <tr>
+                    <th scope="col">map</th>
+                    <th scope="col">#reactions</th>
+                    <th scope="col">#model</th>
+                    <th scope="col">#genes</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+            </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Data Load-->
+<div class="modal fade" id="modal_data_load" tabindex="-1" role="dialog" aria-labelledby="modal_data_load_label" aria-hidden="true">
+  <div class="modal-dialog mw-100 w-75" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Load Data</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <a class="btn" id="download_map" target="_blank">Download CSV (via btoa)</a>
+    <button type="button" class="btn btn-primary" onclick="test()">test</button>
+
+        !!!!!
+<div id="dropzone_load_model" style="height:200px; width:200px">
+Load Model
+</div>
+<div id="dropzone_load_map" style="height:200px; width:200px">
+Load Map
+</div>        
+<form action="your_action" class="dropzone" id="your_form_id">
+     <div class="fallback">
+         <input name="file" type="file" />
+     </div>
+</form>
+
+<button type="button" id="btn_upload">Upload</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+  </body>
+    
+  <!-- Escher requires D3.js -->
+  <script src="js/d3-3.5.6.min.js"></script>
+  <script src="escher.js"></script>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/dataTables.bootstrap4.min.js"></script>
+  <script src="js/dataTables.scroller.min.js"></script>
+  <script src="js/dropzone.js"></script>
+  <script src="js/curation_env.js"></script>
+  <script src="js/curation_api.js"></script>
+  <script src="js/widget_system_status.js"></script>
+  <script>
+
+    
+    Dropzone.autoDiscover = false;
+   var myDropzone = new Dropzone("#dropzone_load_map", { url: "/file/post", autoProcessQueue: false, maxFiles:1});
+  myDropzone.on("addedfile", function(file) {
+    console.log(file)
+    /* Maybe display some more file information on your page */
+  });
+    var dz = new Dropzone("#your_form_id", { autoProcessQueue: false, maxFiles:1, init:function(e) {
+var myDropzone = this;
+
+        $('#btn_upload').on("click", function() {
+            myDropzone.processQueue(); // Tell Dropzone to process all queued files.
+        });
+
+        // Event to send your custom data to your server
+        myDropzone.on("sending", function(file, xhr, data) {
+          console.log(file, xhr, data)
+            // First param is the variable name used server side
+            // Second param is the value, you can add what you what
+            // Here I added an input value
+            //data.append("your_variable", $('#your_input').val());
+        });
+    }});
+    
+  </script>
+  <script src="js/annotation.js"></script>
+  <script src="js/annotation_config.js"></script>
+
+
+  <script src="main.js"></script>
+
+</html>

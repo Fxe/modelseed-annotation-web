@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <!-- Specify the style for the GUI -->
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  <link rel="stylesheet" href="css/escher-shadow.css" />
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+    #map_container{
+      /* background-color: black; */
+      flex-grow : 1;
+      height: 100%;
+    }
+
+    .wutt {
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container-fluid wutt">
+    <div>
+      <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-bars"> </i> Settings</button>
+      User: <span id="label_user" class="badge badge-primary">loading...</span>
+      Genome Set: <span id="label_genome_set" class="badge badge-primary">none</span>
+      Template: <span id="label_target_template" class="badge badge-primary">loading...</span>
+      Server: <span id="label_server_status" class="badge badge-danger">offline</span>
+      Database: <span id="label_database_status" class="badge badge-danger">offline</span>
+      Cloud: <span id="label_cloud_status" class="badge badge-danger">offline</span>
+      Biochemistry: <span id="label_model" class="badge badge-danger">bio7</span>
+      Map: <span id="label_map" class="badge badge-danger">example_map</span>
+      <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_data_load"><i class="fas fa-bars"> </i> Load Data</button>
+      <button type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> Edit </button>
+
+      Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
+    </div>
+    <div id="map_container">Loading map ...</div>
+  </div>
+</body>
+
+<!-- Escher requires D3.js -->
+<script src="js/d3-3.5.6.min.js"></script>
+<script src="escher.js"></script>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/escher_shadow.js"></script>
+<script>
+
+
+
+  var test = {
+    "maps": [
+    "iMM904;c;c;ModelSEED.Folate Biosynthesis",
+    "iMM904;c;c;ModelSEED.Fatty Acid Biosynthesis II Aesthetically Improved",
+    "iAL1006;C_c;c;ModelSEED.Fatty Acid Biosynthesis II Aesthetically Improved",
+    "iAL1006;C_c;c;ModelSEED.Folate Biosynthesis"
+  ],
+    "x": 2,
+    "y": 2
+  };
+
+  var canvas = {
+    "height": 8253.679748535156,
+    "width": 12059.231323242188,
+    "x": 0,
+    "y": 0
+  };
+
+  /*
+  "bigg_id": "M_3dhsk_c@iMM904",
+    "compartment": "c",
+    "label_x": -474.87848742778044,
+    "label_y": -1455.511124277163,
+    "name": "3-Dehydroshikimate",
+  */
+  console.log('!');
+  var e_builder = null;
+  var e_map;
+  var e_map_base;
+  $(function() {
+    console.log('!');
+    $.getJSON("data/TempModels/iMM904.json", function(model_data) {
+      $.getJSON("data/TempModels/chorismate_gap.json", function(map_data) {
+        e_map = map_data;
+        let e_options = {
+          //menu: '',
+          fill_screen: false
+        };
+        e_builder = escher.Builder(e_map, model_data, null, d3.select('#map_container'), e_options);
+        $.getJSON("data/TempModels/chorismate_base.json", function(map_ghost) {
+          e_map_base = map_ghost;
+          draw_watermark(map_ghost);
+        });
+      });
+    });
+
+
+  });
+</script>
+</html>

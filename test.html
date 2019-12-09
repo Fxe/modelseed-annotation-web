@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Model Viewer</title>
+</head>
+<body>
+<div>
+  <table>
+
+  </table>
+</div>
+</body>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap4.min.js"></script>
+<script src="js/dataTables.scroller.min.js"></script>
+<script src="js/dropzone.js"></script>
+<script>
+$.urlParam = function(name){
+  let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  if (results == null) {
+    return 0;
+  }
+  return results[1] || 0;
+};
+
+var model_id = null;
+
+$(function() {
+  model_id = decodeURIComponent($.urlParam('model_id'));
+  if (model_id) {
+    console.log(model_id);
+  }
+})
+</script>
+</html>

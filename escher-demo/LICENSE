@@ -1,0 +1,7 @@
+The demos in this library are licensed separately.
+
+The main reason for separate licenses is that the knockout demo uses glpk.js
+(https://github.com/hgourvest/glpk.js) for linear programming in the browser.
+glpk.js is licensed under GPL v2, so the knockout demo must also use the GPL
+license. However, the rest of the demos are available under the MIT license
+(like the main Escher project).

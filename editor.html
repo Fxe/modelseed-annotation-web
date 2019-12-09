@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  <!-- Specify the style for the GUI
+<script src="//use.edgefonts.net/tulpen-one.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="builder.css" />
+    -->
+  <style>
+      html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+      #map_container{
+          /* background-color: black; */
+          flex-grow : 1;
+          /* height: 800px; */
+      }
+   .axis path,
+   .axis line {
+     fill: none;
+     stroke: #000;
+     shape-rendering: crispEdges;
+   }
+
+   .bar {
+     fill: steelblue;
+   }
+
+   .x.axis path {
+     display: none;
+   }
+      
+      .wutt {
+          display: flex;
+  flex-flow: column;
+  height: 100%;
+      }
+  </style>
+
+
+  <body>
+    <div class="container-fluid wutt">
+      <div>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Settings</button>
+          User: <span id="label_user" class="badge badge-primary">loading...</span>
+          Genome Set: <span id="label_genome_set" class="badge badge-primary">none</span>
+          Template: <span id="label_target_template" class="badge badge-primary">loading...</span>
+          Server: <span id="label_server_status" class="badge badge-danger">offline</span>
+          Database: <span id="label_database_status" class="badge badge-danger">offline</span>
+          Cloud: <span id="label_cloud_status" class="badge badge-danger">offline</span>
+      </div>
+      <div id="map_container" style="background-color: pink">Loading map ...</div>
+    </div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog mw-100 w-75" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Metabolic Maps</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+    <button type="button" class="btn btn-primary" onclick="test()">test</button>
+            <table id="table-escher-maps" class="table table-sm">
+              <thead class="thead-light">
+                  <tr>
+                    <th scope="col">map</th>
+                    <th scope="col">#reactions</th>
+                    <th scope="col">#model</th>
+                    <th scope="col">#genes</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+            </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </body>
+    
+  <!-- Escher requires D3.js -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="escher.js"></script>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/dataTables.bootstrap4.min.js"></script>
+  <script src="js/dataTables.scroller.min.js"></script>
+  <script src="js/annotation.js"></script>
+  <script src="js/annotation_config.js"></script>
+  
+  
+  <script>
+
+var e_map = null;
+const load_map = function(cb) {
+  if (e_map) {
+    console.log('found map!');
+    cb(e_map);
+  } else {
+    console.log('load_default!');
+    $.getJSON("example_map.json", function(map_data) {
+      e_map = map_data;
+      cb(e_map);
+    });
+  }
+};
+
+$(function() {
+  load_map(function(map_data) {
+    $.getJSON("bios7.json", function(model_data) {
+      e_model = model_data
+      e_map = map_data
+      e_options = {
+        //menu: 'zoom',
+        fill_screen: false
+        //tooltip_component: tooltip,
+      }
+      //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+    });
+  });
+})
+  </script>
+</html>

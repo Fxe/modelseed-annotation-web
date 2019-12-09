@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ortholog Viewer</title>
+
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    .fill_height {
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+    }
+
+    li.select2-selection__choice {
+      max-width: 100%;
+      overflow: hidden;
+      /*Altered two below to make word wrap work */
+      word-wrap: normal !important;
+      white-space: normal;
+    }
+    ul.select2-selection__rendered {
+      padding-right: 12px !important;
+    }
+    #map_container{
+      /* background-color: black; */
+      flex-grow : 1;
+      height: 100%;
+      /* height: 800px; */
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div id="top_bar"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="ortholog_container"></div>
+    </div>
+  </div>
+</div>
+    
+<!-- Modal -->
+<div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="modal_comment_label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="width: 500px">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Comment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label id="modal_label_reaction">rxn00148: ATP + Pyruvate <=> ADP + Phosphoenolpyruvate + H+</label>
+          <br>
+          <label id="modal_label" for="text_comment">Star YAL038W: pyruvate kinase CDC19</label>
+          <textarea class="form-control rounded-0" id="text_comment" rows="6"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="button_save_with_comment" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/tooltip_ortholog.js"></script>
+<script src="js/curation_env.js"></script>
+<script src="js/curation_api.js"></script>
+<script src="js/widget_system_status.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+  const getUrlParameter = function getUrlParameter(sParam) {
+    let sPageURL = window.location.search.substring(1),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+      }
+    }
+  };
+
+  const api = new CurationAPI();
+  const env = new CurationEnvironment(api, [
+    new WidgetSystemStatus($('#top_bar'))
+  ]);
+
+  var a = null;
+
+  $(function() {
+    env.load_config();
+    env.init_ui();
+
+    let rxn_id = getUrlParameter('rxn');
+
+    if (rxn_id) {
+      api.get_ortholog_annotation_from_rxn(rxn_id, function(ret) {
+        api.get_template_reaction_gene(env.config.target_template, rxn_id, function (annotation_data) {
+          console.log('get_template_reaction_gene', annotation_data);
+          render_tooltip_ortholog({'seed.reaction' : [rxn_id]}, ret, $('#ortholog_container'), annotation_data, '100%')
+        });
+      });
+    } else {
+      $('#ortholog_container').html(rxn_id);
+    }
+  })
+</script>

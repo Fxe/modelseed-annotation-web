@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <style>
+      .hidden{display:none !important}
+.glyphicon {
+            -moz-osx-font-smoothing:grayscale;
+            -webkit-font-smoothing:antialiased;
+            display:inline-block;
+            font-style:normal;
+            font-variant:normal;
+            text-rendering:auto;
+            line-height:1;
+            font-family:"Font Awesome 5 Free";
+            font-weight:900;
+        }
+        .glyphicon-ok:before {
+            content:"\f00c"
+        }
+      .glyphicon-remove:before {
+            content:"\f00d"
+        }
+      .glyphicon-plus-sign:before {
+            content:"\f067"
+        }
+        
+        .glyphicon-minus-sign:before {
+            content:"\f068"
+        }
+        
+        .glyphicon-resize-full:before {
+            content:"\f337"
+        }
+  </style>
+</head>
+<body>
+  <div class="container">
+      
+    <div class="escher-container fill-screen-div">
+      <div class="escher-zoom-container">
+        <div class="escher-3d-transform-container" style="">
+        </div>
+      </div>
+      <div class="search-menu-container">
+        <div class="search-menu-container-inline">
+          <div id="menu"><ul class="nav nav-pills">
+            <li class="dropdown">
+              <button class="btn btn-link btn-sm dropdown-button" data-toggle="dropdown">Map <b class="caret"></b></button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Save map JSON (Ctrl+S)</span></a></li>
+                <li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Load map JSON (Ctrl+O)</span></a><input type="file" style="display: none;"></li>
+                <li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Export as SVG (Ctrl+Shift+S)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Export as PNG (Ctrl+Shift+P)</span></a></li>
+                <li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Clear map</span></a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <button class="btn btn-link btn-sm dropdown-button" data-toggle="dropdown">Model <b class="caret"></b></button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Load COBRA model JSON (Ctrl+M)</span></a><input type="file" style="display: none;"></li><li role="presentation" id="convert_map"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Update names and gene reaction rules using model</span></a></li><li role="presentation" id="clear_model"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Clear model</span></a></li></ul></li><li class="dropdown"><button class="btn btn-link btn-sm dropdown-button" data-toggle="dropdown">Data <b class="caret"></b></button><ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Load reaction data</span></a><input type="file" style="display: none;"></li><li role="presentation" class="escher-disabled"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Clear reaction data</span></a></li><li role="presentation" class="divider"></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Load gene data</span></a><input type="file" style="display: none;"></li><li role="presentation" class="escher-disabled"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Clear gene data</span></a></li><li role="presentation" class="divider"></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Load metabolite data</span></a><input type="file" style="display: none;"></li><li role="presentation" class="escher-disabled"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Clear metabolite data</span></a></li></ul></li><li class="dropdown"><button class="btn btn-link btn-sm dropdown-button" data-toggle="dropdown">Edit <b class="caret"></b></button><ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel"><li role="presentation" id="zoom-mode-menu-button"><a href="#"><span class="dropdown-button-icon glyphicon glyphicon-ok"></span><span class="dropdown-button-text"> Pan mode (Z)</span></a></li><li role="presentation" id="brush-mode-menu-button"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Select mode (V)</span></a></li><li role="presentation" id="build-mode-menu-button"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Add reaction mode (N)</span></a></li><li role="presentation" id="rotate-mode-menu-button"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Rotate mode (R)</span></a></li><li role="presentation" id="text-mode-menu-button"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Text mode (T)</span></a></li><li role="presentation" class="divider"></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Delete (Del)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Undo (Ctrl+Z)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Redo (Ctrl+Shift+Z)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Toggle primary/secondary (P)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Rotate reactant locations (C)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Select all (Ctrl+A)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Select none (Ctrl+Shift+A)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Invert selection</span></a></li></ul></li><li class="dropdown"><button class="btn btn-link btn-sm dropdown-button" data-toggle="dropdown">View <b class="caret"></b></button><ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dLabel"><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Zoom in (+)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Zoom out (-)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Zoom to nodes (0)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Zoom to canvas (1)</span></a></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Find (F)</span></a></li><li role="presentation" id="bezier-button"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Show control points (B)</span></a></li><li role="presentation" class="divider"></li><li role="presentation"><a href="#"><span class="dropdown-button-icon"></span><span class="dropdown-button-text"> Settings (,)</span></a></li></ul></li><a class="help-button" target="#" href="https://escher.readthedocs.org">?</a></ul></div><div class="search-container" style="display: none;"><input class="search-bar"><div class="btn-group btn-group-sm"><button class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button><button class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button></div><div class="search-counter"></div><button class="btn btn-sm btn-default close-button"><span class="glyphicon glyphicon-remove"></span></button></div></div></div>
+      <div>
+        <ul class="nav nav-pills nav-stacked" id="button-panel">
+          <li><button class="btn btn-default simple-button" title="Zoom in (+)"><span class="glyphicon glyphicon-plus-sign"><span class="hidden">+</span></span></button></li>
+          <li><button class="btn btn-default simple-button" title="Zoom out (-)"><span class="glyphicon glyphicon-minus-sign"><span class="hidden">–</span></span></button></li>
+          <li><button class="btn btn-default simple-button" title="Zoom to canvas (1)"><span class="glyphicon glyphicon-resize-full"><span class="hidden">↔</span></span></button></li>
+        <li class="btn-group-vertical" style="display: none;"><button class="btn btn-default simple-button" title="Direction arrow (←)"><span class="glyphicon glyphicon-arrow-left"><span class="hidden">←</span></span></button><button class="btn btn-default simple-button" title="Direction arrow (→)"><span class="glyphicon glyphicon-arrow-right"><span class="hidden">→</span></span></button><button class="btn btn-default simple-button" title="Direction arrow (↑)"><span class="glyphicon glyphicon-arrow-up"><span class="hidden">↑</span></span></button><button class="btn btn-default simple-button" title="Direction arrow (↓)"><span class="glyphicon glyphicon-arrow-down"><span class="hidden">↓</span></span></button></li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/chroma.min.js"></script>
+<script src="js/popper.min.js"></script>    
+<script src="js/bootstrap.min.js"></script>
+<script src="js/annotation.js"></script>
+<script src="js/tooltip_ortholog.js"></script>
+<script>
+$(function() {
+    console.log('!')
+})
+</script>
+</body>
+</html>
