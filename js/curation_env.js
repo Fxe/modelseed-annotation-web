@@ -46,7 +46,8 @@ class CurationEnvironment {
     if (!this.config['genome_set']) {
       console.log('[genome_set] not set');
     }
-
+      
+    this.save_config_to_localstarage();
     this.update_ui();
   }
 
