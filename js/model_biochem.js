@@ -116,8 +116,15 @@ var current_build_config = null;
 var current_canvas = null;
 
 const api = new CurationAPI();
+const env = new CurationEnvironment(api, [
+  new WidgetSystemStatus($('#top_bar')),
+  //escher_widget,
+]);
+
 //draw_shadow_map(omg, -1 * omg[1].canvas.x, -1 * omg[1].canvas.y);
 $(function() {
+  env.load_config();
+  env.init_ui();
   $('#button_merge_seed').click(function() {
       cluster_merge_map(e_map, current_grid_layout, function(o) {
           e_map = o;

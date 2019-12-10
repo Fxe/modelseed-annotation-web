@@ -31,6 +31,11 @@ class CurationEnvironment {
       w.update(that);
     });
   }
+    
+  reset_config() {
+    localStorage.removeItem(LOCALSTORAGE_KEY);
+    this.load_config();
+  }
 
   load_config() {
     this.config = this.load_config_from_localstorage();
@@ -57,7 +62,7 @@ class CurationEnvironment {
     let cfg = {
       'user' : null,
       'genome_set' : null,
-      'target_template' : 'template_v3',
+      'target_template' : 'fungi',
       'kbase_token' : null
     }
 
