@@ -653,54 +653,71 @@ const manual_groups = {
 const manual_compartment_mapping = {
   'iAL1006' : {
     'c' : 'C_c',
+    'm' : 'C_m',
   },
   'iWV1314' : {
     'c' : 'Cytoplasm',
+    'm' : 'Mitochondrion',
   },
   'iSS884' : {
     'c' : 'C_3',
+    'm' : 'C_1',
   },
   'iMA871' : {
     'c' : 'Cytosol',
+    'm' : 'Mitochondrion',
   },
   'iCT646' : {
     'c' : 'c',
+    'm' : 'm',
   },
   'iLC915' : {
     'c' : 'C_6',
+    'm' : 'C_1',
   },
   'iJDZ836' : {
     'c' : 'CCO__45__CYTOSOL',
+    'm' : 'CCO__45__MIT',
   },
   'iMM904' : {
     'c' : 'c',
+    'm' : 'm',
   },
   'iNL895' : {
     'c' : 'c_01',
+    'm' : 'c_10',
   },
   'iRL766' : {
     'c' : 'C_c',
+    'm' : 'C_m',
   },
   'iTO977' : {
     'c' : 'C_2',
+    'm' : 'C_3',
   },
   'iJL1454' : {
     'c' : 'c',
+    'm' : 'm',
   },
   'iNX804' : {
     'c' : 'c',
+    'm' : 'm',
   },
   'yeast_7.6' : {
     'c' : 'c_02',
+    'm' : 'c_11',
   },
   'iWV1213' : {
     'c' : 'c',
+    'm' : 'm',
   },
   'iOD907' : {
     'c' : 'C_00003',
+    'm' : 'C_00002',
   },
   'yeast_6.06' : {
     'c' : 'c_03',
+    'm' : 'c_11',
   },
 }
 

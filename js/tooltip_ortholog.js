@@ -208,6 +208,7 @@ function update_toggle_label(button_toggle_comment) {
 }
 
 var render_tooltip_ortholog = function(refs, data, container, template_rxns, width = '800px') {
+  data['gene_reaction'] = data['gene_reaction'] || {}
   let seed_ids = []
   if (refs['seed.reaction']) {
     seed_ids = refs['seed.reaction']
@@ -316,6 +317,7 @@ var render_tooltip_ortholog = function(refs, data, container, template_rxns, wid
         });
         console.log(genome_id, genes_found)
         _.each(genome_orthologs[genome_id], function(gene_function, gene_id) {
+          data['gene_reaction'][genome_id] = data['gene_reaction'][genome_id] || {}
           let created_controls = {};
 
           let default_opt = 'opt_null';

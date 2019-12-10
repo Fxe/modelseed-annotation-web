@@ -21,10 +21,24 @@ const cluster_map = function(map_data, grid_data, cb) {
   api.post_escher_cluster({'escher_map' : map_data, 'grid' : grid_data},
     function(report) {
       render_report(report, $('#cluster_report_container'))
-      $('#modal_report').modal()
+      $('#modal_builder').modal('hide')
+      $('#modal_report').modal('show')
       console.log(report);
     })
 };
+
+const cluster_merge_map = function(map_data, grid_data, cb) {
+  api.post_escher_cluster_merge({'escher_map' : map_data, 'grid' : grid_data},
+    function(escher_map) {
+      if(cb){
+          cb(escher_map)
+      }
+      
+      //console.log(escher_map);
+    })
+};
+
+
 
 const post_build = function(build_params, fn_success, fn_always, fn_error) {
   $.ajax({
@@ -98,9 +112,26 @@ var is_init= false;
 var widget_escher_modelseed = null;
 var current_grid_layout = null;
 
+var current_build_config = null;
+var current_canvas = null;
+
 const api = new CurationAPI();
 //draw_shadow_map(omg, -1 * omg[1].canvas.x, -1 * omg[1].canvas.y);
 $(function() {
+  $('#button_merge_seed').click(function() {
+      cluster_merge_map(e_map, current_grid_layout, function(o) {
+          e_map = o;
+          let e_options = {
+        //menu: 'zoom',
+        fill_screen: false
+        //tooltip_component: tooltip,
+      };
+      e_builder = escher.Builder(e_map, null, null, d3.select('#map_container'), e_options);
+          draw_show_grid_layout(get_shadow_grid_layout(current_canvas, current_build_config), api);
+          
+      //console.log(o);
+    });
+  });  
   $('#button_merge_map').click(function() {
     cluster_map(e_map, current_grid_layout, function(o) {
       console.log(o);
@@ -186,6 +217,8 @@ $(function() {
       //w.e_map = e_map;
       let shadow_grid_layout = get_shadow_grid_layout(map_data[1].canvas, build_config);
       //
+    current_build_config = build_config;
+        current_canvas = map_data[1].canvas;
       current_grid_layout =  get_shadow_grid_layout(map_data[1].canvas, build_config);
       draw_show_grid_layout(shadow_grid_layout, api);
 
@@ -194,14 +227,32 @@ $(function() {
       } else {
         is_init = true;
         widget_escher_modelseed = new WidgetEscherModelseed($('#top_bar'), e_builder, true, true);
-        widget_escher_modelseed.options['iMM904'] = 'iMM904';
+        widget_escher_modelseed.options['iMM904'] = 'SBML: iMM904';
         widget_escher_modelseed.options_path['iMM904'] = 'data/TempModels/iMM904.json';
-        widget_escher_modelseed.options['iJDZ836'] = 'iJDZ836';
+        widget_escher_modelseed.options['iJDZ836'] = 'SBML: iJDZ836';
         widget_escher_modelseed.options_path['iJDZ836'] = 'data/TempModels/iJDZ836.json';
-        widget_escher_modelseed.options['iAL1006'] = 'iAL1006';
+        widget_escher_modelseed.options['iAL1006'] = 'SBML: iAL1006';
         widget_escher_modelseed.options_path['iAL1006'] = 'data/TempModels/iAL1006.json';
-        widget_escher_modelseed.options['iLC915'] = 'iLC915';
+        widget_escher_modelseed.options['iCT646'] = 'SBML: iCT646';
+        widget_escher_modelseed.options_path['iCT646'] = 'data/TempModels/iCT646.json';
+        widget_escher_modelseed.options['iLC915'] = 'SBML: iLC915';
         widget_escher_modelseed.options_path['iLC915'] = 'data/TempModels/iLC915.json';
+        widget_escher_modelseed.options['iNL895'] = 'SBML: iNL895';
+        widget_escher_modelseed.options_path['iNL895'] = 'data/TempModels/iNL895.json';
+        widget_escher_modelseed.options['iMA871'] = 'SBML: iMA871';
+        widget_escher_modelseed.options_path['iMA871'] = 'data/TempModels/iMA871.json';
+        widget_escher_modelseed.options['iRL766'] = 'SBML: iRL766';
+        widget_escher_modelseed.options_path['iRL766'] = 'data/TempModels/iRL766.json';
+        widget_escher_modelseed.options['iTO977'] = 'SBML: iTO977';
+        widget_escher_modelseed.options_path['iTO977'] = 'data/TempModels/iTO977.json';
+        widget_escher_modelseed.options['iSS884'] = 'SBML: iSS884';
+        widget_escher_modelseed.options_path['iSS884'] = 'data/TempModels/iSS884.json';
+          
+        widget_escher_modelseed.options['yeast_6.06'] = 'SBML: yeast_6.06';
+        widget_escher_modelseed.options_path['yeast_6.06'] = 'data/TempModels/yeast_6.06.json';
+        widget_escher_modelseed.options['yeast_7.6'] = 'SBML: yeast_7.6';
+        widget_escher_modelseed.options_path['yeast_7.6'] = 'data/TempModels/yeast_7.6.json';
+          
         widget_escher_modelseed.init_container();
       }
 
