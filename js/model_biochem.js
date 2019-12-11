@@ -210,15 +210,16 @@ $(function() {
     };
     post_build(build_config,function(map_data) {
       e_map = map_data;
-      console.log(build_config);
-      console.log(map_data[1].canvas);
-
+      e_map[0]['grid'] = build_config;
+      //console.log(build_config);
+      //console.log(map_data[1].canvas);
 
       let e_options = {
         //menu: 'zoom',
         fill_screen: false
         //tooltip_component: tooltip,
       };
+        
       e_builder = escher.Builder(e_map, null, null, d3.select('#map_container'), e_options);
       //let w = window.open("/annotation/editor.html", '_blank');
       //w.e_map = e_map;
