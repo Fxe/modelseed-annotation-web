@@ -68,6 +68,8 @@ let tooltip_metabolite = function(args) {
         //console.log(svg_data);
         render_tooltip_compound({'seed.compound' : cpd_id}, data, svg_data, $('#tooltip_container'));
       });
+    } else {
+      render_tooltip_compound({'seed.compound' : cpd_id}, data, "", $('#tooltip_container'));
     }
 
   });
