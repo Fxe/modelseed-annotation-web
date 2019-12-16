@@ -5,12 +5,25 @@ class CurationAPI {
     this.base = '/annotation/api';
   }
 
-
-
   get_server_status(cb) {
     return $.getJSON(this.base + "/status", function(e) {
       if (cb) {
         cb(e);
+      }
+    })
+  }
+
+  get_modelseed_compound(seed_id, fn_success) {
+    return $.getJSON(this.base + "/biochem/cpd/" + seed_id, function(ret_val) {
+      if (fn_success) {
+        fn_success(ret_val);
+      }
+    })
+  }
+  get_modelseed_reaction(seed_id, fn_success) {
+    return $.getJSON(this.base + "/biochem/rxn/" + seed_id, function(ret_val) {
+      if (fn_success) {
+        fn_success(ret_val);
       }
     })
   }
