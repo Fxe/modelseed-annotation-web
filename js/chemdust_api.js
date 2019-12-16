@@ -19,12 +19,12 @@ class ChemAPI {
         "aromatic_display" : false,
         "structure" : structure
       }
-      console.log(body);
+      //console.log(body);
       return $.post({
-        type: "POST",
+        //type: "POST",
         //url: this.base + '/api/render/svg/' + structure_type,
         url: this.base + '/api/biochem/depict/' + structure_type + '/svg',
-        crossDomain: true,
+        //crossDomain: true,
         dataType: 'text',
         data: JSON.stringify(body),
         contentType:"application/json; charset=utf-8",

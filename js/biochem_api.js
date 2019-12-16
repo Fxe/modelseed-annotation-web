@@ -12,13 +12,34 @@ class BiochemistryAPI {
 
     if (database && this.database_modules[database]) {
       console.log('get_compound', id, database);
-      this.database_modules[database].get_compound(id, database, fn_success)
+      if (database === 'seed.compound') {
+        id = this.detect_id(id);
+
+        this.database_modules[database].get_compound(id, database, fn_success)
+      } else {
+        this.database_modules[database].get_compound(id, database, fn_success)
+      }
+
     }
+  }
+
+  detect_compartment(id) {
+    if (id.indexOf('_') > 0) {
+      return id.substring(id.indexOf('_') + 1);
+    }
+    return null;
+  }
+
+  detect_id(id) {
+    if (id.indexOf('_') > 0) {
+      return id.substring(0, id.indexOf('_') );
+    }
+    return id;
   }
 
   detect_database(id) {
     if (id.substring(0, 3) === 'cpd') {
-      return 'seed.compound'
+      return 'seed.compound';
     }
 
     return null;

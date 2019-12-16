@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Escher Structures</title>
+    <title>Escher Damage</title>
     <meta charset="utf-8"/>
     <!-- Specify the style for the GUI -->
     <link rel="stylesheet" href="css/bootstrap.css" />
@@ -96,6 +96,7 @@
   <script src="js/chemdust_api.js"></script>
   <script src="js/curation_api.js"></script>
   <script src="js/biochem_api.js"></script>
+  <script src="js/mock_data.js"></script>
   <script src="js/annotation.js"></script>
   <script src="js/annotation_config.js"></script>
   
@@ -177,7 +178,10 @@
           node.remove();
       }
 
-  const render_structures = function (e_builder, primary = true) {
+
+      var omg_wut;
+
+  const render_damage_products = function (e_builder, primary = true) {
     //console.log(escher_map)
     _.each(e_builder.map.nodes, function(node, uid) {
       if (node.node_type === 'metabolite' && (!primary || node.node_is_primary)) {
@@ -199,7 +203,7 @@
 
                         let circle = d3.select(this);
                         let circle_parent = circle.node().parentNode
-                        d3.select(circle.node().parentNode)
+                        let svg_node = d3.select(circle.node().parentNode)
                           .insert('svg')
                           .attr('transform', 'translate('
                             + (data.x - img_size / 2) + ','
@@ -208,6 +212,8 @@
                           .attr('height', img_size)
                           .attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
                           .attr('preserveAspectRatio', 'xMinYMin meet').html(svg_data);
+                        svg_node.select('svg').attr('width', img_size);
+                        svg_node.select('svg').attr('height', img_size);
                         d3.select(d3.select(circle_parent).select('svg').node()).select('svg').attr('width', img_size).attr('height', img_size)
                       }
                     });
@@ -220,16 +226,112 @@
         }
       }
     });
-
-
   };
+
+    const render_structure = function (structure, bigg_id, img_size, primary = true, x_off = 0, y_off = 0) {
+      chem_api.get_depict(structure, 'smi', {}, function (svg_data) {
+        if (svg_data) {
+          d3.select('#map_container')
+            .selectAll('.metabolite-circle')
+            .each(function (data) {
+
+              if (data.bigg_id === bigg_id && (!primary || data.node_is_primary)) {
+                console.log('render svg on node', data);
+
+                let circle = d3.select(this);
+                let circle_parent = circle.node().parentNode
+                let svg_node = d3.select(circle.node().parentNode)
+                  .insert('svg')
+                  .attr('transform', 'translate('
+                    + ((data.label_x - img_size / 2) + x_off) + ','
+                    + ((data.label_y - img_size / 2) + y_off) + ')')
+                  .attr('width', img_size)
+                  .attr('height', img_size)
+                  .attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
+                  .attr('preserveAspectRatio', 'xMinYMin meet').html(svg_data);
+                svg_node.select('svg').attr('width', img_size);
+                svg_node.select('svg').attr('height', img_size);
+                //d3.select(d3.select(circle_parent).select('svg').node()).select('svg').attr('width', img_size).attr('height', img_size)
+              }
+            });
+        }
+        //console.log(cpd.id, svg_data);
+      });
+    };
+
+      const get_mine_id = function(id) {
+        let res = null;
+        _.each(mock_mine_compound_mapping, function(other_id, mine_id) {
+          if (other_id === id) {
+            res = mine_id;
+          }
+        });
+        return res;
+      };
+
+      const get_damage_reaction_products = function(mine_id) {
+        let products = {};
+        _.each(mock_mine_reactions, function(mine_rxn, mine_rxn_uid) {
+          if (mine_rxn[mine_id]) {
+            _.each(mine_rxn, function(s, mine_cpd_uid) {
+              //if is product
+              if (s > 0) {
+                if (mine_cpd_uid[0] === 'C') {
+                  products[mine_cpd_uid] = mock_mine_compounds[mine_cpd_uid];
+                }
+              }
+            });
+          }
+        });
+        return products;
+      };
+
+      const cb_lol = function(e_builder, primary = true) {
+        let img_size = 160;
+        let damage_nodes = {}
+        _.each(e_builder.map.nodes, function(node, uid) {
+          if (node.node_type === 'metabolite' && (!primary || node.node_is_primary)) {
+            if (node.bigg_id) {
+              let cpd_id = biochem_api.detect_id(node.bigg_id);
+              let mine_id = get_mine_id(cpd_id);
+
+              if (mine_id) {
+                damage_nodes[cpd_id] = mine_id
+              }
+              console.log(node.bigg_id);
+            }
+          }
+        });
+
+
+        _.each(damage_nodes, function (mine_id, cpd_id) {
+          console.log(cpd_id, mine_id);
+
+          let products = get_damage_reaction_products(mine_id);
+          let index_x = 0;
+          let index_y = 1;
+          let max_x = 3;
+          _.each(products, function (structure, k) {
+            render_structure(structure, cpd_id, img_size, primary, index_x * (img_size + 10), index_y * (img_size + 10));
+            if (index_x < max_x) {
+              index_x += 1;
+            } else {
+              index_x = 0;
+              index_y += 1;
+            }
+
+          });
+          console.log(products);
+        })
+      };
 var e_builder = null;
   $(function() {
     $('#button_structures').click(function () {
-      render_structures(e_builder);
+      render_damage_products(e_builder);
 
     });
   });
+
       
    function add_structures () {
        console.log('Loading structures');
@@ -263,7 +365,7 @@ var e_builder = null;
    }
       var e_map = null;
       $(function() {
-    $.getJSON("data/WORKING_DO_NOT_DELETE.json", function(map_data) {
+    $.getJSON("data/ModelSEED/Anthranilate Degradation.json", function(map_data) {
         //$.getJSON("bios7.json", function(model_data) {
           e_model = null
           e_map = map_data
@@ -272,11 +374,13 @@ var e_builder = null;
             enable_editing: true,
             fill_screen: false,
             reaction_styles: ['abs', 'color', 'size', 'text'],
-            //first_load_callback: add_structures,
-            primary_metabolite_radius: 120,
+            //first_load_callback: cb_lol,
+            primary_metabolite_radius: 160,
             never_ask_before_quit: true,
           }
-          e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+          e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options);
+          render_damage_products(e_builder);
+          cb_lol(e_builder)
         //});
       })
       })
