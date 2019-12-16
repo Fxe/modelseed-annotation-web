@@ -71,9 +71,12 @@
           Cloud: <span id="label_cloud_status" class="badge badge-danger">offline</span>
           Biochemistry: <span id="label_model" class="badge badge-danger">bio7</span>
           Map: <span id="label_map" class="badge badge-danger">example_map</span>
+
+        <!--
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_data_load"><i class="fas fa-bars"> </i> Load Data</button>
           <button type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> Edit </button>
-        
+        -->
+
           Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
       </div>
       <div id="map_container">Loading map ...</div>
@@ -83,7 +86,7 @@
   <div class="modal-dialog mw-100 w-75" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Metabolic Maps</h5>
+        <h5 class="modal-title" id="exampleModal_Label">Metabolic Maps</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -162,6 +165,9 @@ Load Map
   <script src="js/dropzone.js"></script>
   <script src="js/curation_env.js"></script>
   <script src="js/curation_api.js"></script>
+  <script src="js/biochem_api.js"></script>
+  <script src="js/chemdust_api.js"></script>
+  <script src="js/tooltip_compound.js"></script>
   <script src="js/widget_system_status.js"></script>
   <script>
 

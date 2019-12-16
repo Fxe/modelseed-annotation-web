@@ -38,29 +38,42 @@ var tooltips_1 = function (args) {
 // TOOLTIP 2: Callback function with Tinier for rendering
 // --------------------------------------------------
 
-var tooltip_metabolite = function(args) {
-      tinier.render(
-        args.el,
-        // Create a new div element inside args.el
-        tinier.createElement(
-          'div',
-          // Style the text based on our tooltip_style object
-          { style: tooltip_style, id: 'tooltip_container'},
-          'Metabolite',
-        
-          tinier.createElement(
-            'br'
-          ),
-          tinier.createElement(
-            'b',
-            {},
-            args.state['name']
-          ),
-          // Update the text to read out the identifier biggId
-          '' //JSON.stringify(args.state)
-        ),
-      )
-}
+let tooltip_metabolite = function(args) {
+  tinier.render(
+    args.el,
+    // Create a new div element inside args.el
+    tinier.createElement(
+      'div',
+      // Style the text based on our tooltip_style object
+      { style: tooltip_style, id: 'tooltip_container'},
+      'Metabolite',
+
+      tinier.createElement(
+        'br'
+      ),
+      tinier.createElement(
+        'b',
+        {},
+        args.state['name']
+      ),
+      // Update the text to read out the identifier biggId
+      '' //JSON.stringify(args.state)
+    ),
+  );
+  let cpd_id = biochem_api.detect_id(args.state.biggId);
+  biochem_api.get_compound(cpd_id, null, function (data) {
+    if (data && data.smiles) {
+      chem_api.get_depict(data.smiles, 'smi', {}, function(svg_data) {
+        //console.log(data);
+        //console.log(svg_data);
+        render_tooltip_compound({'seed.compound' : cpd_id}, data, svg_data, $('#tooltip_container'));
+      });
+    }
+
+  });
+  //console.log(biochem_api.detect_id(args.state.biggId));
+  //render_tooltip_compound();
+};
 
 var tooltip = function (args) {
   map_rxn_id = args.state.biggId
@@ -114,7 +127,6 @@ var tooltip = function (args) {
       get_annotation_status(cfg['target_template'], JSON.parse(JSON.stringify(seed_ids)), {}, function(template_rxns) {
           server_render_tooltip(seed_ids[0], $('#tooltip_container'), template_rxns)
       })
-      
     }
     
     
@@ -359,8 +371,34 @@ var toggle_label = function() {
   e_builder.map.draw_everything()
 }
 
+const chem_api = new ChemAPI();
+let env = new CurationEnvironment();
+const api = new CurationAPI();
+const biochem_api = new BiochemistryAPI();
+class SeedModuleFromCurationApi {
+  constructor(api) {
+    this.api = api
+  }
 
-var env = new CurationEnvironment();
+  get_compound(id, database = 'seed.compound', fn_success) {
+    this.api.get_modelseed_compound(id, function(data) {
+      let cpd = {
+        id : data.id,
+        name : data.name,
+        formula : data.formula,
+        charge : data.charge,
+        smiles : data.smiles,
+        aliases : data.aliases,
+      };
+      if (fn_success) {
+        fn_success(cpd);
+      }
+    });
+  }
+}
+
+biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(api);
+
 $(function() {
 
 
@@ -446,6 +484,6 @@ $(function() {
       })
   })
 
-  const api = new CurationAPI();
+
   env = new CurationEnvironment(api, [new WidgetSystemStatus($('#top_bar'))]);
 });

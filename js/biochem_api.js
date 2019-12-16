@@ -24,21 +24,21 @@ class BiochemistryAPI {
   }
 
   detect_compartment(id) {
-    if (id.indexOf('_') > 0) {
+    if (id && id.indexOf('_') > 0) {
       return id.substring(id.indexOf('_') + 1);
     }
     return null;
   }
 
   detect_id(id) {
-    if (id.indexOf('_') > 0) {
+    if (id && id.indexOf('_') > 0) {
       return id.substring(0, id.indexOf('_') );
     }
     return id;
   }
 
   detect_database(id) {
-    if (id.substring(0, 3) === 'cpd') {
+    if (id && id.substring(0, 3) === 'cpd') {
       return 'seed.compound';
     }
 
