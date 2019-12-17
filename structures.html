@@ -158,13 +158,15 @@
           console.log(node)
              d3.select(node.node().parentNode)
                  // insert the image before the text
-               .insert('svg')               .attr('transform', 'translate('
+               .insert('g')               
+                 .attr('transform', 'translate('
                                 + (d.x - img_size / 2) + ','
                                 + (d.y - img_size / 2) + ')')               
-                 .attr('width', img_size)
-               .attr('height', img_size)
-          .attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
-               .attr('preserveAspectRatio', 'xMinYMin meet').html(svg_data)
+                 //.attr('width', img_size)
+               //.attr('height', img_size)
+          //.attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
+               //.attr('preserveAspectRatio', 'xMinYMin meet')
+                 .html(svg_data)
           
           
           //THIS IS NOT THE WAY TO DO THIS BUT I HAD TO HAMMER IT!
@@ -200,14 +202,15 @@
                         let circle = d3.select(this);
                         let circle_parent = circle.node().parentNode
                         d3.select(circle.node().parentNode)
-                          .insert('svg')
+                          .insert('g')
                           .attr('transform', 'translate('
                             + (data.x - img_size / 2) + ','
                             + (data.y - img_size / 2) + ')')
-                          .attr('width', img_size)
-                          .attr('height', img_size)
-                          .attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
-                          .attr('preserveAspectRatio', 'xMinYMin meet').html(svg_data);
+                          //.attr('width', img_size)
+                          //.attr('height', img_size)
+                          //.attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
+                          //.attr('preserveAspectRatio', 'xMinYMin meet')
+                            .html(svg_data);
                         d3.select(d3.select(circle_parent).select('svg').node()).select('svg').attr('width', img_size).attr('height', img_size)
                       }
                     });

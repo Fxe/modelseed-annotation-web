@@ -181,6 +181,8 @@
 
       var omg_wut;
 
+      
+      
   const render_damage_products = function (e_builder, primary = true) {
     //console.log(escher_map)
     _.each(e_builder.map.nodes, function(node, uid) {
@@ -204,14 +206,15 @@
                         let circle = d3.select(this);
                         let circle_parent = circle.node().parentNode
                         let svg_node = d3.select(circle.node().parentNode)
-                          .insert('svg')
+                          .insert('g')
                           .attr('transform', 'translate('
                             + (data.x - img_size / 2) + ','
                             + (data.y - img_size / 2) + ')')
-                          .attr('width', img_size)
-                          .attr('height', img_size)
-                          .attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
-                          .attr('preserveAspectRatio', 'xMinYMin meet').html(svg_data);
+                          //.attr('width', img_size)
+                          //.attr('height', img_size)
+                          //.attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
+                          //.attr('preserveAspectRatio', 'xMinYMin meet')
+                        .html(svg_data);
                         svg_node.select('svg').attr('width', img_size);
                         svg_node.select('svg').attr('height', img_size);
                         d3.select(d3.select(circle_parent).select('svg').node()).select('svg').attr('width', img_size).attr('height', img_size)
@@ -241,14 +244,15 @@
                 let circle = d3.select(this);
                 let circle_parent = circle.node().parentNode
                 let svg_node = d3.select(circle.node().parentNode)
-                  .insert('svg')
+                  .insert('g')
                   .attr('transform', 'translate('
                     + ((data.label_x - img_size / 2) + x_off) + ','
                     + ((data.label_y - img_size / 2) + y_off) + ')')
-                  .attr('width', img_size)
-                  .attr('height', img_size)
-                  .attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
-                  .attr('preserveAspectRatio', 'xMinYMin meet').html(svg_data);
+                  //.attr('width', img_size)
+                  //.attr('height', img_size)
+                  //.attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
+                  //.attr('preserveAspectRatio', 'xMinYMin meet')
+                .html(svg_data);
                 svg_node.select('svg').attr('width', img_size);
                 svg_node.select('svg').attr('height', img_size);
                 //d3.select(d3.select(circle_parent).select('svg').node()).select('svg').attr('width', img_size).attr('height', img_size)
@@ -311,6 +315,7 @@
           let index_x = 0;
           let index_y = 1;
           let max_x = 3;
+            
           _.each(products, function (structure, k) {
             render_structure(structure, cpd_id, img_size, primary, index_x * (img_size + 10), index_y * (img_size + 10));
             if (index_x < max_x) {
