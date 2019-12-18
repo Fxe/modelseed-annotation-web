@@ -302,19 +302,40 @@ var test = function() {
     })
 }
 
-var load_escher_map = function(map_src) {
-    console.log('load_escher_map', map_src)
+var load_escher_map = function(dataset_id, map_id) {
+    console.log('load_escher_map', dataset_id, map_id)
+    api.get_escher_map(dataset_id, map_id, function(escher_map) {
+        e_map = escher_map
+        e_builder = escher.Builder(escher_map, e_model, null, d3.select('#map_container'), e_options)
+    })
+    
+    /*
     $.getJSON(map_src, function(map_data) {
         e_map = map_data
         e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
     })
+    */
 }
 
-var load_catalog = function(cb) {
+const load_catalog = function(catalog_dataset, result, cb) {
+    
+    if (catalog_dataset.length > 0) {
+        let dataset_id = catalog_dataset.pop()
+        
+        api.get_escher_map_list(dataset_id, function(res) {
+            result[dataset_id] = res;
+            load_catalog(catalog_dataset, result, cb)
+        })
+    } else {
+        cb(result);
+    }
+    /*
+    let catalog_dataset = ['ModelSEED', 'BIOS']
+    
     $.getJSON("data/catalog.json", function(catalog) {
         e_catalog = catalog
         cb()
-    })
+    })*/
 }
 
 var e_catalog;
@@ -447,11 +468,32 @@ $(function() {
   });*/
   //$.getJSON("/seed/annotation/rxn/rxn00002", function(e) { console.log(e)})
     
-  load_catalog(function() {
+  load_catalog(['ModelSEED', 'BIOS'], {}, function(catalog) {
+      console.log(catalog);
       //first time table init
       var table = $("#table-escher-maps").DataTable();
       
         rows = []
+      _.each(catalog, function(map_list, dataset_id) {
+          _.each(map_list, function(map_id) {
+            //button_html = $('a', {'href' : '#'}).html('<span class="oi oi-eye"></span>')
+              button_html = '<a href="#" onclick="load_escher_map(\'' + dataset_id +'\', \'' + map_id + '\');"><span class="oi oi-eye"></span></a>'
+            
+        let map_str = map_id
+        if (map_id.indexOf(dataset_id) == 0) {
+            map_str = map_id.substring(dataset_id.length + 1)
+        }
+          row_data = [
+            dataset_id, 
+            map_str, 
+            '-', 
+            '-', 
+            button_html
+          ];
+          rows.push(row_data)
+          });
+      });
+      /*
         for (map_id in e_catalog) {
           map_data = e_catalog[map_id]
           button_html = '<a href="#" onclick="load_escher_map(\'' + map_data["src"] +'\');"><span class="oi oi-eye"></span></a>'
@@ -462,8 +504,8 @@ $(function() {
             '-', 
             button_html
           ];
-          rows.push(row_data)
-        }
+          //rows.push(row_data)
+        }*/
         
         table.rows.add(rows).draw();
       

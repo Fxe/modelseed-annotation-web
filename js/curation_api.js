@@ -27,6 +27,14 @@ class CurationAPI {
       }
     })
   }
+    
+  get_escher_map_list(dataset_id, fn_success) {
+    return $.getJSON(this.base + "/escher/dataset/" + dataset_id + "/map", function(ret_val) {
+      if (fn_success) {
+        fn_success(ret_val);
+      }
+    })
+  }
 
   get_escher_map(dataset_id, map_id, fn_success) {
     return $.getJSON(this.base + "/escher/dataset/" + dataset_id + "/map/" + map_id, function(ret_val) {

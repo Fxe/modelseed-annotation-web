@@ -55,6 +55,25 @@ class WidgetEscherModelseed {
     }
     this.escher_builder.map.draw_everything()
   }
+    
+  load_catalog(dataset_id_list, fn_success) {
+      load_catalog_it(dataset_id_list, {}, fn_success)
+  }
+    
+  load_catalog_it(dataset_id_list, catalog_result, fn_success) {
+      if (dataset_id_list.length > 0) {
+        let dataset_id = dataset_id_list.pop()
+        
+        this.api.get_escher_map_list(dataset_id, function(res) {
+            catalog_result[dataset_id] = res;
+            this.load_catalog_it(dataset_id_list, catalog_result, cb)
+        })
+    } else {
+        if (fn_success) {
+            fn_success(catalog_result);
+        }
+    }
+  }
 
   init_container() {
     let that = this;
