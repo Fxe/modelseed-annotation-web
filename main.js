@@ -468,7 +468,7 @@ $(function() {
   });*/
   //$.getJSON("/seed/annotation/rxn/rxn00002", function(e) { console.log(e)})
     
-  load_catalog(['ModelSEED', 'BIOS'], {}, function(catalog) {
+  load_catalog(['ModelSEED'], {}, function(catalog) {
       console.log(catalog);
       //first time table init
       var table = $("#table-escher-maps").DataTable();
