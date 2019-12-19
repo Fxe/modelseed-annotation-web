@@ -207,9 +207,10 @@
                         let circle_parent = circle.node().parentNode
                         let svg_node = d3.select(circle.node().parentNode)
                           .insert('g')
+                          .attr('id', 'n' + data.node_id + '_label_meta')
                           .attr('transform', 'translate('
-                            + (data.x - img_size / 2) + ','
-                            + (data.y - img_size / 2) + ')')
+                            + (data.label_x) + ','
+                            + (data.label_y) + ')')
                           //.attr('width', img_size)
                           //.attr('height', img_size)
                           //.attr('viewBox', '0 0 ' + img_size + ' ' + img_size)
@@ -329,6 +330,17 @@
           console.log(products);
         })
       };
+      
+this.fn_node_label_drag_end = function(d) {
+    if (d.label_x && d.label_y) {
+        $('#n' + d.node_id + '_label_meta').attr(
+            'transform', 'translate('+ d.label_x +',' + d.label_y + ')')
+    }
+  //console.log('change of coord', d.label_x, d.label_y)
+}
+      
+
+
 var e_builder = null;
   $(function() {
     $('#button_structures').click(function () {
@@ -369,6 +381,7 @@ var e_builder = null;
          });
    }
       var e_map = null;
+      
       $(function() {
     $.getJSON("data/ModelSEED/Anthranilate Degradation.json", function(map_data) {
         //$.getJSON("bios7.json", function(model_data) {
@@ -380,10 +393,13 @@ var e_builder = null;
             fill_screen: false,
             reaction_styles: ['abs', 'color', 'size', 'text'],
             //first_load_callback: cb_lol,
-            primary_metabolite_radius: 160,
+            primary_metabolite_radius: 20,
             never_ask_before_quit: true,
           }
           e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options);
+        e_builder.fn_generic_drag_end = function(d) {
+    console.log('fn_generic_drag_end', d)
+}
           render_damage_products(e_builder);
           cb_lol(e_builder)
         //});

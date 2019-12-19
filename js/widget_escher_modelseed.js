@@ -15,6 +15,7 @@ class WidgetEscherModelseed {
     this.escher_builder = escher_builder;
     this.container = container;
     this.options = {
+      'z' : 'Generic',
       'c' : 'Cytosol',
       'm' : 'Mitochondria',
       //'e' : 'Extracellular',
@@ -22,6 +23,7 @@ class WidgetEscherModelseed {
       'c_m' : 'Cytosol > Mitochondria',
     };
     this.options_path = {
+      'z' : 'data/ModelSEED2.json',
       'c' : 'data/TempModels/seed_c.json',
       'm' : 'data/TempModels/seed_m.json',
       //'e' : 'data/TempModels/seed_e.json',

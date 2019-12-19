@@ -51,8 +51,24 @@
           </div>
       </div>
     </body>
-    
+    <script src="js/d3-3.5.6.min.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/underscore-1.9.1.min.js"></script>
+    <script src="js/d3_svg_utils.js"></script>
     <script>
-        
+        $(function() {
+            let d3_nodes = d3.select('#nodes')
+            let base_x = -3290
+            let base_y = -1801
+            let dist = 200
+            for (let x = 0; x < 10; x+=1) {
+                for (let y = 0; y < 10; y+=1) {
+                    let place_x = base_x + (x * dist)
+                    let place_y = base_y + (y * dist)
+                    d3_place_label(d3_nodes, '*' + place_x + ' ' + place_y, place_x, place_y)
+                }
+            }
+            
+        })
     </script>
 </html>

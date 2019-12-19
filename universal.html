@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ModelSEED Escher</title>
+    <meta charset="utf-8"/>
+    <!-- Specify the style for the GUI -->
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <link rel="stylesheet" href="css/solid.min.css" />
+    <link rel="stylesheet" href="css/regular.min.css" />
+    <link rel="stylesheet" href="css/seed.css" />
+    <link rel="stylesheet" href="css/builder.css" />
+    <link rel="stylesheet" href="css/builder-bootstrap.css" />
+    <link rel="stylesheet" href="css/select2.min.css" />
+    <style>
+      html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+        
+    </style>
+  </head>
+    
+  <body>
+    <div class="container-fluid container-escher-seed">
+      <div id="top_bar"></div>
+      <div id="map_container">Loading map ...</div>
+    </div>
+  </body>
+  <script src="js/d3-3.5.6.min.js"></script>
+  <script src="js/escher.js"></script>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/select2.min.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/dataTables.bootstrap4.min.js"></script>
+  <script src="js/dropzone.js"></script>
+  
+  <script src="js/d3_svg_utils.js"></script>
+    
+  <script src="js/curation_env.js"></script>
+  <script src="js/curation_api.js"></script>
+
+  <script src="js/widget_system_status.js"></script>
+  <script src="js/widget_escher_modelseed.js"></script>
+  
+  <script>
+      var widget_escher_modelseed;
+    $(function() {
+      let escher_options = {
+        //menu: '',
+        fill_screen: false,
+        //tooltip_component: tooltip,
+      }
+      const builder = escher.Builder(null, null, null, d3.select('#map_container'), escher_options);
+      let nav_top = $('#top_bar');
+      const api = new CurationAPI();
+      const widget_system_status = new WidgetSystemStatus(nav_top)
+       widget_escher_modelseed = new WidgetEscherModelseed(nav_top, builder)
+      const env = new CurationEnvironment(api, [
+        widget_system_status,
+        widget_escher_modelseed,
+      ]);
+      env.load_config();
+      env.init_ui();
+      
+      $.getJSON("data/demo_map.json", function(escher_map) {
+        widget_escher_modelseed.escher_builder.load_map(escher_map)
+        //console.log(escher_map);
+      });
+    })
+  </script>
+</html>
