@@ -38,13 +38,7 @@
   </head>
   <body>
     <div class="container-fluid wutt">
-      <div>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Settings</button>
-          User: <span id="label_user" class="badge badge-primary">loading...</span>
-          Template: <span id="label_target_template" class="badge badge-primary">loading...</span>
-          Server: <span id="label_server_status" class="badge badge-danger">offline</span>
-          Database: <span id="label_database_status" class="badge badge-danger">offline</span>
-          Cloud: <span id="label_cloud_status" class="badge badge-danger">offline</span>
+      <div id="top_bar">
         <button id="button_structures">structures</button>
       </div>
       <div id="map_container">Loading map ...</div>
@@ -93,12 +87,21 @@
   <script src="js/jquery.dataTables.min.js"></script>
   <script src="js/dataTables.bootstrap4.min.js"></script>
   <script src="js/dataTables.scroller.min.js"></script>
-  <script src="js/chemdust_api.js"></script>
-  <script src="js/curation_api.js"></script>
-  <script src="js/biochem_api.js"></script>
+  <script src="js/select2.min.js"></script>
+
   <script src="js/annotation.js"></script>
   <script src="js/annotation_config.js"></script>
   
+  <script src="js/d3_svg_utils.js"></script>
+  
+    
+  <script src="js/curation_env.js"></script>
+  <script src="js/chemdust_api.js"></script>
+  <script src="js/biochem_api.js"></script>
+  <script src="js/curation_api.js"></script>
+
+  <script src="js/widget_system_status.js"></script>
+  <script src="js/widget_escher_modelseed.js"></script>
   
   <script>
     const chem_api = new ChemAPI();
@@ -389,6 +392,18 @@ var e_builder = null;
             never_ask_before_quit: true,
           }
           e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+        
+        let nav_top = $('#top_bar');
+        
+      const widget_system_status = new WidgetSystemStatus(nav_top)
+       widget_escher_modelseed = new WidgetEscherModelseed(nav_top, e_builder)
+      const env = new CurationEnvironment(api, [
+        widget_system_status,
+        widget_escher_modelseed,
+      ]);
+      env.load_config();
+      env.init_ui();
+        
         //render_damage_products(e_builder)
         //});
       })
