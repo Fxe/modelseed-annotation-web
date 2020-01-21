@@ -2,13 +2,17 @@
       'seed.reaction' : 'https://identifiers.org/seed.reaction/'
     }
 
-var get_annotation_status = function(template_id, rxns, result, cb) {
+var get_annotation_status = function(template_id, rxns, result, cb, fn_fail) {
     rxn_id = rxns.pop()
     if (rxn_id) {
         get_template_reaction_annotation_status(template_id, rxn_id, function(e) {
             result[rxn_id] = e
             get_annotation_status(template_id, rxns, result, cb)
-        });
+        }).fail(function() {
+    if (fn_fail) {
+        fn_fail()
+    }
+  });
     } else {
         if (cb) {
             cb(result);
@@ -19,6 +23,7 @@ var get_annotation_status = function(template_id, rxns, result, cb) {
 var get_template_reaction_annotation_status = function(template_id, rxn_id, cb) {
     return $.getJSON("/annotation/api/template/" + template_id + "/reaction/" + rxn_id, function(e) {
         if (cb) {
+          console.log('eeee', e);
             cb(e);
         }
     })
@@ -37,7 +42,7 @@ var set_annotation = function(function_id, reaction_id, user_id, template_id, lo
 }
 
 var set_annotation_temp = function(function_id, reaction_id, logic) {
-    set_annotation(function_id, reaction_id, cfg['user'], cfg['target_template'], logic)
+    set_annotation(function_id, reaction_id, env.config['user'], env.config['target_template'], logic)
 }
 
 var post_annotation = function(function_id, reaction_id, user_id, template_id, logic) {
@@ -117,7 +122,7 @@ var create_control_group = function(opts, def_opt, id, seed_ids) {
     return base;
 }
 
-var render_tooltip = function(refs, data, container, template_rxns) {
+var render_tooltip = function(refs, data, container, template_rxns, wide) {
     seed_ids = []
     if (refs['seed.reaction']) {
         seed_ids = refs['seed.reaction']
@@ -163,17 +168,17 @@ var render_tooltip = function(refs, data, container, template_rxns) {
         }
 
         var controls = create_control_group({
-            'opt_score1' : 'fas fa-star', 'opt_score2' : 'fas fa-star-half-alt', 'opt_score3' : 'far fa-star', 
+            'opt_score1' : 'fas fa-star', 'opt_score2' : 'fas fa-star-half-alt', 'opt_score3' : 'far fa-star',
             'opt_rej' : 'fas fa-ban', 'opt_null' : 'fas fa-question'}, default_opt, v['id'], seed_ids)
         annotation_el.append(controls)
         //annotation_el.append(check_el)
         annotation_el.append(render_function(function_name, v))
         _.each(v.sources, function(source_data, source_id) {
             annotation_el.append(' ')
-            annotation_el.append($('<span>', 
-                                   {'text' : source_id + ' (' + source_data[0] + '/' + source_data[1] + ')', 
+            annotation_el.append($('<span>',
+                                   {'text' : source_id + ' (' + source_data[0] + '/' + source_data[1] + ')',
                                     'class' : 'label label-annotation-source'}))
-            
+
             //console.log(source_id, source_data)
         })
         annotation_el.append('<br>')
@@ -184,11 +189,11 @@ var render_tooltip = function(refs, data, container, template_rxns) {
           annotation_el.append(source_tag)
           annotation_el.append(' ')
         })
-        
+
         container.append(annotation_el)
         container.append('<br>')
       });
-      
+
       _.each(databases, function(uri, db) {
         if (refs[db]) {
           var database_link_el = $('<div>', {'class' : 'e-block'})

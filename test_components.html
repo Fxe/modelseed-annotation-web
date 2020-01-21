@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Test Components</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat:400,700" />
+    <link rel="stylesheet" href="http://modelseed.org/css/core.css" />
     <link rel="stylesheet" href="css/bootstrap.css" />
     <link rel="stylesheet" href="css/fontawesome.min.css" />
     <link rel="stylesheet" href="css/solid.min.css" />
@@ -91,6 +96,7 @@ html{
   transition: all .4s ease;
 }
 
+
 #first_toggle:checked ~ .toggle_option_slider{
   background: rgba(255,255,255,.3);
   left: 3px;
@@ -136,7 +142,97 @@ html{
             content:"\f337"
         }
     </style>
-</head>
+  </head>
+<body>
+<div class="md-toolbar-tools md-whiteframe-z2 app-toolbar ng-scope md-default-theme">
+  <div class="md-toolbar-tools ng-scope">
+    <a class="md-button md-default-theme" ng-transclude="" flex="22" ui-sref="app.RefModels" href="#">
+      <span style="font-size: 18pt;" class="ng-scope">Reference Data</span>
+    </a>
+  </div>
+</div>
+
+
+
+<div>
+  <!--
+  <div class="container">
+  <iframe src="http://modelseed.org/biochem/reactions/rxn00148" style="width: 100%; height: 500px">
+
+  </iframe>
+  -->
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Add</span>
+    </div>
+    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button">Button</button>
+    </div>
+  </div>
+
+  </div>
+  <div id="omgtest">
+    <div class="seed-annotation-group">
+
+      <div class="float-left">
+        <div class="btn-group btn-group-toggle seed-annotation-curated-group" data-toggle="buttons">
+          <div class="seed-annotation-control-label">fliu</div>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-star"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-star-half-alt"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="far fa-star"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-ban"></i></label>
+          <label class="btn btn-seed-sm btn-warning active"><input type="radio" name="options" autocomplete="off"><i class="fas fa-question"></i></label>
+        </div>
+      </div>
+      <div class="float-left">
+        <div>
+          Phosphohistidine swiveling domain <i class="fas fa-spinner fa-spin"></i>
+        </div>
+      </div>
+      <div class="float-left">
+        <div>
+          <span class="label label-annotation-source">BETA_RAST (1306/1558)</span>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="seed-annotation-group">
+
+      <div class="float-left">
+        <div class="btn-group btn-group-toggle seed-annotation-auto-group" data-toggle="buttons">
+          <div class="seed-annotation-control-label">system</div>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-star"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-star-half-alt"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="far fa-star"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-ban"></i></label>
+          <label class="btn btn-seed-sm btn-warning active"><input type="radio" name="options" autocomplete="off"><i class="fas fa-question"></i></label>
+        </div>
+      </div>
+      opt2  <span class="badge badge-danger"><i class="fas fa-bug"></i> Error: rxn000001</span>
+      Download SVGPerfect for when you want to use just one icon as a vector on the desktop or in your own icon workflow.
+    </div>
+
+    <div class="seed-annotation-group">
+
+      <div class="float-left">
+        <div class="btn-group btn-group-toggle seed-annotation-auto-group" data-toggle="buttons">
+          <div class="seed-annotation-control-label">algorithm</div>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-star"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-star-half-alt"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="far fa-star"></i></label>
+          <label class="btn btn-seed-sm btn-warning"><input type="radio" name="options" autocomplete="off"><i class="fas fa-ban"></i></label>
+          <label class="btn btn-seed-sm btn-warning active"><input type="radio" name="options" autocomplete="off"><i class="fas fa-question"></i></label>
+        </div>
+      </div>
+      opt3
+    </div>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+
     check-circle
     <span class="dropdown-button-icon glyphicon glyphicon-ok">!!</span>
     <i class="fas fa-check">glyphicon-ok</i>
@@ -672,15 +768,17 @@ Pc18g06000 hypothetical protein cluster308
     </div>
   </div>
 </div>
-
-<script src="js/jquery-3.4.1.min.js"></script>
-<script src="js/underscore-1.9.1.min.js"></script>
-<script src="js/chroma.min.js"></script>
-<script src="js/popper.min.js"></script>    
-<script src="js/bootstrap.min.js"></script>
-<script src="js/annotation.js"></script>
-<script src="js/tooltip_ortholog.js"></script>
-<script src="js/merge_report.js"></script>
+</body>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/chroma.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/annotation.js"></script>
+  <script src="js/tooltip_ortholog.js"></script>
+  <script src="js/mock_data.js"></script>
+  <script src="js/merge_report.js"></script>
+  <script src="js/escher_tooltip_annotation.js"></script>
 <script>
 $( "button" ).click(function() {
   $( "p" ).toggle();
@@ -689,11 +787,28 @@ $(function() {
     
     console.log('!')
     
-    e = {"Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551086,"sources":{},"subsystems":{}},"Pyruvate kinase (EC 2.7.1.40)":{"hits":[{"score":146,"source":["KEGG","K00873"]},{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":2280,"sources":{"BETA_RAST":[1306,1558,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","PCC7424_RS11540@GCF_000021825.1","MPOP_RS23010@GCF_000019945.1"]],"KBASE_RAST":[1408,1715,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","TKV_RS08220@GCF_000763575.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","COPRO5265_RS04105@GCF_000020945.1"]]},"subsystems":{"Entner-Doudoroff Pathway":{},"Glycolysis and Gluconeogenesis":{},"Glycolysis and Gluconeogenesis, including Archaeal enzymes":{},"Pyruvate metabolism I: anaplerotic reactions, PEP":{}}},"Pyruvate kinase (EC 2.7.1.40) / Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551047,"sources":{"BETA_RAST":[247,254,["DESCA_RS08745@GCF_000214435.1","TRESU_RS02515@GCF_000195275.1","PCC7424_RS16950@GCF_000021825.1","LDB_RS03675@GCF_000056065.1","WANG_RS03905@GCF_000214785.1","SYNPCC7002_RS08305@GCF_000019485.1","A361_RS22205@GCF_000294775.2","NTHER_RS02900@GCF_000020005.1","AUO94_RS02205@GCF_001465835.2","SGLY_RS08835@GCF_000190635.1"]]},"subsystems":{}},"Pyruvate kinase family protein":{"hits":[{"score":4,"source":["KEGG","K00873"]}],"id":400511,"sources":{"BETA_RAST":[92,92,["RPE_RS15350@GCF_000014825.1","GTNG_RS15315@GCF_000015745.1","THEOS_RS11820@GCF_000309885.1","CDOO_RS12485@GCF_000767055.1","B842_RS12400@GCF_000819445.1","CKROP_RS00580@GCF_000023145.1","JI59_RS22370@GCF_000767465.1","CYAGR_RS04985@GCF_000316515.1","MFUMSOLV_RS01890@GCF_000953475.1","CE_RS13615@GCF_000011305.1"]],"KBASE_RAST":[81,81,["RPE_RS15350@GCF_000014825.1","AO081_RS23665@GCF_001308105.1","AZF01_RS00330@GCF_001578105.1","H924_RS12380@GCF_000344785.1","TERTU_RS08180@GCF_000023025.1","TOLA_RS06570@GCF_000023065.1","THEOS_RS11820@GCF_000309885.1","CCE_RS03345@GCF_000017845.1","B842_RS12400@GCF_000819445.1","A605_RS13465@GCF_000341345.1"]]},"subsystems":{}},"galacturonokinase (EC 2.7.1.44)":{"hits":[{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":5544954,"sources":{},"subsystems":{}}}
+    let e = {"Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551086,"sources":{},"subsystems":{}},"Pyruvate kinase (EC 2.7.1.40)":{"hits":[{"score":146,"source":["KEGG","K00873"]},{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":2280,"sources":{"BETA_RAST":[1306,1558,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","PCC7424_RS11540@GCF_000021825.1","MPOP_RS23010@GCF_000019945.1"]],"KBASE_RAST":[1408,1715,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","TKV_RS08220@GCF_000763575.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","COPRO5265_RS04105@GCF_000020945.1"]]},"subsystems":{"Entner-Doudoroff Pathway":{},"Glycolysis and Gluconeogenesis":{},"Glycolysis and Gluconeogenesis, including Archaeal enzymes":{},"Pyruvate metabolism I: anaplerotic reactions, PEP":{}}},"Pyruvate kinase (EC 2.7.1.40) / Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551047,"sources":{"BETA_RAST":[247,254,["DESCA_RS08745@GCF_000214435.1","TRESU_RS02515@GCF_000195275.1","PCC7424_RS16950@GCF_000021825.1","LDB_RS03675@GCF_000056065.1","WANG_RS03905@GCF_000214785.1","SYNPCC7002_RS08305@GCF_000019485.1","A361_RS22205@GCF_000294775.2","NTHER_RS02900@GCF_000020005.1","AUO94_RS02205@GCF_001465835.2","SGLY_RS08835@GCF_000190635.1"]]},"subsystems":{}},"Pyruvate kinase family protein":{"hits":[{"score":4,"source":["KEGG","K00873"]}],"id":400511,"sources":{"BETA_RAST":[92,92,["RPE_RS15350@GCF_000014825.1","GTNG_RS15315@GCF_000015745.1","THEOS_RS11820@GCF_000309885.1","CDOO_RS12485@GCF_000767055.1","B842_RS12400@GCF_000819445.1","CKROP_RS00580@GCF_000023145.1","JI59_RS22370@GCF_000767465.1","CYAGR_RS04985@GCF_000316515.1","MFUMSOLV_RS01890@GCF_000953475.1","CE_RS13615@GCF_000011305.1"]],"KBASE_RAST":[81,81,["RPE_RS15350@GCF_000014825.1","AO081_RS23665@GCF_001308105.1","AZF01_RS00330@GCF_001578105.1","H924_RS12380@GCF_000344785.1","TERTU_RS08180@GCF_000023025.1","TOLA_RS06570@GCF_000023065.1","THEOS_RS11820@GCF_000309885.1","CCE_RS03345@GCF_000017845.1","B842_RS12400@GCF_000819445.1","A605_RS13465@GCF_000341345.1"]]},"subsystems":{}},"galacturonokinase (EC 2.7.1.44)":{"hits":[{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":5544954,"sources":{},"subsystems":{}}}
   
+  let annotation_tooltip = new EscherTooltipAnnotation(null, null, null);
+  e = mock_annotation_tooltip_data_rxn41846;
+  let res = annotation_tooltip.escher_tooltip_annotation(
+    'rxn00002', 'seed.reaction',
+    e.annotation,
+    e.curation,
+    e.function_rxns,
+    true,
+    ['rxn00002', 'seed.reaction']
+  );
+  $('#test_tooltip1').append(res);
+  $('#omgtest').append(annotation_tooltip.build_annotation_row(
+    "opt_score2", "rxn00002", "example 1.1.1.1", "test_annotation_id", {"ss1" : {}, "ss2" : {}}, {'BEST_RAST' : [1306, 1558]}, {}, "fliu", false));
+  $('#omgtest').append(annotation_tooltip.build_annotation_row(
+    "opt_score1", "rxn00002", "example 255.255.255.255", "test_annotation_id", {"ss1" : {}, "ss2" : {}}, {'BEST_RAST' : [1306, 1558]}, {}, "system", true));
+  $('#omgtest').append(annotation_tooltip.build_annotation_row(
+    "opt_score1", "rxn00002", "example 0.0.0.0", "test_annotation_id", {"ss1" : {}, "ss2" : {}}, {'BEST_RAST' : [1306, 1558]}, {}, undefined, true));
+
   
-  
-  render_tooltip({'seed.reaction' : ['rxn00148']}, e, $('#test_tooltip1'), {})
+  //render_tooltip({'seed.reaction' : ['rxn00148']}, e, $('#test_tooltip1'), {})
   
   e = {'orthologs': {
            'cluster308' : {

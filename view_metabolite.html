@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Metabolite</title>
+
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    .fill_height {
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+    }
+
+    li.select2-selection__choice {
+      max-width: 100%;
+      overflow: hidden;
+      /*Altered two below to make word wrap work */
+      word-wrap: normal !important;
+      white-space: normal;
+    }
+    ul.select2-selection__rendered {
+      padding-right: 12px !important;
+    }
+    #map_container{
+      /* background-color: black; */
+      flex-grow : 1;
+      height: 100%;
+      /* height: 800px; */
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div id="top_bar"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="view_container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="modal_comment_label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="width: 500px">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Comment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label id="modal_label_reaction">rxn00148: ATP + Pyruvate <=> ADP + Phosphoenolpyruvate + H+</label>
+          <br>
+          <label id="modal_label" for="text_comment">Star YAL038W: pyruvate kinase CDC19</label>
+          <textarea class="form-control rounded-0" id="text_comment" rows="6"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="button_save_with_comment" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/annotation.js"></script>
+<script src="js/curation_env.js"></script>
+<script src="js/curation_api.js"></script>
+<script src="js/biochem_api.js"></script>
+<script src="js/chemdust_api.js"></script>
+<script src="js/widget_system_status.js"></script>
+<script src="js/escher_tooltip_compound.js"></script>
+
+<script>
+  const getUrlParameter = function getUrlParameter(sParam) {
+    let sPageURL = window.location.search.substring(1),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+      }
+    }
+  };
+
+  const api = new CurationAPI();
+  const env = new CurationEnvironment(api, [
+    new WidgetSystemStatus($('#top_bar'))
+  ]);
+  const chem_api = new ChemAPI();
+  const biochem_api = new BiochemistryAPI();
+
+  class SeedModuleFromCurationApi {
+    constructor(api) {
+      this.api = api
+    }
+
+    get_compound(id, database = 'seed.compound', fn_success) {
+      this.api.get_modelseed_compound(id, function(data) {
+        let cpd = {
+          id : data.id,
+          name : data.name,
+          formula : data.formula,
+          charge : data.charge,
+          smiles : data.smiles,
+          aliases : data.aliases,
+        };
+        if (fn_success) {
+          fn_success(cpd);
+        }
+      });
+    }
+  }
+
+  biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(api);
+
+  var a = null;
+
+  $(function() {
+    env.load_config();
+    env.init_ui();
+
+    let cpd_data = getUrlParameter('cpd');
+    if (cpd_data) {
+      let t = new EscherTooltipCompound();
+      t.render_tooltip_compound({
+        'seed.compound' : 'cpd00001'
+      }, {}, null,
+      )
+    } else {
+      $('#view_container').html('Missing metabolite parameter');
+    }
+  })
+</script>

@@ -38,7 +38,7 @@ var tooltips_1 = function (args) {
 // TOOLTIP 2: Callback function with Tinier for rendering
 // --------------------------------------------------
 
-let tooltip_metabolite = function(args) {
+const tooltip_metabolite = function(args) {
   tinier.render(
     args.el,
     // Create a new div element inside args.el
@@ -77,68 +77,101 @@ let tooltip_metabolite = function(args) {
   //render_tooltip_compound();
 };
 
-var tooltip = function (args) {
-  map_rxn_id = args.state.biggId
-  model_rxns = _.filter(e_model.reactions, function(x) {return x.id == map_rxn_id})
-  seed_ids = []
 
-  if (args.state.type == 'reaction' && args.state.biggId.startsWith("rxn")) {
+
+const tooltip_reaction = function(args, ids) {
+  /*
+  rxn = model_rxns[0]
+
+  if (rxn && rxn['dblinks'] && rxn['dblinks']['seed.reaction']) {
+    _.each(rxn['dblinks']['seed.reaction'], function(seed_id) {
+      seed_ids.push(seed_id)
+    })
+  }
+  */
+  //console.log(seed_ids, rxn)
+  tinier.render(
+    args.el,
+    tinier.createElement(
+      'div',
+      {style: tooltip_style},
+      tinier.createElement(
+        'a',
+        {
+          class: 'badge badge-primary',
+          href: 'view_annotation.html?rxn=' + args.state.biggId,
+          target: '_blank'
+        },
+        tinier.createElement(
+          'i',
+          {class: 'fas fa-external-link-alt'}
+        )
+      ),
+      ' '+ args.state.biggId + ": " + args.state.name
+    ),
+    // Create a new div element inside args.el
+    tinier.createElement(
+      'div',
+      // Style the text based on our tooltip_style object
+      { style: tooltip_style, id: 'tooltip_container'},
+/*
+      '!!!',
+
+      tinier.createElement(
+        'br'
+      ),
+      tinier.createElement(
+        'b',
+        {},
+        'NO SEED ID'
+      ),
+      // Update the text to read out the identifier biggId
+      '' //JSON.stringify(args.state)
+
+ */
+    ),
+  );
+  if (ids.length > 0) {
+    reaction_tooltip.ttt2(ids, env.config['target_template'], env.config['genome_set']);
+  }
+
+
+  /*
+  if (seed_ids.length > 0) {
+    get_annotation_status(env.config['target_template'], JSON.parse(JSON.stringify(seed_ids)), {}, function(template_rxns) {
+      console.log('template_rxns', template_rxns);
+      server_render_tooltip(seed_ids[0], $('#tooltip_container'), template_rxns)
+    }, function() {
+      console.log('!!! FAIL')
+    })
+  }
+
+   */
+};
+
+const tooltip = function (args) {
+  if (reaction_tooltip.is_busy()) {
+    console.log('reaction_tooltip', reaction_tooltip.is_busy());
+    return
+  }
+  let map_rxn_id = args.state.biggId;
+  let model_rxns = _.filter(e_model.reactions, function(x) {return x.id === map_rxn_id});
+  let seed_ids = [];
+
+  if (args.state.type === 'reaction' && args.state.biggId.startsWith("rxn")) {
     seed_ids.push(args.state.biggId)
   }
 
-  console.log(seed_ids, args.state)
-  if (args.state.type == 'metabolite') {
+  //console.log(seed_ids, args.state);
+
+  if (args.state.type === 'metabolite') {
     tooltip_metabolite(args)
-  } else if (args.state.type == 'reaction') {
-    rxn = model_rxns[0]
-    
-    if (rxn && rxn['dblinks'] && rxn['dblinks']['seed.reaction']) {
-      _.each(rxn['dblinks']['seed.reaction'], function(seed_id) {
-        seed_ids.push(seed_id)
-      })
-    }
-      //console.log(seed_ids, rxn)
-      tinier.render(
-        args.el,
-        tinier.createElement(
-          'div',
-          {style: tooltip_style},
-          args.state.biggId + ": " + args.state.name
-        ),
-        // Create a new div element inside args.el
-        tinier.createElement(
-          'div',
-          // Style the text based on our tooltip_style object
-          { style: tooltip_style, id: 'tooltip_container'},
-          '!!!',
-        
-          tinier.createElement(
-            'br'
-          ),
-          tinier.createElement(
-            'b',
-            {},
-            'NO SEED ID'
-          ),
-          // Update the text to read out the identifier biggId
-          '' //JSON.stringify(args.state)
-        ),
-      )
-      
-    if (seed_ids.length > 0) {
-      get_annotation_status(cfg['target_template'], JSON.parse(JSON.stringify(seed_ids)), {}, function(template_rxns) {
-          server_render_tooltip(seed_ids[0], $('#tooltip_container'), template_rxns)
-      })
-    }
-    
-    
-
+  } else if (args.state.type === 'reaction') {
+    tooltip_reaction(args, seed_ids);
   } else {
-      console.log(args.state.type)
+    console.log(args.state.type)
   }
-    
-
-}
+};
 
 // --------------------------------------------------
 // TOOLTIP 3: Tooltip with random pics
@@ -422,9 +455,11 @@ class SeedModuleFromCurationApi {
 
 biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(api);
 
+let reaction_tooltip = new EscherTooltipAnnotation(tinier, api, env, 'tooltip_container');
+
 $(function() {
 
-
+/*
   $('#display_toggle').click(function(e) {
     if (label_ids) {
       $(this).html('<i class="fas fa-eye"></i> Name')
@@ -433,6 +468,7 @@ $(function() {
     }
     toggle_label()
   })
+    
   get_server_status(function(e) {
       if (e['server']) {
           var label = $('#label_server_status') 
@@ -458,6 +494,7 @@ $(function() {
   }).fail(function(e) {
       console.log(':(')
   })
+  */
   //var biodb_server = 'http://192.168.1.10:8058';
   //var rest_end_point = biodb_server + '';
 
@@ -530,4 +567,6 @@ $(function() {
 
 
   env = new CurationEnvironment(api, [new WidgetSystemStatus($('#top_bar'))]);
+  env.load_config()
+  env.init_ui()
 });

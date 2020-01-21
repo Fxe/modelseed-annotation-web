@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Config</title>
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/select2.min.css" />
+</head>
+<body>
+<div class="container">
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <label for="select_genome_set">Genome Set</label>
+      <div id="select_genome_set"></div>
+      <label for="select_model_set">Model Set</label>
+      <div id="select_model_set"></div>
+    </div>
+    <div class="form-group col-md-12">
+      <label for="text_user">User:</label>
+      <div class="input-group input-group-sm mb-3">
+        <input id="text_user" class="form-control" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="?" disabled>
+        <div class="input-group-append">
+          <button class="btn btn-danger">x</button>
+        </div>
+      </div>
+
+      <label for="text_template">Template:</label>
+      <div class="input-group input-group-sm mb-3">
+        <input id="text_template" class="form-control" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="?" disabled>
+        <div class="input-group-append">
+          <button class="btn btn-danger">x</button>
+        </div>
+      </div>
+
+      <label for="text_token">KBase Token:</label>
+      <div class="input-group input-group-sm mb-3">
+        <!--
+        <div class="input-group-prepend">
+          <span class="input-group-text">@</span>
+        </div>
+        -->
+        <input id="text_token" class="form-control" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="?" disabled>
+        <div class="input-group-append">
+          <button class="btn btn-danger">x</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/select2.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/curation_api.js"></script>
+<script src="js/curation_env.js"></script>
+<script>
+  $(function() {
+    let api = new CurationAPI();
+    let env = new CurationEnvironment(api, []);
+    env.load_config();
+    env.init_ui();
+
+
+    if (env && env.config) {
+        console.log(env.config)
+    api.get_genome_set_list(function(res) {
+      console.log(res);
+        let template_list = []
+      _.each(res, function(v) {
+        template_list.push({
+                    id : v,
+        text : v,
+        selected : env.config['genome_set'] && env.config['genome_set'] === v
+        })
+      });
+let select_genome_set = $("#select_genome_set").select2({
+    width: '100%',
+    placeholder: "Select genome set",
+    multiple: true,
+    allowClear: true,
+    maximumSelectionLength: 1,
+    data: template_list
+  });
+        select_genome_set.on('select2:select', function (e) {
+            let data = e.params.data;
+            env.config['genome_set'] = data.id
+            env.save_config_to_localstarage()
+            env.update_ui()
+        });
+    });
+      
+    let select_model_set = $("#select_model_set").select2({
+    width: '100%',
+    placeholder: "Select model set",
+    multiple: true,
+    allowClear: true,
+    maximumSelectionLength: 10,
+    data: []
+  });
+        
+        
+      if (env.config['user']) {
+        $('#text_user').val(env.config['user']);
+      } else {
+        $('#text_user').val('error')
+      }
+      if (env.config['target_template']) {
+        $('#text_template').val(env.config['target_template']);
+      } else {
+        $('#text_template').val('error')
+      }
+      if (env.config['kbase_token']) {
+        $('#text_token').val(env.config['kbase_token']);
+      } else {
+        $('#text_token').val('undefined')
+      }
+    }
+  })
+</script>
+</html>

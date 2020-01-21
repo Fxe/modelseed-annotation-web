@@ -52,6 +52,39 @@ class CurationAPI {
     })
   }
 
+  get_annotation_reaction(rxn_id, fn_success) {
+    return $.getJSON(this.base + "/annotation/rxn/" + rxn_id, function(e) {
+      if (fn_success) {
+        fn_success(e);
+      }
+    })
+  }
+
+
+  get_template_reaction_annotation_status(template_id, rxn_id, fn_success) {
+    return $.getJSON(this.base + "/template/" + template_id + "/reaction/" + rxn_id, function(e) {
+      if (fn_success) {
+        fn_success(e);
+      }
+    })
+  }
+
+  get_genome_set(genome_set_id, fn_success, fn_always, fn_error) {
+    return $.getJSON(this.base + "/annotation/genome_set/" + genome_set_id, function(e) {
+      if (fn_success) {
+        fn_success(e);
+      }
+    })
+  }
+
+  get_genome_set_list(fn_success, fn_always, fn_error) {
+    return $.getJSON(this.base + "/annotation/genome_set", function(e) {
+      if (fn_success) {
+        fn_success(e);
+      }
+    })
+  }
+
   get_template_reaction_gene(template_id, rxn_id, fn_success) {
     return $.getJSON(this.base + "/template/" + template_id + "/reaction/" + rxn_id + "/gene", function(e) {
       if (fn_success) {
@@ -59,6 +92,44 @@ class CurationAPI {
       }
     })
   }
+
+  post_get_annotation_reaction_custom(rxn_id, fn_success) {
+    return $.getJSON(this.base + "/annotation/rxn/" + rxn_id, function(e) {
+      if (fn_success) {
+        fn_success(e);
+      }
+    })
+  }
+  //"/template/<template_id>/annotation/reaction/<rxn_id>/ko/<ko_id>"
+  post_template_annotation_reaction_ko(template_id, reaction_id, ko_id, user, value, fn_success, fn_always, fn_error) {
+    let params = {
+      'user' : user,
+      'value' : value
+    }
+    return this.post("/template/" + template_id + "/annotation/reaction/" + reaction_id + "/ko/" + ko_id, params, fn_success, fn_always, fn_error)
+  }
+
+  post_template_annotation_reaction_status(template_id, reaction_id, genome_set_id, fn_success, fn_always, fn_error) {
+    let params = {}
+    if (genome_set_id) {
+      params['genome_set_id'] = genome_set_id;
+    }
+    return this.post("/template/" + template_id + "/annotation/reaction/" + reaction_id + "/status", params, fn_success, fn_always, fn_error)
+  }
+
+  post_template_reaction_function(function_id, reaction_id, user_id, template_id, logic, fn_success, fn_always, fn_error) {
+    let params = {
+      'function_id' : function_id,
+      'user_id' : user_id,
+      'template_id' : template_id,
+      'logic' : logic
+    }
+    return this.post("/template/" + template_id + "/reaction" + reaction_id, params, fn_success, fn_always, fn_error);
+  }
+
+  post_template_function_rxns(template_id, params, fn_success, fn_always, fn_error) {
+    return this.post("/template/" + template_id + "/functions_rxn", params, fn_success, fn_always, fn_error);
+  };
 
   post_build_grid(params, fn_success, fn_always, fn_error) {
     return this.post("/escher/build/grid", params, fn_success, fn_always, fn_error);

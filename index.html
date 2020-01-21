@@ -63,12 +63,6 @@
     <div class="container-fluid wutt">
       <div id="top_bar">
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-bars"> </i> Settings</button>
-          User: <span id="label_user" class="badge badge-primary">loading...</span>
-          Genome Set: <span id="label_genome_set" class="badge badge-primary">none</span>
-          Template: <span id="label_target_template" class="badge badge-primary">loading...</span>
-          Server: <span id="label_server_status" class="badge badge-danger">offline</span>
-          Database: <span id="label_database_status" class="badge badge-danger">offline</span>
-          Cloud: <span id="label_cloud_status" class="badge badge-danger">offline</span>
           Biochemistry: <span id="label_model" class="badge badge-danger">bio7</span>
           Map: <span id="label_map" class="badge badge-danger">example_map</span>
 
@@ -81,6 +75,7 @@
       </div>
       <div id="map_container">Loading map ...</div>
     </div>
+
 <!-- Modal Map Select-->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog mw-100 w-75" role="document">
@@ -112,6 +107,8 @@
     </div>
   </div>
 </div>
+
+
 
 <!-- Modal Data Load-->
 <div class="modal fade" id="modal_data_load" tabindex="-1" role="dialog" aria-labelledby="modal_data_load_label" aria-hidden="true">
@@ -169,6 +166,8 @@ Load Map
   <script src="js/chemdust_api.js"></script>
   <script src="js/tooltip_compound.js"></script>
   <script src="js/widget_system_status.js"></script>
+  <script src="js/escher_tooltip_annotation.js"></script>
+
   <script>
 
     
