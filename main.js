@@ -343,6 +343,7 @@ var load_escher_map = function(dataset_id, map_id) {
         
         widget_escher.escher_builder = e_builder
         widget_escher.toggle_display()
+        $('#label_map').html(map_id)
     })
     
     /*

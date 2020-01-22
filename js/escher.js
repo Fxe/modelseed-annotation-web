@@ -2786,7 +2786,6 @@ function _setup_modes (map, brush, zoom_container) {
  * Define keyboard shortcuts
  */
 function _get_keys (map, zoom_container, search_bar, settings_bar, enable_editing, full_screen_button) {
-
   var keys = {
     save: {
       key: 'ctrl+s',

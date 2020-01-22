@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <meta charset="utf-8"/>
-  <!-- Specify the style for the GUI -->
+  <title>Escher Annotation</title>
+    
   <link rel="stylesheet" href="css/bootstrap.css" />
   <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
   <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
@@ -62,16 +63,25 @@
   <body>
     <div class="container-fluid wutt">
       <div id="top_bar">
-          <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-bars"> </i> Settings</button>
-          Biochemistry: <span id="label_model" class="badge badge-danger">bio7</span>
+          <!-- 
+          <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
+-->
+          <a href="#" data-toggle="modal" data-target="#exampleModal" class="badge badge-primary">
+              <i class="fas fa-map"> Map</i>
+          </a>
+          <a href="config.html" class="badge badge-primary">
+              <i class="fas fa-cog"> </i>
+          </a>
+          Biochemistry: <span id="label_model" class="badge badge-danger">ModelSEED</span>
           Map: <span id="label_map" class="badge badge-danger">example_map</span>
 
         <!--
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_data_load"><i class="fas fa-bars"> </i> Load Data</button>
           <button type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> Edit </button>
-        -->
+        
 
           Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
+-->
       </div>
       <div id="map_container">Loading map ...</div>
     </div>
@@ -87,7 +97,9 @@
         </button>
       </div>
       <div class="modal-body">
+          <!-- 
     <button type="button" class="btn btn-primary" onclick="test()">test</button>
+-->
             <table id="table-escher-maps" class="table table-sm">
               <thead class="thead-light">
                   <tr>
@@ -101,8 +113,11 @@
             </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> 
+          <!-- 
         <button type="button" class="btn btn-primary">Save changes</button>
+-->
       </div>
     </div>
   </div>
@@ -170,8 +185,16 @@ Load Map
   <script src="js/escher_tooltip_annotation.js"></script>
 
   <script>
-
+$('#exampleModal').on('hide.bs.modal', function (e) {
+  // do something...
+    e_builder.map.key_manager.toggle(true)
+})
+      $('#exampleModal').on('show.bs.modal', function (e) {
+  // do something...
+          e_builder.map.key_manager.toggle(false)
+})
     
+      
     Dropzone.autoDiscover = false;
    var myDropzone = new Dropzone("#dropzone_load_map", { url: "/file/post", autoProcessQueue: false, maxFiles:1});
   myDropzone.on("addedfile", function(file) {
