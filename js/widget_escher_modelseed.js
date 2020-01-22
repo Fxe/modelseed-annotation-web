@@ -14,6 +14,7 @@ class WidgetEscherModelseed {
     this.toggle_escher_label = null;
     this.escher_builder = escher_builder;
     this.container = container;
+    this.escher_display = "bigg_id"
     this.options = {
       'z' : 'Generic',
       'c' : 'Cytosol',
@@ -48,14 +49,21 @@ class WidgetEscherModelseed {
 
   }
 
+  toggle_display() {
+    this.escher_builder.settings.set_option('identifiers_on_map', this.escher_display);
+    this.escher_builder.map.draw_everything()
+  }
+
   toggle_label() {
     this.diplay_ids = !this.diplay_ids
     if (this.diplay_ids) {
-      this.escher_builder.settings.set_option('identifiers_on_map', 'bigg_id')
+      this.escher_display = "bigg_id"
+      this.toggle_display()
     } else {
-      this.escher_builder.settings.set_option('identifiers_on_map', 'name')
+      this.escher_display = "name"
+      this.toggle_display()
     }
-    this.escher_builder.map.draw_everything()
+    
   }
     
   load_catalog(dataset_id_list, fn_success) {

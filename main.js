@@ -340,6 +340,9 @@ var load_escher_map = function(dataset_id, map_id) {
     api.get_escher_map(dataset_id, map_id, function(escher_map) {
         e_map = escher_map
         e_builder = escher.Builder(escher_map, e_model, null, d3.select('#map_container'), e_options)
+        
+        widget_escher.escher_builder = e_builder
+        widget_escher.toggle_display()
     })
     
     /*
@@ -457,6 +460,8 @@ biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(ap
 
 let reaction_tooltip = new EscherTooltipAnnotation(tinier, api, env, 'tooltip_container');
 
+const widget_escher = new WidgetEscherModelseed($('#top_bar'), e_builder, false, true);
+
 $(function() {
 
 /*
@@ -561,12 +566,14 @@ $(function() {
             tooltip_component: tooltip,
           }
           e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+          widget_escher.escher_builder = e_builder
         });
       })
   })
 
-
-  env = new CurationEnvironment(api, [new WidgetSystemStatus($('#top_bar'))]);
+  env = new CurationEnvironment(api, [
+      new WidgetSystemStatus($('#top_bar')),
+      widget_escher]);
   env.load_config()
   env.init_ui()
 });

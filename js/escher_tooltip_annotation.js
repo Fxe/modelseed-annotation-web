@@ -18,6 +18,9 @@ class EscherTooltipAnnotation {
       'opt_rej' : 'fas fa-ban',
       'opt_null' : 'fas fa-question'
     };
+    this.source_alias = {
+      'KBASE_RAST' : 'Legacy RAST'
+    }
     this.active_xhr = 0;
   }
 
@@ -226,6 +229,9 @@ class EscherTooltipAnnotation {
     let annotation_label = this.render_function(annotation, {subsystems : subsystems});
     let source_tags = $('<div>', {'class' : 'float-left'});
     _.each(source, function(data, text) {
+      if (that.source_alias[text]) {
+        text = that.source_alias[text]    
+      }
       source_tags.append($('<span>',
         {
           'text' : text + ' (' + data[0] + '/' + data[1] + ')',
