@@ -575,6 +575,6 @@ $(function() {
   env = new CurationEnvironment(api, [
       new WidgetSystemStatus($('#top_bar')),
       widget_escher]);
-  env.load_config()
-  env.init_ui()
+  env.load_config();
+  env.init_ui();
 });

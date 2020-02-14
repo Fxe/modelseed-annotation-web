@@ -154,7 +154,8 @@ class EscherTooltipAnnotation {
             e.function_rxns,
             true));
           //console.log('post_template_annotation_reaction_status', e);
-        }, undefined, function () {
+        }, undefined, function (e) {
+          console.log('@@@', e)
           rxn_annotation_container.html('<span class="badge badge-danger"><i class="fas fa-bug"></i> Error: ' + rxn_id + '</span> Try refresh the page. If this problem persist contact page admin.');
         }).always(function() {
           that.active_xhr -= 1;

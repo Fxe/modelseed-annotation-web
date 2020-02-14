@@ -315,7 +315,7 @@ var render_tooltip_ortholog = function(refs, data, container, template_rxns, wid
                 //console.log('genome_orthologs', model_id, d['genes'])
             });
         });
-        console.log(genome_id, genes_found)
+        //console.log(genome_id, genes_found)
         _.each(genome_orthologs[genome_id], function(gene_function, gene_id) {
           data['gene_reaction'][genome_id] = data['gene_reaction'][genome_id] || {}
           let created_controls = {};
@@ -324,7 +324,7 @@ var render_tooltip_ortholog = function(refs, data, container, template_rxns, wid
           if (template_rxns && template_rxns['genes'] && template_rxns['genes'][gene_id + '@' + genome_id]) {
             default_opt = template_rxns['genes'][gene_id + '@' + genome_id];
           }
-          console.log(genome_id, gene_id, default_opt)
+          //console.log(genome_id, gene_id, default_opt)
           let controls = ortholog_create_control_group({
               'opt_score1' : 'fas fa-star', 'opt_score2' : 'fas fa-star-half-alt', 'opt_score3' : 'far fa-star',
               'opt_rej' : 'fas fa-ban', 'opt_null' : 'fas fa-question'},
@@ -354,6 +354,9 @@ var render_tooltip_ortholog = function(refs, data, container, template_rxns, wid
               t_end = "</i>" + t_end;
             }
             gene_id_ct.html(t_start + gene_id + t_end);
+            gene_id_ct.append(' ')
+            let paperblast_url = "http://papers.genomics.lbl.gov/cgi-bin/litSearch.cgi?query=" + gene_id + "&Search=Search";
+            gene_id_ct.append($('<a>', {'href' : paperblast_url, 'target' : '_blank'}).html('<i class="fas fa-book-reader"></i>'))
             //let gene_function_ct2 = $('<div>').html(missing_rxns.join(' '))
             let other_rxn_ct = $('<div>').html('<i>+' + missing_rxns.length + ' reactions</i>')
             let gene_function_ct = $('<div>').html(gene_function)

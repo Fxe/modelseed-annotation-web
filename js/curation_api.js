@@ -164,17 +164,19 @@ class CurationAPI {
       data: JSON.stringify(body),
 
       complete: function(o) {
+        console.log('complete!')
         if (fn_always) {
           fn_always(o);
         }
       },
       success: function(o) {
+        console.log('success!')
         if (fn_success) {
-          console.log(typeof o)
           fn_success(o);
         }
       },
       error: function(o) {
+        console.log('error!')
         if (fn_error) {
           fn_error(o);
         }

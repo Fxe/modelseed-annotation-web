@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat:400,700" />
     <link rel="stylesheet" href="http://modelseed.org/css/core.css" />
     <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/select2.min.css" />
     <link rel="stylesheet" href="css/fontawesome.min.css" />
     <link rel="stylesheet" href="css/solid.min.css" />
     <link rel="stylesheet" href="css/regular.min.css" />
@@ -113,7 +114,9 @@ html{
   background: rgba(255,255,255,.3);
   left: 325px;
 }
-        
+        .select2-container .select2-selection--single .select2-selection__rendered {
+          z-index:1;
+        }
         
         .glyphicon {
             -moz-osx-font-smoothing:grayscale;
@@ -172,6 +175,25 @@ html{
   </div>
 
   </div>
+<div style="width: 400px">
+  <div class="js-example-basic-multiple" ></div>
+
+</div>
+<div>
+  <i class="fas fa-bug"></i>
+  <i class="fas fa-book"></i>
+  <i class="fas fa-dna"></i> Sequence
+  <i class="fas fa-cog"></i> Automated
+  <i class="fas fa-flask"></i> Experimental
+  <i class="fas fa-vial"></i> Essay
+  <i class="fas fa-laptop"></i> Computational
+  <i class="fas fa-user-check"></i> Human
+  <i class="fas fa-pastafarianism"></i> Mutant
+  <i class="fas fa-ban"></i> Blocked
+
+</div>
+
+
   <div id="omgtest">
     <div class="seed-annotation-group">
 
@@ -771,6 +793,7 @@ Pc18g06000 hypothetical protein cluster308
 </body>
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/select2.full.js"></script>
   <script src="js/chroma.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
@@ -784,7 +807,187 @@ $( "button" ).click(function() {
   $( "p" ).toggle();
 });
 $(function() {
-    
+
+  let icons = {
+    'EV-EXP' : '<i class="fas fa-flask"></i>',
+    'EV-EXP-IDA' : '<i class="fas fa-vial"></i>',
+    'EV-COMP-HINF-SEQ-ORTHOLOGY' : '<i class="fas fa-laptop"></i>',
+    'EV-COMP-HAINF-FN-FROM-SEQ' : '<i class="fas fa-user-check"></i><i class="fas fa-laptop"></i>',
+    'a' : '<i class="fas fa-pastafarianism"></i>', //mutant
+    'ban' : '<i class="fas fa-ban"></i>',
+    'EV-EXP-IMP-REACTION-BLOCKED' : '<i class="fas fa-pastafarianism"></i><i class="fas fa-ban"></i>'
+  };
+  function formatSelection(state) {
+    console.log('formatSelection', state);
+    if (icons[state.id]) {
+      let res = $('<span>').append(icons[state.id]);
+      return res;
+    }
+    return state.text;
+  }
+  function formatState (state) {
+    //console.log(state);
+    if (!state.id) {
+      return state.text;
+    }
+
+    let baseUrl = "/user/pages/images/flags";
+    let $state = $(
+      '<span><img src="' + baseUrl + '/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+    );
+    let res = $('<span>')
+    if (icons[state.id]) {
+      res.append(icons[state.id]).append(' ');
+    }
+    res.append(state.text);
+    return res;
+  };
+
+  $('.js-example-basic-multiple').select2({
+    maximumSelectionLength: 5,
+    placeholder: 'This is my placeholder',
+    allowClear: true,
+    multiple: true,
+    width: '600px',
+    templateSelection: formatSelection,
+    templateResult: formatState,
+    data : [
+      {
+        "id": "EV-EXP-IMP-REACTION-BLOCKED",
+        "text": "Reaction blocked in mutant"
+      },
+      {
+        "id": "EV-EXP-IDA-PURIFIED-PROTEIN-HH",
+        "text": "Assay of protein purified to homogeneity from a heterologous host",
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-PURIFIED-PROTEIN-NH",
+        "text": "Assay of protein purified to homogeneity from its native host",
+        "disabled": true
+      },
+      {
+        "id": "EV-EXP-IDA-PURIFIED-PROTEIN",
+        "text": "Assay of protein purified to homogeneity",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IGI-FUNC-COMPLEMENTATION",
+        "text": "Inferred by functional complementation",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-UNPURIFIED-PROTEIN-HH",
+        "text": "Assay of unpurified protein expressed in a heterologous host",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-UNPURIFIED-PROTEIN",
+        "text": "Assay of unpurified protein",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-UNPURIFIED-PROTEIN-NH",
+        "text": "Assay of unpurified protein expressed in its native host",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-PART-PURIFIED-PROTEIN-NH",
+        "text": "Assay of protein partially-purified from its native host",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IMP",
+        "text": "Inferred from mutant phenotype",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP",
+        "text": "Inferred from experiment",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA",
+        "text": "Inferred from direct assay",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-PART-PURIFIED-PROTEIN",
+        "text": "Assay of partially-purified protein",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-COMP-HINF-FN-FROM-SEQ",
+        "text": "Human inference of function from sequence",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IMP-REACTION-ENHANCED",
+        "text": "Reaction enhanced in mutant",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IDA-PART-PURIFIED-PROTEIN-HH",
+        "text": "Assay of protein partially-purified from a heterologous host",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IGI",
+        "text": "Inferred from genetic interaction",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-IEP",
+        "text": "Inferred from expression pattern",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-COMP-HINF-SEQ-ORTHOLOGY",
+        "text": "Human inference of function by sequence orthology",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-EXP-TAS",
+        "text": "Traceable author statement to experimental support",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-COMP-HAINF-FN-FROM-SEQ",
+        "text": "Inferred by a human author based on computational evidence",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-COMP-AINF-FN-FROM-SEQ",
+        "text": "Automated inference of function from sequence",
+        "disabled": false,
+        "selected": false
+      },
+      {
+        "id": "EV-IC-HINF-FN-FROM-SEQ",
+        "text": "Curator inference of function from sequence",
+        "disabled": false,
+        "selected": false
+      }
+    ]
+  });
     console.log('!')
     
     let e = {"Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551086,"sources":{},"subsystems":{}},"Pyruvate kinase (EC 2.7.1.40)":{"hits":[{"score":146,"source":["KEGG","K00873"]},{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":2280,"sources":{"BETA_RAST":[1306,1558,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","PCC7424_RS11540@GCF_000021825.1","MPOP_RS23010@GCF_000019945.1"]],"KBASE_RAST":[1408,1715,["RLO149_RS01040@GCF_000154785.2","COCH_RS05350@GCF_000023285.1","BN940_RS01045@GCF_000612685.1","STHE_RS09785@GCF_000024985.1","TKV_RS08220@GCF_000763575.1","UWK_RS01550@GCF_000341395.1","SVI_RS10955@GCF_000091325.1","SMUL_RS03360@GCF_000568815.1","ARNIT_RS13900@GCF_000092245.1","COPRO5265_RS04105@GCF_000020945.1"]]},"subsystems":{"Entner-Doudoroff Pathway":{},"Glycolysis and Gluconeogenesis":{},"Glycolysis and Gluconeogenesis, including Archaeal enzymes":{},"Pyruvate metabolism I: anaplerotic reactions, PEP":{}}},"Pyruvate kinase (EC 2.7.1.40) / Phosphohistidine swiveling domain":{"hits":[{"score":21,"source":["KEGG","K00873"]}],"id":5551047,"sources":{"BETA_RAST":[247,254,["DESCA_RS08745@GCF_000214435.1","TRESU_RS02515@GCF_000195275.1","PCC7424_RS16950@GCF_000021825.1","LDB_RS03675@GCF_000056065.1","WANG_RS03905@GCF_000214785.1","SYNPCC7002_RS08305@GCF_000019485.1","A361_RS22205@GCF_000294775.2","NTHER_RS02900@GCF_000020005.1","AUO94_RS02205@GCF_001465835.2","SGLY_RS08835@GCF_000190635.1"]]},"subsystems":{}},"Pyruvate kinase family protein":{"hits":[{"score":4,"source":["KEGG","K00873"]}],"id":400511,"sources":{"BETA_RAST":[92,92,["RPE_RS15350@GCF_000014825.1","GTNG_RS15315@GCF_000015745.1","THEOS_RS11820@GCF_000309885.1","CDOO_RS12485@GCF_000767055.1","B842_RS12400@GCF_000819445.1","CKROP_RS00580@GCF_000023145.1","JI59_RS22370@GCF_000767465.1","CYAGR_RS04985@GCF_000316515.1","MFUMSOLV_RS01890@GCF_000953475.1","CE_RS13615@GCF_000011305.1"]],"KBASE_RAST":[81,81,["RPE_RS15350@GCF_000014825.1","AO081_RS23665@GCF_001308105.1","AZF01_RS00330@GCF_001578105.1","H924_RS12380@GCF_000344785.1","TERTU_RS08180@GCF_000023025.1","TOLA_RS06570@GCF_000023065.1","THEOS_RS11820@GCF_000309885.1","CCE_RS03345@GCF_000017845.1","B842_RS12400@GCF_000819445.1","A605_RS13465@GCF_000341345.1"]]},"subsystems":{}},"galacturonokinase (EC 2.7.1.44)":{"hits":[{"score":0,"source":["template","GramNegModelTemplate"]},{"score":0,"source":["template","GramNegModelTemplateV2"]}],"id":5544954,"sources":{},"subsystems":{}}}
