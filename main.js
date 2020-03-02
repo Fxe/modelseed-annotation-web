@@ -461,7 +461,8 @@ biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(ap
 
 let reaction_tooltip = new EscherTooltipAnnotation(tinier, api, env, 'tooltip_container');
 
-const widget_escher = new WidgetEscherModelseed($('#top_bar'), e_builder, false, true);
+const widget_escher_depict = new WidgetEscherDepict(biochem_api, chem_api);
+const widget_escher = new WidgetEscherModelseed($('#top_bar'), e_builder, false, true, [widget_escher_depict]);
 
 $(function() {
 

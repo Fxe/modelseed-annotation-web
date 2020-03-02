@@ -8,7 +8,7 @@ var load_model = function(map_path, cb) {
 
 class WidgetEscherModelseed {
 
-  constructor(container, escher_builder, has_modelselect = true, has_display_toggle = true) {
+  constructor(container, escher_builder, has_modelselect = true, has_display_toggle = true, plugins = []) {
     this.escher_map = null;
     this.escher_model = null;
     this.toggle_escher_label = null;
@@ -31,11 +31,17 @@ class WidgetEscherModelseed {
       'c_e' : 'data/TempModels/seed_c_e.json',
       'c_m' : 'data/TempModels/seed_c_m.json',
     };
+    this.plugins = plugins;
 
     this.has_modelselect = has_modelselect;
 
     this.has_display_toggle = has_display_toggle;
     this.diplay_ids = true;
+    console.log('loading plugins...')
+    let that = this;
+    _.each(this.plugins, function(p) {
+      p.set_escher_widget(that);
+    });
   }
 
   change_model(model) {
@@ -108,14 +114,14 @@ class WidgetEscherModelseed {
       }
 
       if (this.has_display_toggle) {
-        this.toggle_escher_label = $('<button>', {'class' : 'btn btn-seed-sm btn-dark'}).append($('<i>', {'class' : 'fas fa-cog'}))
-          .append(' ID ');
+        this.toggle_escher_label = $('<button>', {'class' : 'btn btn-seed-sm btn-dark'}).append(
+          $('<i>', {'class' : 'fas fa-eye'}).html(' ID'));
         this.toggle_escher_label.click(function(e) {
           //should be on update
           if (that.diplay_ids) {
-            $(this).html('<i class="fas fa-eye"></i> Name');
+            $(this).html('<i class="fas fa-eye"> Name</i>');
           } else {
-            $(this).html('<i class="fas fa-eye"></i> ID');
+            $(this).html('<i class="fas fa-eye"> ID</i>');
           }
           that.toggle_label();
         })
@@ -124,6 +130,10 @@ class WidgetEscherModelseed {
           .append(this.toggle_escher_label);
       }
     }
+
+    _.each(this.plugins, function(p) {
+      p.init_container();
+    });
 
   }
 }

@@ -1,4 +1,5 @@
 class EscherTooltipAnnotation {
+
   constructor(tinier, curation_api, env, container_id = 'tooltip_container') {
     this.tinier = tinier
     this.container_id = container_id;
@@ -280,6 +281,11 @@ class EscherTooltipAnnotation {
   build_reaction_section(rxn_id, database_id, rxn_data, wide) {
     let container_section = $('<div>', {'class' : 'seed-annotation-group'})
     container_section.append(this.build_link_span(rxn_id, 'http://modelseed.org/biochem/reactions/' + rxn_id));
+    //$('<div>', {'id' : 'rxn_container_' + rxn_id})
+
+    api.get_modelseed_reaction(rxn_id, function(o) {
+      container_section.append(' ' + o.definition);
+    })
     return container_section
   }
 

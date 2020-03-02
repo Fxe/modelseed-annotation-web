@@ -63,9 +63,10 @@
 <script src="js/curation_api.js"></script>
 <script src="js/curation_env.js"></script>
 <script>
+  let api = new CurationAPI();
+  let env = new CurationEnvironment(api, []);
   $(function() {
-    let api = new CurationAPI();
-    let env = new CurationEnvironment(api, []);
+
     env.load_config();
     env.init_ui();
 

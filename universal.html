@@ -46,27 +46,58 @@
     
   <script src="js/curation_env.js"></script>
   <script src="js/curation_api.js"></script>
+  <script src="js/chemdust_api.js"></script>
+  <script src="js/biochem_api.js"></script>
 
   <script src="js/widget_system_status.js"></script>
   <script src="js/widget_escher_modelseed.js"></script>
+  <script src="js/widget_escher_depict_compound.js"></script>
   
   <script>
-      var widget_escher_modelseed;
+    const chem_api = new ChemAPI();
+    const biochem_api = new BiochemistryAPI();
+    const api = new CurationAPI();
+    class SeedModuleFromCurationApi {
+      constructor(api) {
+        this.api = api
+      }
+
+      get_compound(id, database = 'seed.compound', fn_success) {
+        return this.api.get_modelseed_compound(id, function(data) {
+          let cpd = {
+            id : data.id,
+            name : data.name,
+            formula : data.formula,
+            charge : data.charge,
+            smiles : data.smiles,
+          };
+          if (fn_success) {
+            fn_success(cpd);
+          }
+        });
+      }
+    }
+
+    biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(api);
+    const widget_escher_depict = new WidgetEscherDepict(biochem_api, chem_api);
+    let widget_escher_modelseed = null;
     $(function() {
       let escher_options = {
         //menu: '',
         fill_screen: false,
         //tooltip_component: tooltip,
-      }
+      };
       const builder = escher.Builder(null, null, null, d3.select('#map_container'), escher_options);
       let nav_top = $('#top_bar');
-      const api = new CurationAPI();
-      const widget_system_status = new WidgetSystemStatus(nav_top)
-       widget_escher_modelseed = new WidgetEscherModelseed(nav_top, builder)
+
+      const widget_system_status = new WidgetSystemStatus(nav_top);
+
+      widget_escher_modelseed = new WidgetEscherModelseed(nav_top, builder, true, true, [widget_escher_depict]);
       const env = new CurationEnvironment(api, [
         widget_system_status,
         widget_escher_modelseed,
       ]);
+
       env.load_config();
       env.init_ui();
       

@@ -208,6 +208,7 @@ $(function() {
       x : parseInt($('#input_grid_x').val()),
       y : parseInt($('#input_grid_y').val())
     };
+    console.log('build_config', build_config);
     post_build(build_config,function(map_data) {
       e_map = map_data;
       e_map[0]['grid'] = build_config;
