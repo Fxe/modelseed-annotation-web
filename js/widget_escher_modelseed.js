@@ -8,11 +8,12 @@ var load_model = function(map_path, cb) {
 
 class WidgetEscherModelseed {
 
-  constructor(container, escher_builder, has_modelselect = true, has_display_toggle = true, plugins = []) {
+  constructor(container, map_container, e_options, has_modelselect = true, has_display_toggle = true, plugins = []) {
+
     this.escher_map = null;
     this.escher_model = null;
     this.toggle_escher_label = null;
-    this.escher_builder = escher_builder;
+    this.escher_builder = escher.Builder(null, null, null, map_container, e_options);
     this.container = container;
     this.escher_display = "bigg_id"
     this.options = {
@@ -44,10 +45,59 @@ class WidgetEscherModelseed {
     });
   }
 
+  get_map_pathway_data() {
+    if (this.escher_map && this.escher_map[0].metadata && this.escher_map[0].metadata.pathways) {
+      return this.escher_map[0].metadata.pathways
+    }
+    /*
+    let pwy_data = {
+      'pw1' : {
+        'name' : 'the parent pathway !',
+        'rxns' : ['rxn00459', 'rxn00153', 'rxn00004', 'rxn00250', 'rxn00266'],
+        'childs' : {
+          'pwy2' : {
+            'name' : 'sub branch !',
+            'rxns' : ['rxn00250', 'rxn00266'],
+            'childs' :{}
+          }
+        },
+      }
+    }
+
+     */
+    return {};
+  }
+
+  get_rxn_to_uid() {
+    let rxn_to_uid = {}
+    _.each(this.escher_builder.map.reactions, function(rxn, uid) {
+      if (!rxn_to_uid[rxn.bigg_id]) {
+        rxn_to_uid[rxn.bigg_id] = {}
+      }
+      rxn_to_uid[rxn.bigg_id][uid] = true
+    })
+    return rxn_to_uid
+  }
+
+  change_map(map) {
+    let that = this;
+    if (this.escher_builder && map) {
+      this.escher_map = map;
+      this.escher_builder.load_map(map, true);
+      _.each(this.plugins, function(p) {
+        p.refresh(that);
+      });
+    }
+  }
+
   change_model(model) {
+    let that = this;
     if (this.escher_builder && model) {
       this.escher_model = model;
       this.escher_builder.load_model(this.escher_model, true);
+      _.each(this.plugins, function(p) {
+        p.refresh(that);
+      });
     }
   }
 

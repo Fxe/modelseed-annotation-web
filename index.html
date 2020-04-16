@@ -57,12 +57,32 @@
     background: #00CC71;
   }
 
+    .escher_right_panel {
+      border: solid 1px #000000;
+      position: absolute;
+      top: 40px;
+      right: 20px;
+      z-index: 1;
+      background-color: #ffffff;
+      padding: 2px;
+      visibility: visible;
+    }
+
   </style>
 
   
   <body>
     <div class="container-fluid wutt">
       <div id="top_bar">
+        <label for="upload" class="badge badge-primary">
+          <i class="fas fa-upload"> Load Map</i>
+          <input type="file" id="upload" style="display:none">
+        </label>
+        <label for="download" class="badge badge-primary">
+          <i class="fas fa-download"> Download Map</i>
+          <input type="file" id="download" style="display:none">
+        </label>
+
           <!-- 
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
 -->
@@ -86,6 +106,9 @@
           Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
 -->
           
+      </div>
+      <div id="left_panel" class="escher_right_panel">
+
       </div>
       <div id="map_container">Loading map ...</div>
     </div>
@@ -245,16 +268,27 @@ Load Map
   <script src="js/widget_system_status.js"></script>
   <script src="js/widget_escher_modelseed.js"></script>
   <script src="js/widget_escher_depict_compound.js"></script>
+  <script src="js/widget_escher_left_panel.js"></script>
   <script src="js/escher_tooltip_annotation.js"></script>
 
   <script>
+    $('#upload').on('change', function() {
+      console.log(this);
+      let file = this.files[0];
+      let reader = new FileReader();
+      console.log(file);
+      reader.onload = function(e) {
+        widget_escher.change_map(JSON.parse(e.target.result));
+      };
+      reader.readAsText(file);
+    });
 $('#exampleModal').on('hide.bs.modal', function (e) {
   // do something...
-    e_builder.map.key_manager.toggle(true)
+    widget_escher.escher_builder.map.key_manager.toggle(true)
 })
       $('#exampleModal').on('show.bs.modal', function (e) {
   // do something...
-          e_builder.map.key_manager.toggle(false)
+        widget_escher.escher_builder.map.key_manager.toggle(false)
 })
     
       

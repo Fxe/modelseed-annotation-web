@@ -154,8 +154,8 @@ const tooltip = function (args) {
     console.log('reaction_tooltip', reaction_tooltip.is_busy());
     return
   }
-  let map_rxn_id = args.state.biggId;
-  let model_rxns = _.filter(e_model.reactions, function(x) {return x.id === map_rxn_id});
+  //let map_rxn_id = args.state.biggId;
+  //let model_rxns = _.filter(widget_escher.escher_model.reactions, function(x) {return x.id === map_rxn_id});
   let seed_ids = [];
 
   if (args.state.type === 'reaction' && args.state.biggId.startsWith("rxn")) {
@@ -338,12 +338,13 @@ var test = function() {
 var load_escher_map = function(dataset_id, map_id) {
     console.log('load_escher_map', dataset_id, map_id)
     api.get_escher_map(dataset_id, map_id, function(escher_map) {
-        e_map = escher_map
-        e_builder = escher.Builder(escher_map, e_model, null, d3.select('#map_container'), e_options)
+      widget_escher.change_map(escher_map)
+        //e_map = escher_map
+        //e_builder = escher.Builder(escher_map, e_model, null, d3.select('#map_container'), e_options)
         
-        widget_escher.escher_builder = e_builder
-        widget_escher.toggle_display()
-        $('#label_map').html(map_id)
+        //widget_escher.escher_builder = e_builder
+        widget_escher.toggle_display();
+        $('#label_map').html(map_id);
     })
     
     /*
@@ -379,7 +380,6 @@ var e_catalog;
 var e_model;
 var e_map;
 var e_builder;
-var e_options;
 var cfg;
 // Fun this code after the page loads
 var cloud_status = false
@@ -462,45 +462,18 @@ biochem_api.database_modules['seed.compound'] = new SeedModuleFromCurationApi(ap
 let reaction_tooltip = new EscherTooltipAnnotation(tinier, api, env, 'tooltip_container');
 
 const widget_escher_depict = new WidgetEscherDepict(biochem_api, chem_api);
-const widget_escher = new WidgetEscherModelseed($('#top_bar'), e_builder, false, true, [widget_escher_depict]);
+const widget_escher_left_panel = new WidgetEscherLeftPanel($('#left_panel'));
+const e_options = {
+  //menu: '',
+  fill_screen: false,
+  tooltip_component: tooltip,
+};
+const widget_escher = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_container'), e_options, false, true, [widget_escher_depict, widget_escher_left_panel]);
 
 $(function() {
 
 /*
-  $('#display_toggle').click(function(e) {
-    if (label_ids) {
-      $(this).html('<i class="fas fa-eye"></i> Name')
-    } else {
-      $(this).html('<i class="fas fa-eye"></i> ID')
-    }
-    toggle_label()
-  })
-    
-  get_server_status(function(e) {
-      if (e['server']) {
-          var label = $('#label_server_status') 
-          label.removeClass("badge-danger")
-          label.addClass("badge-success")
-          label.html('alive')
-      }
-      if (e['neo4j']) {
-          var label = $('#label_database_status')
-          label.removeClass("badge-danger")
-          label.addClass("badge-success")
-          label.html('alive')
-          server_status = true;
-      }
-      if (e['mongo_atlas']) {
-          var label = $('#label_cloud_status')
-          label.removeClass("badge-danger")
-          label.addClass("badge-success")
-          label.html('alive')
-      }
-      console.log(e)
-      cfg = load_config()
-  }).fail(function(e) {
-      console.log(':(')
-  })
+
   */
   //var biodb_server = 'http://192.168.1.10:8058';
   //var rest_end_point = biodb_server + '';
@@ -513,6 +486,11 @@ $(function() {
   //$.getJSON("/seed/annotation/rxn/rxn00002", function(e) { console.log(e)})
     
   load_catalog(['ModelSEED'], {}, function(catalog) {
+    /*
+
+    */
+
+
       console.log(catalog);
       //first time table init
       var table = $("#table-escher-maps").DataTable();
@@ -554,21 +532,14 @@ $(function() {
         table.rows.add(rows).draw();
       
       $.getJSON("data/ModelSEED/demo_map.json", function(map_data) {
-
+        widget_escher.change_map(map_data);
         $.getJSON("data/ModelSEED2.json", function(model_data) {
-          e_model = model_data
-          e_map = map_data
-          
               var a2 = document.getElementById("download_map");
     a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));
-          
-          e_options = {
-            //menu: '',
-            fill_screen: false,
-            tooltip_component: tooltip,
-          }
-          e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
-          widget_escher.escher_builder = e_builder
+          //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+          //widget_escher.escher_builder = e_builder
+          widget_escher.change_model(model_data);
+
         });
       })
   })

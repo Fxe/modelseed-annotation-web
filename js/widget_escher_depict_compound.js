@@ -17,10 +17,14 @@ class WidgetEscherDepict {
     }
   }
 
+  refresh() {
+
+  }
+
   get_smiles = function(cpd_id) {
-    let builder = this.escher.escher_builder
+    let model = this.escher.escher_model
     let smiles = null;
-    _.each(builder.model_data.metabolites, function(m) {
+    _.each(model.metabolites, function(m) {
       if (m.id === cpd_id && m.smiles) {
         smiles = m.smiles
       }
