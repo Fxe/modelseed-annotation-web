@@ -232,10 +232,12 @@ $(function() {
       draw_show_grid_layout(shadow_grid_layout, api);
 
       if (is_init) {
-        widget_escher_modelseed.escher_builder = e_builder;
+        widget_escher_modelseed.change_map(e_map)
+        //widget_escher_modelseed.escher_builder = e_builder;
       } else {
         is_init = true;
-        widget_escher_modelseed = new WidgetEscherModelseed($('#top_bar'), e_builder, true, true);
+        //widget_escher_modelseed = new WidgetEscherModelseed($('#top_bar'), e_builder, true, true);
+        widget_escher_modelseed = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_container'), e_options, true, true, []);
         widget_escher_modelseed.options['iMM904'] = 'SBML: iMM904';
         widget_escher_modelseed.options_path['iMM904'] = 'data/TempModels/iMM904.json';
         widget_escher_modelseed.options['iJDZ836'] = 'SBML: iJDZ836';
@@ -263,6 +265,8 @@ $(function() {
         widget_escher_modelseed.options_path['yeast_7.6'] = 'data/TempModels/yeast_7.6.json';
           
         widget_escher_modelseed.init_container();
+        widget_escher_modelseed.change_map(e_map)
+        //widget_escher_modelseed.
       }
 
     });
@@ -325,6 +329,9 @@ $(function() {
   });
   model_options.push({
     id : 'all_fungi', text : 'Set: All 17 Fungi SBML Models'
+  });
+  model_options.push({
+    id : 'core', text : 'Core Model'
   });
 
   select_model = $("#select_model").select2({

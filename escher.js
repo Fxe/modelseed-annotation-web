@@ -4127,10 +4127,10 @@ function update_segment (update_selection, scale, cobra_model,
     }
     return { width: width, height: height }
   },
-  get_disp = function (arrow_size, reversibility, coefficient, node_is_primary) {
+  get_disp = function (arrow_size, reversibility, coefficient, node_is_primary, node_size) {
     var arrow_height = ((reversibility || coefficient > 0) ?
                         arrow_size.height : 0)
-    var r = node_is_primary ? primary_r : secondary_r
+    let r = node_size ? node_size : (node_is_primary ? primary_r : secondary_r);
     return r + arrow_height + 10
   }
 
@@ -4163,7 +4163,8 @@ function update_segment (update_selection, scale, cobra_model,
         var arrow_size = get_arrow_size(d.data, should_size)
         var disp = get_disp(arrow_size, d.reversibility,
                             d.from_node_coefficient,
-                            start.node_is_primary)
+                            start.node_is_primary,
+                            start.size);
         var direction = (b1 === null) ? end : b1
         start = displaced_coords(disp, start, direction, 'start')
       }
@@ -4171,7 +4172,8 @@ function update_segment (update_selection, scale, cobra_model,
         var arrow_size = get_arrow_size(d.data, should_size)
         var disp = get_disp(arrow_size, d.reversibility,
                             d.to_node_coefficient,
-                            end.node_is_primary)
+                            end.node_is_primary,
+                            end.size)
         var direction = (b2 === null) ? start : b2
         end = displaced_coords(disp, direction, end, 'end')
       }
@@ -4227,7 +4229,7 @@ function update_segment (update_selection, scale, cobra_model,
         var arrow_size = get_arrow_size(d.data, should_size)
         var disp = get_disp(arrow_size, d.reversibility,
                         d.from_node_coefficient,
-                        start.node_is_primary)
+                        start.node_is_primary, start.size)
         var direction = (b1 === null) ? end : b1
         var rotation = utils.to_degrees(utils.get_angle([ start, direction ])) + 90
         var loc = displaced_coords(disp, start, direction, 'start')
@@ -4246,7 +4248,7 @@ function update_segment (update_selection, scale, cobra_model,
         var arrow_size = get_arrow_size(d.data, should_size)
         var disp = get_disp(arrow_size, d.reversibility,
                         d.to_node_coefficient,
-                        end.node_is_primary)
+                        end.node_is_primary, end.size)
         var direction = (b2 === null) ? start : b2
         var rotation = utils.to_degrees(utils.get_angle([ end, direction ])) + 90
         var loc = displaced_coords(disp, direction, end, 'end')
@@ -4548,7 +4550,7 @@ function update_node (update_selection, scale, has_data_on_nodes,
           var f = d.data
           return f === null ? no_data_style['size'] : scale.metabolite_size(f)
         } else {
-          return d.node_is_primary ? primary_r : secondary_r
+          return d.size ? d.size : (d.node_is_primary ? primary_r : secondary_r);
         }
       }
       // midmarkers and multimarkers
@@ -4559,10 +4561,10 @@ function update_node (update_selection, scale, has_data_on_nodes,
         var should_color_data = (has_data_on_nodes &&
                                  metabolite_data_styles.indexOf('color') !== -1)
         if (should_color_data) {
-          var f = d.data
-          return f === null ? no_data_style['color'] : scale.metabolite_color(f)
+          var f = d.data;
+          return f === null ? (d.color ? d.color : no_data_style['color']) : scale.metabolite_color(f);
         } else {
-          return null
+          return d.color ? d.color : null;
         }
       }
       // midmarkers and multimarkers

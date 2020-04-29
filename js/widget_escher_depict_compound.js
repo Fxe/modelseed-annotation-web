@@ -33,7 +33,6 @@ class WidgetEscherDepict {
   }
 
   set_escher_widget(ew) {
-    console.log('!', ew)
     this.escher = ew;
   }
 

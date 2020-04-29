@@ -114,7 +114,7 @@ var tooltip_reaction = function(args) {
 
 var tooltip = function (args) {
     let map_rxn_id = args.state.biggId
-    let model_rxns = _.filter(e_model.reactions, function(x) {return x.id == map_rxn_id})
+    let model_rxns = _.filter(widget_escher.escher_model.reactions, function(x) {return x.id == map_rxn_id})
     let seed_ids = []
 
   if (args.state.type == 'reaction' && args.state.biggId.startsWith("rxn")) {
@@ -124,7 +124,8 @@ var tooltip = function (args) {
     console.log(seed_ids, args.state)
     
   if (args.state.type == 'metabolite') {
-    tooltip_metabolite(args)
+    widget_escher.fn_tooltip_cpd(args);
+    //tooltip_metabolite(args)
   } else if  (args.state.type == 'reaction') {
     tooltip_reaction(args)
     get_ortholog_data(seed_ids)
@@ -146,13 +147,17 @@ var toggle_label = function() {
 var e_model;
 var e_map;
 var e_builder;
-var e_options;
+var e_options = {
+  //menu: '',
+  fill_screen: false,
+  tooltip_component: tooltip,
+}
 
-const escher_widget = new WidgetEscherModelseed($('#top_bar'), e_builder)
+const widget_escher = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_container'), e_options, true, true, [])
 const api = new CurationAPI();
 const env = new CurationEnvironment(api, [
   new WidgetSystemStatus($('#top_bar')),
-  escher_widget,
+  widget_escher,
 ]);
 
 $(function() {
@@ -169,24 +174,21 @@ $(function() {
   })
 
    */
-    
-    console.log('ortholog.js')
-    $.getJSON("data/TempModels/test_fungi.json", function(map_data) {
-        $.getJSON("data/TempModels/seed_c.json", function(model_data) {
-          e_model = model_data
-          e_map = map_data
+  const default_map = "data/TempModels/test_fungi.json";
+  console.log('ortholog.js')
+  $.getJSON(default_map, function(map_data) {
+    widget_escher.change_map(map_data);
+    $.getJSON("data/TempModels/seed_c.json", function(model_data) {
+      widget_escher.change_model(model_data);
+          //e_model = model_data
+          //e_map = map_data
           
               //var a2 = document.getElementById("download_map");
     //a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));
-          
-          e_options = {
-            //menu: '',
-            fill_screen: false,
-            tooltip_component: tooltip,
-          }
 
-          e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
-          escher_widget.escher_builder = e_builder
+
+          //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+          //escher_widget.escher_builder = e_builder
           //let widget_escher_modelseed = new WidgetEscherModelseed($('#top_bar'), e_builder);
           //widget_escher_modelseed.init_container();
         });

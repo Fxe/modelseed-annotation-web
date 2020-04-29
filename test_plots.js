@@ -186,11 +186,11 @@ const tooltip = function (args) {
   //console.log(seed_ids, args.state);
 
   if (args.state.type === 'metabolite') {
-    tooltip_metabolite(args);
-    //widget_escher.fn_tooltip_cpd(args);
+    //tooltip_metabolite(args);
+    widget_escher.fn_tooltip_cpd(args);
   } else if (args.state.type === 'reaction') {
-    tooltip_reaction(args, seed_ids);
-    //widget_escher.fn_tooltip_rxn(args);
+    //tooltip_reaction(args, seed_ids);
+    widget_escher.fn_tooltip_rxn(args);
   } else if (args.state.type === 'gene') {
     widget_escher.fn_tooltip_gene(args);
   } else {
@@ -556,12 +556,12 @@ $(function() {
         }*/
         
         table.rows.add(rows).draw();
-      const default_map = 'data/ModelSEED/demo_map.json';
-      const default_model = "data/ModelSEED2.json";
+      //const default_map = 'data/ModelSEED/demo_map.json';
+      //const default_model = "data/ModelSEED2.json";
     //const default_map = 'data/iJB785_tnseq.json';
     //const default_model = "data/iJB785.json";
-    //const default_model = "data/iML1515.json";
-    //const default_map = "data/iML1515.PLP.JTBupdate_folates.json";
+    const default_model = "data/iML1515.json";
+    const default_map = "data/iML1515.PLP.JTBupdate_folates.json";
 
     const dataset = {
       'min' : -10,

@@ -647,7 +647,7 @@ const manual_groups = {
     'iNX804',
     'yeast_6.06',
     'yeast_7.6'
-  ]
+  ],
 }
 
 const manual_compartment_mapping = {

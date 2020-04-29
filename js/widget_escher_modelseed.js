@@ -6,14 +6,47 @@ var load_model = function(map_path, cb) {
   });
 };
 
+const default_tooltip = function(args) {
+  tinier.render(
+    args.el,
+    tinier.createElement(
+      'div',
+      { style: tooltip_style, id: 'tooltip_container'},
+      args.state.type + ': ' + args.state.biggId,
+
+      tinier.createElement(
+        'br'
+      ),
+      tinier.createElement(
+        'b',
+        {},
+        args.state['name']
+      ),
+    ),
+  );
+}
+
 class WidgetEscherModelseed {
 
   constructor(container, map_container, e_options, has_modelselect = true, has_display_toggle = true, plugins = []) {
 
     this.escher_map = null;
+    this.model = null;
     this.escher_model = null;
+    this.submodels = {}
     this.toggle_escher_label = null;
     this.escher_builder = escher.Builder(null, null, null, map_container, e_options);
+    this.escher_builder.options.cofactors = [
+      "atp", "adp", "nad", "nadh", "nadp", "nadph", "gtp", "gdp", "h", "coa", "ump", "h2o", "ppi", "akg",
+      "cpd00001", "cpd00013", "cpd00067", //h2o, nh4, h+
+      "cpd00005", "cpd00004", "cpd00006", "cpd00003", //nad
+      "cpd00008", "cpd00002", //adp, atp
+      "cpd00009", "cpd00012", //pi, ppi
+      "cpd00017", "cpd00019", //sam,amet
+      "cpd00010", //coa
+      "cpd00015", "cpd00982", //fad, fadh2
+      "cpd11620", "cpd11621", //red, ox ferredoxin
+    ]
     this.container = container;
     this.escher_display = "bigg_id"
     this.options = {
@@ -43,7 +76,25 @@ class WidgetEscherModelseed {
     _.each(this.plugins, function(p) {
       p.set_escher_widget(that);
     });
+
+    this.fn_tooltip_options = {
+      'compound' : {
+        'default' : default_tooltip
+      },
+      'reaction' : {
+        'default' : default_tooltip
+      },
+      'gene' : {
+        'default' : default_tooltip
+      }
+    }
+
+    this.fn_tooltip_cpd = default_tooltip;
+    this.fn_tooltip_rxn = default_tooltip;
+    this.fn_tooltip_gene = default_tooltip;
   }
+
+
 
   get_map_pathway_data() {
     if (this.escher_map && this.escher_map[0].metadata && this.escher_map[0].metadata.pathways) {
@@ -87,6 +138,26 @@ class WidgetEscherModelseed {
       _.each(this.plugins, function(p) {
         p.refresh(that);
       });
+    }
+  }
+
+  get_submodel(rxn_filter) {
+    if (!this.model) {
+      this.model = this.escher_model;
+    }
+    let escher_model_copy = JSON.parse(JSON.stringify(this.model));
+    let rxns = _.filter(this.model.reactions, function(o) { return rxn_filter.indexOf(o.id) >= 0})
+    escher_model_copy.reactions = rxns;
+
+    return escher_model_copy;
+  }
+
+  load_submodel(rxn_filter) {
+    if (!rxn_filter) {
+      this.change_model(this.model)
+    } else {
+      let submodel = this.get_submodel(rxn_filter)
+      this.change_model(submodel)
     }
   }
 

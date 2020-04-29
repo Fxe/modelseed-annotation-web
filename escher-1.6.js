@@ -4071,6 +4071,7 @@ function create_segment (enter_selection) {
  */
 function update_segment (update_selection, scale, cobra_model,
                          drawn_nodes, defs, has_data_on_reactions) {
+
   var reaction_data_styles = this.settings.get_option('reaction_styles')
   var should_size = (has_data_on_reactions && reaction_data_styles.indexOf('size') !== -1)
   var should_color = (has_data_on_reactions && reaction_data_styles.indexOf('color') !== -1)
@@ -4496,10 +4497,10 @@ function update_node (update_selection, scale, has_data_on_nodes,
   var metabolite_data_styles = this.settings.get_option('metabolite_styles')
   var no_data_style = { color: this.settings.get_option('metabolite_no_data_color'),
                         size: this.settings.get_option('metabolite_no_data_size') }
-  var label_mousedown_fn = this.behavior.label_mousedown
-  var label_mouseover_fn = this.behavior.label_mouseover
-  var label_mouseout_fn = this.behavior.label_mouseout
-
+  var label_mousedown_fn = this.behavior.label_mousedown;
+  var label_mouseover_fn = this.behavior.label_mouseover;
+  var label_mouseout_fn = this.behavior.label_mouseout;
+  //console.log(update_node, update_selection);
   var mg = update_selection
       .select('.node-circle')
     .attr('transform', function(d) {
