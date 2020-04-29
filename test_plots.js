@@ -560,7 +560,7 @@ $(function() {
       //const default_model = "data/ModelSEED2.json";
     //const default_map = 'data/iJB785_tnseq.json';
     //const default_model = "data/iJB785.json";
-    const default_model = "data/iML1515.json";
+    const default_model = "data/iML1515_JTB.json";
     const default_map = "data/iML1515.PLP.JTBupdate_folates.json";
 
     const dataset = {
