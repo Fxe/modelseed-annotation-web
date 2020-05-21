@@ -24,10 +24,10 @@ class WidgetEscherDepict {
   }
 
   get_smiles = function(cpd_id) {
-    let model = this.escher.escher_model
+    let model = this.escher.escher_builder.cobra_model
     let smiles = null;
-    _.each(model.metabolites, function(m) {
-      if (m.id === cpd_id && m.smiles) {
+    _.each(model.metabolites, function(m, m_id) {
+      if (m_id === cpd_id && m.smiles) {
         smiles = m.smiles
       }
     });
