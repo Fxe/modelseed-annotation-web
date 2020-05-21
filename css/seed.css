@@ -1,3 +1,37 @@
+.top-bar-seed {
+    font-size: 1em;
+    background-color: #2D224E;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    height: 50px;
+    min-height: 50px;
+    max-height: 50px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.14), 0 4px 5px 0 rgba(0, 0, 0, 0.098), 0 1px 10px 0 rgba(0, 0, 0, 0.084);
+
+    position: relative;
+    color: #EBEBEB;
+}
+
+.badge-seed-large {
+    display: inline-block;
+    margin-bottom: 0;
+    margin-top: 0;
+    border-radius: 3px;
+    white-space: nowrap;
+    padding: 0 6px;
+    margin: 6px 8px;
+    line-height: 36px;
+    min-height: 36px;
+    min-width: 88px;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+}
+
+.badge-seed {
+    color: #ffffff !important;
+    background-color: #30BCCF !important;
+}
+
 .container-escher-seed {
     display: flex;
     flex-flow: column;

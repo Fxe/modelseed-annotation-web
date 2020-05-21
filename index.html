@@ -1,85 +1,93 @@
 <!DOCTYPE html>
-<html>
-  <meta charset="utf-8"/>
-  <title>Escher Annotation</title>
-    
-  <link rel="stylesheet" href="css/bootstrap.css" />
-  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
-  <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
-  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
-  <link rel="stylesheet" href="css/fontawesome.min.css" />
-  <link rel="stylesheet" href="css/solid.min.css" />
-  <link rel="stylesheet" href="css/regular.min.css" />
-  <link rel="stylesheet" href="css/seed.css" />
-  <link rel="stylesheet" href="css/builder.css" />
-  <link rel="stylesheet" href="css/builder-bootstrap.css" />
-    
-  <style>
-      html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-}
-      #map_container{
-          /* background-color: black; */
-          flex-grow : 1;
-          height: 100%;
-      }
-   .axis path,
-   .axis line {
-     fill: none;
-     stroke: #000;
-     shape-rendering: crispEdges;
-   }
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Escher Annotation</title>
 
-   .bar {
-     fill: steelblue;
-   }
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <link rel="stylesheet" href="css/solid.min.css" />
+    <link rel="stylesheet" href="css/regular.min.css" />
+    <link rel="stylesheet" href="css/seed.css" />
+    <link rel="stylesheet" href="css/builder.css" />
+    <link rel="stylesheet" href="css/builder-bootstrap.css" />
 
-   .x.axis path {
-     display: none;
-   }
-      
-      .wutt {
-          display: flex;
-  flex-flow: column;
-  height: 100%;
-      }
-    
-    
-  .demo-droppable {
-    background: #08c;
-    color: #fff;
-    padding: 100px 0;
-    text-align: center;
+    <style>
+        html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
   }
-  .demo-droppable.dragover {
-    background: #00CC71;
-  }
+        #map_container{
+            /* background-color: black; */
+            flex-grow : 1;
+            height: 100%;
+        }
+     .axis path,
+     .axis line {
+       fill: none;
+       stroke: #000;
+       shape-rendering: crispEdges;
+     }
 
-    .escher_right_panel {
-      border: solid 1px #000000;
-      position: absolute;
-      top: 40px;
-      right: 20px;
-      z-index: 1;
-      background-color: #ffffff;
-      padding: 2px;
-      visibility: visible;
+     .bar {
+       fill: steelblue;
+     }
+
+     .x.axis path {
+       display: none;
+     }
+
+        .wutt {
+          padding-left: 0px !important;
+          padding-right: 0px !important;
+            display: flex;
+    flex-flow: column;
+    height: 100%;
+        }
+
+
+    .demo-droppable {
+      background: #08c;
+      color: #fff;
+      padding: 100px 0;
+      text-align: center;
+    }
+    .demo-droppable.dragover {
+      background: #00CC71;
     }
 
-  </style>
+      .escher_right_panel {
+        font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        background-color: #30BCCF !important;
+        color: #fff;
+        border: solid 1px #2D224E;
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        z-index: 1;
 
+        padding: 2px;
+        visibility: visible;
+      }
+
+    </style>
+  </head>
   
   <body>
+
+
     <div class="container-fluid wutt">
-      <div id="top_bar">
-        <label for="upload" class="badge badge-primary">
-          <i class="fas fa-upload"> Load Map</i>
+      <div id="top_bar" class="top-bar-seed">
+        <label for="upload" class="badge-seed-large badge-seed">
+          <i class="fas fa-upload"></i> Load Map
           <input type="file" id="upload" style="display:none">
         </label>
-        <label for="download" class="badge badge-primary">
-          <i class="fas fa-download"> Download Map</i>
+        <label for="download" class="badge-seed-large badge-seed">
+          <i class="fas fa-download"></i> Download Map
           <input type="file" id="download" style="display:none">
         </label>
         <label for="upload_heatmap" class="badge badge-primary">
@@ -87,33 +95,33 @@
           <input type="file" id="upload_heatmap" style="display:none">
         </label>
 
-          <!-- 
-          <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
--->
-          <a href="#" data-toggle="modal" data-target="#exampleModal" class="badge badge-primary">
-              <i class="fas fa-map"> Map</i>
-          </a>
-          <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge badge-primary">
-              <i class="fas fa-question-circle"></i>
-          </a>
-          <a href="config.html" class="badge badge-primary" target="_blank">
-              <i class="fas fa-cog"> </i>
-          </a>
-          Biochemistry: <span id="label_model" class="badge badge-danger">ModelSEED</span>
-          Map: <span id="label_map" class="badge badge-danger">example_map</span>
+        <!--
+        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
+    -->
+        <a href="#" data-toggle="modal" data-target="#exampleModal" class="badge-seed-large badge-seed">
+          <i class="fas fa-map"></i> Map
+        </a>
+        <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge-seed-large badge-seed">
+          <i class="fas fa-question-circle"></i> Help
+        </a>
+        <a href="config.html" class="badge-seed-large badge-seed" target="_blank">
+          <i class="fas fa-cog"> </i> Settings
+        </a>
+        Biochemistry: <span id="label_model" class="badge badge-danger">ModelSEED</span>
+        Map: <span id="label_map" class="badge badge-danger">example_map</span>
 
         <!--
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_data_load"><i class="fas fa-bars"> </i> Load Data</button>
           <button type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> Edit </button>
-        
+
 
           Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
--->
-          
+    -->
+        <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
+        <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
       </div>
-      <div id="left_panel" class="escher_right_panel">
 
-      </div>
+      <div id="left_panel" class="escher_right_panel"></div>
       <div id="map_container">Loading map ...</div>
     </div>
 
@@ -275,6 +283,7 @@ Load Map
   <script src="js/widget_escher_depict_compound.js"></script>
   <script src="js/widget_escher_left_panel.js"></script>
   <script src="js/widget_escher_plot.js"></script>
+  <script src="js/widget_escher_description.js"></script>
   <script src="js/escher_tooltip_annotation.js"></script>
 
   <script>

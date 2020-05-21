@@ -3,6 +3,12 @@ class WidgetEscherPlot {
     this.escher = null;
     this.active_plots = {}
     this.dataset = undefined;
+    this.datasets = {
+      'gene' : {},
+      'reaction' : {},
+      'compound' : {}
+    }
+
   }
 
   set_escher_widget(ew) {

@@ -82,10 +82,7 @@
           <i class="fas fa-download"> Download Map</i>
           <input type="file" id="download" style="display:none">
         </label>
-        <label for="upload_heatmap" class="badge badge-primary">
-          <i class="fas fa-upload"> Load Heatmap Data</i>
-          <input type="file" id="upload_heatmap" style="display:none">
-        </label>
+
 
           <!-- 
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
@@ -96,6 +93,14 @@
           <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge badge-primary">
               <i class="fas fa-question-circle"></i>
           </a>
+
+
+        <a href="#" data-toggle="modal" data-target="#model_data_plots" class="badge badge-primary">
+          <i class="fas fa-upload"> Load Data</i>
+        </a>
+
+
+
           <a href="config.html" class="badge badge-primary" target="_blank">
               <i class="fas fa-cog"> </i>
           </a>
@@ -249,6 +254,61 @@ Load Map
     </div>
   </div>
 </div>
+    <!-- Modal Load Data-->
+    <div class="modal fade" id="model_data_plots" tabindex="-1" role="dialog" aria-labelledby="model_data_plots_label" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="model_data_plots_label">Description of star rating system</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-9">
+                  <div>
+                    <label for="upload_heatmap" class="badge badge-primary">
+                      <i class="fas fa-upload"> Load Heatmap Data</i>
+                      <input type="file" id="upload_heatmap" style="display:none">
+                    </label>
+
+                    <label for="upload_gene_data" class="badge badge-primary">
+                      <i class="fas fa-upload"> Load Gene Data</i>
+                      <input type="file" id="upload_gene_data" style="display:none">
+                    </label>
+                  </div>
+                  <div id="escher-plots-display-dataset">
+
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div id="escher-plots-loaded-datasets">
+                    <p>Gene Datasets:</p>
+                  </div>
+                  <div>
+                    <input id="lower_bound" type="number" step="any"><label for="lower_bound">Min</label>
+                  </div>
+                  <div>
+                    <input id="upper_bound" type="number" step="any"><label for="upper_bound">Max</label>
+                  </div>
+                  <div>
+                    <button id="escher-plots-button-paint-map">Display</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
       
   </body>
     
@@ -278,6 +338,62 @@ Load Map
   <script src="js/escher_tooltip_annotation.js"></script>
 
   <script>
+
+    const y_vars = {};
+    const x_vars = {};
+
+    const build_heat_map_data = function(min_v, max_v, datasets) {
+      let d_values = widget_escher_plot.datasets.gene
+
+      let dataset = {
+        'min' : min_v,
+        'max' : max_v,
+        'sets' : datasets,
+        'rxn' : {}
+      };
+
+
+
+      _.each(widget_escher.escher_builder.cobra_model.reactions, function(reaction, reaction_id) {
+        let d_set_rxn_data = {};
+        _.each(reaction.genes, function(oGene) {
+          if (y_vars[oGene.bigg_id] || true) {
+            let gene_id = oGene.bigg_id;
+            d_set_rxn_data[gene_id] = [];
+            _.each(dataset.sets, function(x_var) {
+              if (d_values[x_var] && d_values[x_var].values[gene_id]) {
+                d_set_rxn_data[gene_id].push(d_values[x_var].values[gene_id])
+              } else {
+                d_set_rxn_data[gene_id].push('nan')
+              }
+            });
+          }
+        });
+        dataset['rxn'][reaction_id] = d_set_rxn_data
+      });
+      /*
+      if not len(d_set_rxn_data) == 0:
+      dataset['rxn'][rxn.id] = d_set_rxn_data
+      */
+
+
+
+      return dataset;
+    }
+
+    $('#escher-plots-button-paint-map').on('click', function() {
+      if (!$('#lower_bound').val() || !$('#upper_bound').val()) {
+        alert('missing either min or max')
+      } else {
+        let lower_bound = parseFloat($('#lower_bound').val());
+        let upper_bound = parseFloat($('#upper_bound').val());
+        console.log(lower_bound, upper_bound)
+        widget_escher_plot.dataset = build_heat_map_data(lower_bound, upper_bound, _.keys(widget_escher_plot.datasets.gene));
+        widget_escher_plot.refresh()
+      }
+
+    });
+
     $('#upload').on('change', function() {
       console.log(this);
       let file = this.files[0];
@@ -297,6 +413,74 @@ Load Map
       reader.onload = function(e) {
         widget_escher_plot.dataset = JSON.parse(e.target.result);
         widget_escher_plot.refresh()
+      };
+      reader.readAsText(file);
+    });
+
+    const parse_file = function(data_as_string) {
+      let lines = data_as_string.split(/\r?\n/);
+      console.log(lines);
+      let d_values = {};
+
+      let v_min = 10000;
+      let v_max = -10000;
+      for (let i = 1; i < lines.length; i++) {
+        let row = lines[i].split(',');
+        let val = parseFloat(row[1])
+        d_values[row[0]] = val;
+        if (val < v_min) {
+          v_min = val;
+        }
+        if (val > v_max) {
+          v_max = val;
+        }
+      }
+
+      return {
+        'name' : lines[0].split(',')[1],
+        'min' : v_min,
+        'max' : v_max,
+        'values' : d_values,
+      }
+    };
+
+    $('#upload_gene_data').on('change', function() {
+      let file = this.files[0];
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        let loaded_data = parse_file(e.target.result);
+        widget_escher_plot.datasets.gene[loaded_data.name] = loaded_data;
+        console.log($('#lower_bound').val());
+        if ($('#lower_bound').val()) {
+          if ($('#lower_bound').val() > loaded_data.min) {
+            $('#lower_bound').val(loaded_data.min);
+          }
+        } else {
+          $('#lower_bound').val(loaded_data.min);
+        }
+        if ($('#upper_bound').val()) {
+          if ($('#upper_bound').val() < loaded_data.max) {
+            $('#upper_bound').val(loaded_data.max);
+          }
+        } else {
+          $('#upper_bound').val(loaded_data.max);
+        }
+
+        let radioId =  'dataset-radio-' + loaded_data.name
+        if ($("#" + radioId).length) {
+          $('#escher-plots-display-dataset').html('DATASET already present (reload): ' + loaded_data.name + ', min: ' + loaded_data.min + ', max: ' + loaded_data.max + ', variables: ' + _.size(loaded_data.values))
+        } else {
+          $('#escher-plots-display-dataset').html('loaded dataset: ' + loaded_data.name + ', min: ' + loaded_data.min + ', max: ' + loaded_data.max + ', variables: ' + _.size(loaded_data.values))
+          $('#escher-plots-loaded-datasets').append(
+            $('<input>',
+              {
+                'type' : 'radio',
+                'id' : radioId,
+                'name' : 'dataset-gene',
+                'value' : loaded_data.name
+              })).append($('<label>', {'for' : radioId}).append(' ' + loaded_data.name)).append('<br>');
+        }
+
       };
       reader.readAsText(file);
     });

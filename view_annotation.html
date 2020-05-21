@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>View Annotation</title>
-
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/bootstrap.css" />
   <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
   <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
@@ -45,18 +45,14 @@
   </style>
 </head>
 <body>
-
+<div id="top_bar" class="top-bar-seed">
+  <span class="badge-seed-large badge-seed">View Reaction Annotation</span>
+  <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge-seed-large badge-seed">
+    <i class="fas fa-question-circle"></i> Help
+  </a>
+</div>
 <div class="container-fluid">
-  <div id="top_bar">
-    <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge badge-primary">
-              <i class="fas fa-question-circle"> </i>
-          </a>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div id="view_container"></div>
-    </div>
-  </div>
+  <div id="view_container"></div>
 </div>
 
 <!-- Modal -->
@@ -154,6 +150,9 @@
 <script src="js/escher_tooltip_annotation.js"></script>
 
 <script>
+
+
+
   const getUrlParameter = function getUrlParameter(sParam) {
     let sPageURL = window.location.search.substring(1),
       sURLVariables = sPageURL.split('&'),
@@ -183,15 +182,19 @@
     env.init_ui();
 
 
+
     let rxn_data = getUrlParameter('rxn');
     if (rxn_data) {
+
+      //$('#button-comment-post').click(post_comment);
+
       let rxn_ids = rxn_data.split(';');
 
       let template_id = env.config['target_template'];
       let t = new EscherTooltipAnnotation(null, api, env, 'view_container');
 
 
-      t.ttt2(rxn_ids, template_id, env.config['genome_set']);
+      t.ttt2(rxn_ids, template_id, env.config['genome_set'], true);
     } else {
       $('#view_container').html('Missing reaction parameter');
     }

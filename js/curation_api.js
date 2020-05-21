@@ -127,6 +127,38 @@ class CurationAPI {
     return this.post("/template/" + template_id + "/reaction" + reaction_id, params, fn_success, fn_always, fn_error);
   }
 
+  post_template_reaction_disable(template_id, reaction_id, fn_success, fn_always, fn_error) {
+
+  }
+
+  post_template_reaction_enable(template_id, reaction_id, fn_success, fn_always, fn_error) {
+
+  }
+
+  get_template_reaction_comment(template_id, reaction_id, fn_success, fn_always, fn_error) {
+    return this.get("/template/" + template_id + "/reaction/" + reaction_id + '/comment', fn_success, fn_always, fn_error)
+  }
+
+  post_template_reaction_comment(template_id, reaction_id, user_id, comment, fn_success, fn_always, fn_error) {
+    let params = {
+      'user_id' : user_id,
+      'comment' : comment,
+    }
+    return this.post("/template/" + template_id + "/reaction/" + reaction_id + '/comment', params, fn_success, fn_always, fn_error);
+  }
+
+  get_template_reaction_attribute(template_id, reaction_id, fn_success, fn_always, fn_error) {
+    return this.get("/template/" + template_id + "/reaction/" + reaction_id + '/attributes', fn_success, fn_always, fn_error)
+  }
+
+  post_template_reaction_attribute(template_id, reaction_id, attr, value, fn_success, fn_always, fn_error) {
+    let params = {
+      'attribute' : attr,
+      'value' : value,
+    }
+    return this.post("/template/" + template_id + "/reaction/" + reaction_id + '/attributes', params, fn_success, fn_always, fn_error);
+  }
+
   post_template_function_rxns(template_id, params, fn_success, fn_always, fn_error) {
     return this.post("/template/" + template_id + "/functions_rxn", params, fn_success, fn_always, fn_error);
   };
@@ -153,6 +185,14 @@ class CurationAPI {
 
   post_template_model_reaction_reference(template_id, mrxn_id, params, fn_success, fn_always, fn_error) {
     return this.post("/template/" + template_id + "/model_reaction/" + mrxn_id + "/map", params, fn_success, fn_always, fn_error);
+  }
+
+  get(url, fn_success, fn_always, fn_error) {
+    return $.getJSON(this.base + url, function(e) {
+      if (fn_success) {
+        fn_success(e);
+      }
+    })
   }
 
   post(url, body, fn_success, fn_always, fn_error) {

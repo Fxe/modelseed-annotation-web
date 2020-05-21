@@ -136,32 +136,148 @@ class EscherTooltipAnnotation {
     }
   }
 
-  ttt2(rxn_ids, template_id, genome_set_id) {
+  build_controls_container(container, rxn_id, template_id) {
+    let that = this;
+    this.active_xhr += 1;
+    this.curation_api.get_template_reaction_attribute(template_id, rxn_id, function(o) {
+      container.html('');
+      if (o.active === undefined) {
+        o.active = true;
+      }
+      let active = o.active;
+      let check_active = $('<input>', {'type' : 'checkbox', 'checked' : active})
+      let button_flag_reaction = $('<button>').html('Flag Reaction for Review')
+      let button_clear_reaction = $('<button>').html('Clear')
+      check_active.click(function() {
+        if($(this).is(":checked")){
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'active', true)
+        } else if($(this).is(":not(:checked)")){
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'active', false)
+        }
+      });
+      button_flag_reaction.click(function() {
+        if (confirm("Request review?")) {
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'review', true)
+        }
+      })
+      button_clear_reaction.click(function() {
+        if (confirm("Clear review?")) {
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'review', false)
+        }
+      })
+
+      container.append($('<div>').append('Include reaction in template? ').append(check_active))
+               .append($('<div>').append(button_flag_reaction).append(button_clear_reaction))
+      console.log(o)
+    }).always(function() {
+      that.active_xhr -= 1;
+      console.log('done', rxn_id, 'remaing:', that.loading_count);
+    });
+  }
+
+  build_comment_section(user_id, date, value) {
+    let comment_section = $('<div>', {'class' : 'comment-section'}).append(
+      $('<div>', {'class' : ''}).append($('<div>', {'class' : 'float-left'}).html(user_id))
+        .append($('<div>', {'class' : 'float-right'}).html(date.toISOString()))).append($('<div>', {'style' : 'clear: both'}).html(value))
+    return comment_section
+  }
+
+  build_comments_container(container, rxn_id, template_id) {
+    let that = this;
+    this.active_xhr += 1;
+
+    this.curation_api.get_template_reaction_comment(template_id, rxn_id, function(o) {
+      container.html("");
+      let comment_container = $('<div>', {'class' : ''});
+      container.append(comment_container)
+      _.each(o, function(comment) {
+        var d = new Date(0);
+        d.setUTCSeconds(comment.timestamp);
+        let comment_section = that.build_comment_section(comment.user_id, d, comment.comment)
+
+        comment_container.append(comment_section);
+        console.log(comment);
+      })
+
+      let text_area = $('<textarea>')
+      let button_push_comment = $('<button>').html('Comment')
+      button_push_comment.click(function() {
+        if (confirm("Post Comment?")) {
+          that.curation_api.post_template_reaction_comment(
+            template_id,
+            rxn_id,
+            that.env.config.user,
+            text_area.val(), function(o) {
+              console.log('posted', o)
+              let comment_section = that.build_comment_section(that.env.config.user, new Date(), text_area.val())
+              text_area.val('')
+              comment_container.append(comment_section);
+            })
+        }
+      });
+      container.append($('<div>', {'class' : 'comment-section'}).append(text_area).append(button_push_comment))
+      console.log(o)
+    }).always(function() {
+      that.active_xhr -= 1;
+      console.log('done', rxn_id, 'remaing:', that.loading_count);
+    });
+  }
+
+  build_annotation_container(container, rxn_id, template_id, genome_set_id, wide) {
+    let that = this;
+    this.active_xhr += 1;
+    this.curation_api.post_template_annotation_reaction_status(template_id, rxn_id, genome_set_id, function(e) {
+      container.html('');
+      container.append(that.escher_tooltip_annotation(
+        rxn_id,
+        'seed.reaction',
+        e.annotation,
+        e.curation,
+        e.function_rxns,
+        wide));
+      //console.log('post_template_annotation_reaction_status', e);
+    }, undefined, function (e) {
+      console.log('@@@', e)
+      container.html('<span class="badge badge-danger"><i class="fas fa-bug"></i> Error: ' + rxn_id + '</span> Try refresh the page. If this problem persist contact page admin.');
+    }).always(function() {
+      that.active_xhr -= 1;
+      console.log('done', rxn_id, 'remaing:', that.loading_count);
+    });
+  }
+
+  ttt2(rxn_ids, template_id, genome_set_id, wide = false) {
     let rxn_id = rxn_ids[0];
     let that = this
     let ct = $('#' + this.container_id);
     if (ct.length) {
       _.each(rxn_ids, function(rxn_id) {
-        let rxn_annotation_container = $('<div>', {'class' : 'container'}).html('<i class="fas fa-spinner fa-spin"></i> Loading: ' + rxn_id);
-        ct.append(rxn_annotation_container);
-        that.active_xhr += 1;
-        that.curation_api.post_template_annotation_reaction_status(template_id, rxn_id, genome_set_id, function(e) {
-          rxn_annotation_container.html('');
-          rxn_annotation_container.append(that.escher_tooltip_annotation(
-            rxn_id,
-            'seed.reaction',
-            e.annotation,
-            e.curation,
-            e.function_rxns,
-            true));
-          //console.log('post_template_annotation_reaction_status', e);
-        }, undefined, function (e) {
-          console.log('@@@', e)
-          rxn_annotation_container.html('<span class="badge badge-danger"><i class="fas fa-bug"></i> Error: ' + rxn_id + '</span> Try refresh the page. If this problem persist contact page admin.');
-        }).always(function() {
-          that.active_xhr -= 1;
-          console.log('done', rxn_id, 'remaing:', that.loading_count);
-        });
+        let rxn_annotation_container = $('<div>', {'class' : 'annotation-section'}).html('<i class="fas fa-spinner fa-spin"></i> Loading: ' + rxn_id);
+        if (wide) {
+          let left_section = $('<div>', {'class' : 'col-md-3'})
+          let center_section = $('<div>', {'class' : 'col-md-6'})
+          let right_section = $('<div>', {'class' : 'col-md-3'})
+          let section = $('<div>', {'class' : 'row'}).append(left_section).append(center_section).append(right_section)
+
+          let rxn_controls_container = $('<div>').html('Loading data ...');
+          let rxn_comments_container = $('<div>').html('Loading comments ...');
+
+          left_section.html('big phat species tree')
+          center_section.append(rxn_annotation_container);
+          right_section.append(rxn_controls_container);
+          right_section.append(rxn_comments_container);
+          ct.append(section);
+
+          that.build_annotation_container(rxn_annotation_container, rxn_id, template_id, genome_set_id, wide);
+          that.build_controls_container(rxn_controls_container, rxn_id, template_id);
+          that.build_comments_container(rxn_comments_container, rxn_id, template_id);
+        } else {
+          let center_section = $('<div>', {'class' : 'col-md-12'})
+          let section = $('<div>', {'class' : 'row'}).append(center_section);
+          center_section.append(rxn_annotation_container);
+          ct.append(section);
+
+          that.build_annotation_container(rxn_annotation_container, rxn_id, template_id, genome_set_id, wide);
+        }
 
       });
     }

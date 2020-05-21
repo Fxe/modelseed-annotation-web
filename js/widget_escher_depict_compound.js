@@ -13,6 +13,8 @@ class WidgetEscherDepict {
         $('#n' + d.node_id + '_label_meta').attr(
           'transform', 'translate('+ d.label_x + ',' + (d.label_y + 10) + ')')
       }
+
+
       //console.log('change of coord', d.label_x, d.label_y)
     }
   }

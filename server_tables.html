@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Escher Annotation</title>
+
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <link rel="stylesheet" href="css/solid.min.css" />
+    <link rel="stylesheet" href="css/regular.min.css" />
+    <link rel="stylesheet" href="css/seed.css" />
+    <link rel="stylesheet" href="css/builder.css" />
+    <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  </head>
+  <body>
+  <table id="table" class="table">
+    <thead class="thead-light">
+      <tr>
+
+      </tr>
+    </thead>
+  </table>
+  </body>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/underscore-1.9.1.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/dataTables.bootstrap4.min.js"></script>
+  <script>
+    const table = $("#table").DataTable(
+      {
+        aoColumns : [
+          {
+            sTitle : 'UID',
+            sName : 'uid',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          },
+          {
+            sTitle : 'Function',
+            sName : 'function',
+            bVisible : true,
+            bSearchable : true,
+            bSortable : true
+          },
+          {
+            sTitle : 'Gene Count',
+            sName : 'gene_count',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          },
+          {
+            sTitle : 'KO',
+            sName : 'ko',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          },
+          {
+            sTitle : 'Version',
+            sName : 'version',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          }
+        ],
+        processing: true,
+        searchDelay: 2000,
+
+        serverSide: true,
+        ajax: {
+          url : '/annotation/api/query/function',
+          type: 'POST'
+          //dataType: 'json',
+          //contentType: 'application/json',
+        }
+
+      }
+    );
+
+    table.rows.add(rows).draw();
+  </script>
+</html>

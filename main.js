@@ -100,7 +100,18 @@ const tooltip_metabolite = function(args) {
 
 
 
-const tooltip_reaction = function(args, ids) {
+const tooltip_reaction = function(args) {
+  if (reaction_tooltip.is_busy()) {
+    console.log('reaction_tooltip', reaction_tooltip.is_busy());
+    return
+  }
+
+  let seed_ids = [];
+
+  if (args.state.type === 'reaction' && args.state.biggId.startsWith("rxn")) {
+    seed_ids.push(args.state.biggId)
+  }
+
   /*
   rxn = model_rxns[0]
 
@@ -152,8 +163,8 @@ const tooltip_reaction = function(args, ids) {
  */
     ),
   );
-  if (ids.length > 0) {
-    reaction_tooltip.ttt2(ids, env.config['target_template'], env.config['genome_set']);
+  if (seed_ids.length > 0) {
+    reaction_tooltip.ttt2(seed_ids, env.config['target_template'], env.config['genome_set']);
   }
 
 
@@ -171,26 +182,12 @@ const tooltip_reaction = function(args, ids) {
 };
 
 const tooltip = function (args) {
-  if (reaction_tooltip.is_busy()) {
-    console.log('reaction_tooltip', reaction_tooltip.is_busy());
-    return
-  }
-  //let map_rxn_id = args.state.biggId;
-  //let model_rxns = _.filter(widget_escher.escher_model.reactions, function(x) {return x.id === map_rxn_id});
-  let seed_ids = [];
-
-  if (args.state.type === 'reaction' && args.state.biggId.startsWith("rxn")) {
-    seed_ids.push(args.state.biggId)
-  }
-
-  //console.log(seed_ids, args.state);
-
   if (args.state.type === 'metabolite') {
-    tooltip_metabolite(args);
-    //widget_escher.fn_tooltip_cpd(args);
+    //tooltip_metabolite(args);
+    widget_escher.fn_tooltip_cpd(args);
   } else if (args.state.type === 'reaction') {
-    tooltip_reaction(args, seed_ids);
-    //widget_escher.fn_tooltip_rxn(args);
+    //tooltip_reaction(args, seed_ids);
+    widget_escher.fn_tooltip_rxn(args);
   } else if (args.state.type === 'gene') {
     widget_escher.fn_tooltip_gene(args);
   } else {
@@ -489,13 +486,19 @@ let reaction_tooltip = new EscherTooltipAnnotation(tinier, api, env, 'tooltip_co
 const widget_escher_depict = new WidgetEscherDepict(biochem_api, chem_api);
 const widget_escher_left_panel = new WidgetEscherLeftPanel($('#left_panel'));
 const widget_escher_plot = new WidgetEscherPlot();
+const widget_escher_metadata = new WidgetEscherMetadata(biochem_api, api, env);
 const e_options = {
   //menu: '',
   fill_screen: false,
   tooltip_component: tooltip,
 };
-const widget_escher = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_container'), e_options, false, true, [widget_escher_depict, widget_escher_left_panel, widget_escher_plot]);
-
+const widget_escher = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_container'), e_options, false, true, [
+  widget_escher_depict,
+  widget_escher_left_panel,
+  widget_escher_plot,
+  widget_escher_metadata]);
+widget_escher.fn_tooltip_options.reaction['annotation'] = tooltip_reaction;
+var waaaa = null;
 $(function() {
 
 /*
@@ -590,6 +593,18 @@ $(function() {
           let b = widget_escher.escher_builder;
           b.settings.set_conditional('show_gene_reaction_rules', true);
           b.map.draw_everything()
+          /*
+          d3.svg("data/reactome/R-ICO-012397.svg").then(function(xml) {
+            xml.documentElement.setAttribute('width', '100');
+            xml.documentElement.setAttribute('height', '100');
+            d3.select("#n4").each(function(data) {
+              console.log(xml.documentElement);
+              d3.select(this).insert('g').attr('transform', 'translate('
+                + (data.x) + ','
+                + (data.y) + ')').node().appendChild(xml.documentElement);
+            }).insert('g')
+          });
+          */
         });
       })
   })
@@ -599,4 +614,5 @@ $(function() {
       widget_escher]);
   env.load_config();
   env.init_ui();
+  widget_escher_metadata.env = env;
 });
