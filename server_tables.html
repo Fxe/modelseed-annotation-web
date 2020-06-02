@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8"/>
     <title>Escher Annotation</title>
-
     <link rel="stylesheet" href="css/bootstrap.css" />
     <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
     <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
@@ -11,26 +10,171 @@
     <link rel="stylesheet" href="css/fontawesome.min.css" />
     <link rel="stylesheet" href="css/solid.min.css" />
     <link rel="stylesheet" href="css/regular.min.css" />
+    <link rel="stylesheet" href="css/select2.min.css" />
+    <link rel="stylesheet" href="css/chosen.min.css" />
     <link rel="stylesheet" href="css/seed.css" />
     <link rel="stylesheet" href="css/builder.css" />
     <link rel="stylesheet" href="css/builder-bootstrap.css" />
+
   </head>
   <body>
-  <table id="table" class="table">
-    <thead class="thead-light">
+  <div class="container-fluid">
+    <table id="table" class="table">
+      <thead class="thead-light">
       <tr>
 
       </tr>
-    </thead>
-  </table>
+      </thead>
+    </table>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="omg"></div>
+        <div id="chosen-genomes"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <table id="table-genome-genes" class="table">
+          <thead class="thead-light">
+          <tr>
+
+          </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
   </body>
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/underscore-1.9.1.min.js"></script>
-  <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/jquery.dataTables.min.js"></script>
   <script src="js/dataTables.bootstrap4.min.js"></script>
+  <script src="js/select2.full-4.1.0.min.js"></script>
+  <script src="js/chosen.jquery-1.8.7.min.js"></script>
+
   <script>
+    let formatState = function(state) {
+      let res = $('<span>').append(state.id).append(": ").append(state.text);
+      return res;
+    };
+    function formatSelection(state) {
+      console.log('formatSelection', state);
+      if (state.id) {
+        let res = $('<span>').append(state.id);
+        return res;
+      }
+      return state.text;
+    }
+    let page_size = 20;
+    const ajax_config = {
+      delay: 500,
+      url: '/annotation/api/query/genome',
+      type: 'POST',
+      cache: true,
+      data: function (params) {
+        return {
+          'search[value]': params.term,
+          'length': page_size,
+          'start' : (params.page || 0) * page_size
+        };
+      },
+      processResults: function (data) {
+        let items = [
+          //{ id:233242, text:3434}
+          ];
+
+        _.each(data.data, function(o) {
+          items.push({id: o[1], text: o[2]})
+        });
+        console.log(data);
+
+        return {
+          results: items,
+          pagination: {
+            "more": false
+          }
+        };
+      }
+    };
+    $('.omg').select2({
+      maximumSelectionLength: 1,
+      placeholder: 'Select Genome',
+      allowClear: true,
+      multiple: true,
+      id: function(o){ console.log(o); return o.id; },
+      //width: '600px',
+      templateSelection: formatSelection,
+      templateResult: formatState,
+      //data : [{id :1 ,text:'acb'}, {id :111 ,text:'bbb'}]
+      ajax: ajax_config
+    });
+
+    const table_genome_genes = $("#table-genome-genes").DataTable(
+      {
+        aoColumns : [
+          {
+            sTitle : 'UID',
+            sName : 'uid',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          },
+          {
+            sTitle : 'Genome',
+            sName : 'genome_id',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          },
+          {
+            sTitle : 'Gene',
+            sName : 'gene_id',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false
+          },
+          {
+            sTitle : 'Function',
+            sName : 'function',
+            bVisible : true,
+            bSearchable : true,
+            bSortable : true,
+            "mRender": function (data) {
+              console.log(data)
+              let annotation_container = $('<table>', {'class' : 'table table-borderless table-sm table-hover'});
+
+              for (let i = 0; i < data[0].length; i++) {
+                annotation_container.append($('<tr>').append($('<td>').html(data[0][i])).append($('<td>').html(data[1][i])))
+              }
+              return annotation_container.prop('outerHTML');
+            }
+          },
+          {
+            sTitle : 'Reaction',
+            sName : 'reaction',
+            bVisible : true,
+            bSearchable : false,
+            bSortable : false,
+            "mRender": function (data, type, row) {
+              return 'not implemented';
+            }
+          }
+        ],
+        processing: true,
+        searchDelay: 2000,
+
+        serverSide: true,
+        ajax: {
+          url : '/annotation/api/query/genome/GCF_000005845.2/genes',
+          type: 'POST'
+        }
+
+      }
+    );
+
     const table = $("#table").DataTable(
       {
         aoColumns : [
@@ -84,6 +228,6 @@
       }
     );
 
-    table.rows.add(rows).draw();
+
   </script>
 </html>

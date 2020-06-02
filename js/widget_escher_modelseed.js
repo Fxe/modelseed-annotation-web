@@ -56,6 +56,7 @@ class WidgetEscherModelseed {
       //'e' : 'Extracellular',
       'c_e' : 'Cytosol > Extracellular',
       'c_m' : 'Cytosol > Mitochondria',
+      'm_c' : 'Mitochondria > Cytosol',
     };
     this.options_path = {
       'z' : 'data/ModelSEED2.json',
@@ -64,6 +65,7 @@ class WidgetEscherModelseed {
       //'e' : 'data/TempModels/seed_e.json',
       'c_e' : 'data/TempModels/seed_c_e.json',
       'c_m' : 'data/TempModels/seed_c_m.json',
+      'm_c' : 'data/TempModels/seed_m_c.json',
     };
     this.plugins = plugins;
 

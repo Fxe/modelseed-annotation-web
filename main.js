@@ -365,8 +365,9 @@ var load_escher_map = function(dataset_id, map_id) {
         //e_builder = escher.Builder(escher_map, e_model, null, d3.select('#map_container'), e_options)
         
         //widget_escher.escher_builder = e_builder
-        widget_escher.toggle_display();
-        $('#label_map').html(map_id);
+      widget_escher.toggle_display();
+      $('#label_map').html(map_id);
+      env.set_config_property('default_map', dataset_id + '/' + map_id);
     })
     
     /*
@@ -582,8 +583,17 @@ $(function() {
     };
 
 
+
+
     $.getJSON(default_map, function(map_data) {
+      if (env.config.default_map) {
+        let map_id = env.config.default_map.split('/');
+        load_escher_map(map_id[0], map_id[1]);
+      } else {
+        console.log('default map not found. loading demo');
         widget_escher.change_map(map_data);
+      }
+
         $.getJSON(default_model, function(model_data) {
               var a2 = document.getElementById("download_map");
     a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));

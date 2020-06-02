@@ -145,14 +145,23 @@ class EscherTooltipAnnotation {
         o.active = true;
       }
       let active = o.active;
+      let is_spontaneous = o.spontaneous;
       let check_active = $('<input>', {'type' : 'checkbox', 'checked' : active})
-      let button_flag_reaction = $('<button>').html('Flag Reaction for Review')
-      let button_clear_reaction = $('<button>').html('Clear')
+      let check_spont = $('<input>', {'type' : 'checkbox', 'checked' : is_spontaneous})
+      let button_flag_reaction = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Flag Reaction for Review')
+      let button_clear_reaction = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Clear')
       check_active.click(function() {
         if($(this).is(":checked")){
           that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'active', true)
         } else if($(this).is(":not(:checked)")){
           that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'active', false)
+        }
+      });
+      check_spont.click(function() {
+        if($(this).is(":checked")){
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'spontaneous', true)
+        } else if($(this).is(":not(:checked)")){
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'spontaneous', false)
         }
       });
       button_flag_reaction.click(function() {
@@ -167,7 +176,9 @@ class EscherTooltipAnnotation {
       })
 
       container.append($('<div>').append('Include reaction in template? ').append(check_active))
+               .append($('<div>').append('Spontaneous ? ').append(check_spont))
                .append($('<div>').append(button_flag_reaction).append(button_clear_reaction))
+
       console.log(o)
     }).always(function() {
       that.active_xhr -= 1;
@@ -200,7 +211,7 @@ class EscherTooltipAnnotation {
       })
 
       let text_area = $('<textarea>')
-      let button_push_comment = $('<button>').html('Comment')
+      let button_push_comment = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Comment')
       button_push_comment.click(function() {
         if (confirm("Post Comment?")) {
           that.curation_api.post_template_reaction_comment(

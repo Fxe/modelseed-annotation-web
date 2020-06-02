@@ -51,11 +51,15 @@ class CurationEnvironment {
     this.update_ui();
   }
 
-  set_config_template_id(template_id) {
+  set_config_property(prop, value) {
     let cfg = this.load_config_from_localstorage();
-    cfg.target_template = template_id
+    cfg[prop] = value
     localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(cfg))
-    this.update_ui();
+    this.load_config();
+  }
+
+  set_config_template_id(template_id) {
+    this.set_config_property('target_template', template_id)
   }
 
   load_config_from_localstorage() {
@@ -64,7 +68,9 @@ class CurationEnvironment {
       'user' : null,
       'genome_set' : null,
       'target_template' : 'fungi',
-      'kbase_token' : null
+      'kbase_token' : null,
+      'default_map' : null,
+      'default_model' : null,
     }
 
     if (!localStorage.getItem(LOCALSTORAGE_KEY)) {

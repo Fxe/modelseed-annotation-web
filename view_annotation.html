@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/fontawesome.min.css" />
   <link rel="stylesheet" href="css/solid.min.css" />
   <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/select2.min.css" />
   <link rel="stylesheet" href="css/builder.css" />
   <link rel="stylesheet" href="css/builder-bootstrap.css" />
   <link rel="stylesheet" href="css/seed.css" />
@@ -36,12 +37,6 @@
     ul.select2-selection__rendered {
       padding-right: 12px !important;
     }
-    #map_container{
-      /* background-color: black; */
-      flex-grow : 1;
-      height: 100%;
-      /* height: 800px; */
-    }
   </style>
 </head>
 <body>
@@ -53,6 +48,11 @@
 </div>
 <div class="container-fluid">
   <div id="view_container"></div>
+  <!--
+  <div>
+    <div id="select2-roles" class="js-example-basic-multiple"></div>
+  </div>
+  -->
 </div>
 
 <!-- Modal -->
@@ -140,6 +140,7 @@
 <script src="js/jquery-3.4.1.min.js"></script>
 <script src="js/underscore-1.9.1.min.js"></script>
 <script src="js/popper.min.js"></script>
+<script src="js/select2.full.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/annotation.js"></script>
 <script src="js/curation_env.js"></script>
@@ -150,8 +151,62 @@
 <script src="js/escher_tooltip_annotation.js"></script>
 
 <script>
+/*
+  function formatSelection(state) {
+    console.log('formatSelection', state);
+    if (icons[state.id]) {
+      let res = $('<span>').append(icons[state.id]);
+      return res;
+    }
+    return state.text;
+  }
+  function formatState (state) {
+    //console.log(state);
+    if (!state.id) {
+      return state.text;
+    }
 
+    let baseUrl = "/user/pages/images/flags";
+    let $state = $(
+      '<span><img src="' + baseUrl + '/' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+    );
+    let res = $('<span>')
+    if (icons[state.id]) {
+      res.append(icons[state.id]).append(' ');
+    }
+    res.append(state.text);
+    return res;
+  };
+  $('#select2-roles').select2({
+    maximumSelectionLength: 1,
+    placeholder: 'This is my placeholder',
+    allowClear: true,
+    multiple: true,
+    //width: '600px',
+    //templateSelection: formatSelection,
+    //templateResult: formatState,
+    ajax: {
+      url: 'https://api.github.com/orgs/select2/repos',
+      data: function (params) {
+        var query = {
+          search: params.term,
+          type: 'public'
+        }
 
+        // Query parameters will be ?search=[term]&type=public
+        return query;
+      },
+      processResults: function (data) {
+        // Transforms the top-level key of the response object from 'items' to 'results'
+        console.log(data.items);
+        return {
+          results: data.items
+        };
+      }
+    }
+  });
+
+ */
 
   const getUrlParameter = function getUrlParameter(sParam) {
     let sPageURL = window.location.search.substring(1),

@@ -263,7 +263,10 @@ $(function() {
         widget_escher_modelseed.options_path['yeast_6.06'] = 'data/TempModels/yeast_6.06.json';
         widget_escher_modelseed.options['yeast_7.6'] = 'SBML: yeast_7.6';
         widget_escher_modelseed.options_path['yeast_7.6'] = 'data/TempModels/yeast_7.6.json';
-          
+
+        widget_escher_modelseed.options['MitoCore'] = 'SBML: MitoCore';
+        widget_escher_modelseed.options_path['MitoCore'] = 'data/TempModels/MitoCore.json';
+
         widget_escher_modelseed.init_container();
         widget_escher_modelseed.change_map(e_map)
         //widget_escher_modelseed.

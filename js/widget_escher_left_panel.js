@@ -10,9 +10,8 @@ class WidgetEscherLeftPanel {
   init_container() {
     this.container.html("");
     this.container.append($('<div>', {}).html('Pathways'));
-    this.section_pwy = $('<div>', {});
+    this.section_pwy = $('<div>', {'class' : 'seed-escher-panel-right-content'});
     this.container.append(this.section_pwy);
-
 
 
     let section_rxn = $('<div>', {}).html('Reaction')
@@ -36,6 +35,7 @@ class WidgetEscherLeftPanel {
     let ct = $('#' + id);
     ct.children( "g" ).children('path').css(css);
   }
+
   update_paint() {
     let that = this;
     let uid_toggle = {}
@@ -94,7 +94,7 @@ class WidgetEscherLeftPanel {
         that.update_paint()
       }
     })
-    ct.append($('<div>').append(depth).append(checkbox).append(pwy_data.name))
+    ct.append($('<div>', {'class' : ''}).append(depth).append(checkbox).append(' ' + pwy_data.name))
     _.each(pwy_data.childs, function(pwy_data, pwy_id) {
       that.add_pathway_option(pwy_id, pwy_data, depth + 1, ct);
     })
