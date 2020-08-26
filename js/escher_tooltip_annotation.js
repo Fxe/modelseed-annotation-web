@@ -145,11 +145,12 @@ class EscherTooltipAnnotation {
         o.active = true;
       }
       let active = o.active;
+      let is_review = o.review;
       let is_spontaneous = o.spontaneous;
       let check_active = $('<input>', {'type' : 'checkbox', 'checked' : active})
       let check_spont = $('<input>', {'type' : 'checkbox', 'checked' : is_spontaneous})
-      let button_flag_reaction = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Flag Reaction for Review')
-      let button_clear_reaction = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Clear')
+      let check_review = $('<input>', {'type' : 'checkbox', 'checked' : is_review})
+
       check_active.click(function() {
         if($(this).is(":checked")){
           that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'active', true)
@@ -164,6 +165,17 @@ class EscherTooltipAnnotation {
           that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'spontaneous', false)
         }
       });
+      check_review.click(function() {
+        if($(this).is(":checked")){
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'review', true)
+        } else if($(this).is(":not(:checked)")){
+          that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'review', false)
+        }
+      });
+
+      /*
+      let button_flag_reaction = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Flag Reaction for Review')
+      let button_clear_reaction = $('<button>', {'class' : 'badge-seed-large badge-seed'}).html('Clear')
       button_flag_reaction.click(function() {
         if (confirm("Request review?")) {
           that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'review', true)
@@ -174,10 +186,11 @@ class EscherTooltipAnnotation {
           that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'review', false)
         }
       })
+       */
 
       container.append($('<div>').append('Include reaction in template? ').append(check_active))
                .append($('<div>').append('Spontaneous ? ').append(check_spont))
-               .append($('<div>').append(button_flag_reaction).append(button_clear_reaction))
+               .append($('<div>').append('Review ? ').append(check_review))
 
       console.log(o)
     }).always(function() {

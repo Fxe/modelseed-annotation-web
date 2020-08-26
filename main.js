@@ -454,6 +454,7 @@ var toggle_label = function() {
   e_builder.map.draw_everything()
 }
 
+const kbaseApi = new KBaseAPI();
 const chem_api = new ChemAPI();
 let env = new CurationEnvironment();
 const api = new CurationAPI();
@@ -500,6 +501,26 @@ const widget_escher = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_c
   widget_escher_metadata]);
 widget_escher.fn_tooltip_options.reaction['annotation'] = tooltip_reaction;
 var waaaa = null;
+
+const temp_save_map = function() {
+  let m = widget_escher.escher_map;
+  let ids = widget_escher.escher_map[0]['map_name'].split('.');
+  env.save_map(m, ids[0], ids[1])
+};
+
+
+const validate = function(fn_valid, control) {
+  if (fn_valid()) {
+    control.removeClass("is-invalid");
+    control.addClass("is-valid");
+    return true;
+  } else {
+    control.removeClass("is-valid");
+    control.addClass("is-invalid");
+    return false;
+  }
+};
+
 $(function() {
 
 /*
@@ -514,12 +535,70 @@ $(function() {
     options.url = rest_end_point + options.url;
   });*/
   //$.getJSON("/seed/annotation/rxn/rxn00002", function(e) { console.log(e)})
-    
+  $('#export-button').click(function(e) {
+    e.preventDefault();
+    let exportNamespace = $('#export-namespace');
+    let exportInputId = $('#export-in-id');
+    let exportInputWorkspace = $('#export-in-ws');
+    let exportOutputId = $('#export-out-id');
+    let exportOutputWorkspace = $('#export-out-ws');
+    let token = $('#export-token');
+
+    let exportNamespaceVal = exportNamespace.val();
+    let exportInputIdVal = exportInputId.val();
+    let exportInputWorkspaceVal = exportInputWorkspace.val();
+    let exportOutputIdVal = exportOutputId.val();
+    let exportOutputWorkspaceVal = exportOutputWorkspace.val();
+    let tokenVal = token.val();
+
+    let valid = true;
+
+    valid &= validate(function() {
+      return tokenVal && tokenVal.length > 0;
+    }, token);
+
+    valid &= validate(function() {
+      return exportNamespaceVal && exportNamespaceVal.length > 0;
+    }, exportNamespace);
+
+    valid &= validate(function() {
+      return exportInputIdVal && exportInputIdVal.length > 0;
+    }, exportInputId);
+
+    valid &= validate(function() {
+      return exportInputWorkspaceVal && exportInputWorkspaceVal.length > 0;
+    }, exportInputWorkspace);
+
+    valid &= validate(function() {
+      return exportOutputIdVal && exportOutputIdVal.length > 0;
+    }, exportOutputId);
+
+    valid &= validate(function() {
+      return exportOutputWorkspaceVal && exportOutputWorkspaceVal.length > 0;
+    }, exportOutputWorkspace);
+
+    if (valid) {
+      $(this).attr("disabled","disabled");
+      console.log(exportNamespaceVal, exportInputIdVal, exportInputWorkspaceVal, exportOutputIdVal, exportOutputWorkspaceVal, tokenVal);
+      kbaseApi.post_export_template(exportNamespaceVal,
+        exportInputIdVal, exportInputWorkspaceVal,
+        exportOutputIdVal, exportOutputWorkspaceVal, tokenVal,
+        function(result) {
+          console.log(result);
+          $(this).removeAttr("disabled");
+        },
+        function() {
+          $(this).removeAttr("disabled");
+        },
+        function() {
+          $(this).removeAttr("disabled");
+        });
+    }
+  });
   load_catalog(['ModelSEED'], {}, function(catalog) {
     /*
 
     */
-
 
       console.log(catalog);
       //first time table init

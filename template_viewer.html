@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Template Viewer</title>
+
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+</head>
+<body>
+
+
+<div class="container-fluid">
+
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="base-tab" data-toggle="tab" href="#base" role="tab" aria-controls="home" aria-selected="true">Object</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="biomass-tab" data-toggle="tab" href="#biomass" role="tab" aria-controls="profile" aria-selected="false">Biomass</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="compartment-tab" data-toggle="tab" href="#compartment" role="tab" aria-controls="contact" aria-selected="false">Compartments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="compound-tab" data-toggle="tab" href="#compound" role="tab" aria-controls="contact" aria-selected="false">Compounds</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="reaction-tab" data-toggle="tab" href="#reaction" role="tab" aria-controls="contact" aria-selected="false">Reactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="role-tab" data-toggle="tab" href="#role" role="tab" aria-controls="contact" aria-selected="false">Roles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="complex-tab" data-toggle="tab" href="#complex" role="tab" aria-controls="contact" aria-selected="false">Complexes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="subsystem-tab" data-toggle="tab" href="#subsystem" role="tab" aria-controls="contact" aria-selected="false">Subsystems</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="pathway-tab" data-toggle="tab" href="#pathway" role="tab" aria-controls="contact" aria-selected="false">Pathways</a>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="base" role="tabpanel" aria-labelledby="base-tab">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12">
+                <table>
+
+                </table>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="biomass" role="tabpanel" aria-labelledby="biomass-tab">biomass</div>
+        <div class="tab-pane fade" id="compartment" role="tabpanel" aria-labelledby="compartment-tab">compartment</div>
+        <div class="tab-pane fade" id="compound" role="tabpanel" aria-labelledby="compound-tab">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <table id="table-template-compounds" class="table table-striped"></table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="reaction" role="tabpanel" aria-labelledby="reaction-tab">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <table id="table-template-reactions" class="table table-striped"></table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="role" role="tabpanel" aria-labelledby="role-tab">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <table id="table-template-roles" class="table table-striped"></table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="complex" role="tabpanel" aria-labelledby="complex-tab">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <table id="table-template-complexes" class="table table-striped"></table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="subsystem" role="tabpanel" aria-labelledby="subsystem-tab">subsystem</div>
+        <div class="tab-pane fade" id="pathway" role="tabpanel" aria-labelledby="pathway-tab">pathway</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap4.min.js"></script>
+<script src="js/dataTables.scroller.min.js"></script>
+<script src="js/kbase_api.js"></script>
+<script>
+
+  const init_table = function(template_data) {
+    const dt_compound_config = {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data) {
+            return data[0] + ', ' + data[1]
+          }
+        },
+        {
+          sTitle : 'Formula',
+          sName : 'formula',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Mass',
+          sName : 'mass',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        }
+      ]
+    };
+    const dt_role_config = {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        },
+        {
+          sTitle : 'Source',
+          sName : 'source',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Aliases',
+          sName : 'aliases',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data) {
+            return data.join('<br>')
+          }
+        }
+      ]
+    };
+
+    let roles = {};
+    _.each(template_data['roles'], function(o_role) {
+      roles[o_role['id']] = o_role['name']
+    });
+    let complexes = {};
+    _.each(template_data['complexes'], function(o_complex) {
+      complexes[o_complex['id']] = o_complex
+    });
+
+    const render_complex_role = function(complex_role) {
+      let html_string = "";
+      if (complex_role['optional_role']) {
+        html_string += '<span class="badge badge-warning">Optional</span> '
+      } else {
+        html_string += '<span class="badge badge-secondary">Optional</span> '
+      }
+      if (complex_role['triggering']) {
+        html_string += '<span class="badge badge-success">Triggering</span> '
+      } else {
+        html_string += '<span class="badge badge-secondary">Triggering</span> '
+      }
+      let templaterole_ref = complex_role['templaterole_ref'].split('/').slice(-1)[0];
+      if (roles[templaterole_ref]) {
+        html_string += roles[templaterole_ref];
+      } else {
+        html_string += complex_role['templaterole_ref'];
+      }
+
+
+      return html_string
+    };
+
+    const view_reaction_complex = function(complex_ref) {
+      let complex_id = complex_ref.split('/').slice(-1)[0];
+      if (complexes[complex_id]) {
+        let html = '<div class="container-fluid badge badge-dark"><div class="row"><div class="col-sm-12 text-left" style="margin: 1px">' + complex_id + "</div></div>";
+        _.each(complexes[complex_id]['complexroles'], function(complex_role) {
+          let role_badge = render_complex_role(complex_role);
+          html += '<div class="row"><div class="col-sm-12 text-left" style="margin: 1px">' + role_badge + '</div></div>'
+        });
+        html += '</div>'
+        return html;
+      } else {
+        return '<div class="badge badge-dark"><div>' + complex_ref + '</div></div>';
+      }
+
+
+    };
+
+    const dt_complex_config = {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        },
+        {
+          sTitle : '#Roles',
+          sName : 'role_count',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          //width: "10px"
+        },
+        {
+          sTitle : 'Roles',
+          sName : 'roles',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data) {
+            return data.map(x => render_complex_role(x)).join('<br>')
+          }
+        },
+        {
+          sTitle : 'Source',
+          sName : 'source',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        },
+        {
+          sTitle : 'Reference',
+          sName : 'reference',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        }
+      ]
+    };
+    const dt_reaction_config = {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data) {
+            return data[0] + '<br>' + JSON.stringify(data[1])
+          }
+        },
+        {
+          sTitle : '',
+          sName : 'direction',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        },
+        {
+          sTitle : 'Penalty',
+          sName : 'pen',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data) {
+            return data[0] + ' (Forward), ' + data[1] + ' (Reverse)'
+          }
+        },
+        {
+          sTitle : 'Max Flux',
+          sName : 'max_flux',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data) {
+            return data[0] + ', ' + data[1]
+          }
+        },
+        {
+          sTitle : '',
+          sName : 'compartment',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        },
+        {
+          sTitle : 'Complex',
+          sName : 'complex',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (complex_refs) {
+            let html = '<div class="container-fluid">';
+            _.each(complex_refs, function(complex_ref) {
+              html += '<div class="row"><div class="col-sm-12" style="padding: 2px">' + view_reaction_complex(complex_ref) + '</div></div>';
+            });
+            html += '</div>';
+            return html
+          }
+        }
+      ]
+    };
+    init_compound_table(template_data, $("#table-template-compounds").DataTable(dt_compound_config));
+    init_role_table(template_data, $("#table-template-roles").DataTable(dt_role_config));
+    init_complex_table(template_data, $("#table-template-complexes").DataTable(dt_complex_config));
+    init_reaction_table(template_data, $("#table-template-reactions").DataTable(dt_reaction_config));
+  };
+
+  const getUrlParam = function(name){
+    let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results) {
+      return results[1] || 0;
+    } else {
+      return undefined;
+    }
+  };
+
+  let object_id = getUrlParam('object');
+  let object_workspace = getUrlParam('workspace');
+  let token = 'DGXHUU34PUCT2V5JGUYA23P6TMQJM3FK';
+
+
+
+  //
+
+  const init_compound_table = function(template_data, table) {
+    let rows = [];
+    _.each(template_data['compounds'], function(o_compound) {
+      rows.push([
+        o_compound['id'],
+        [o_compound['abbreviation'], o_compound['name']],
+        o_compound['formula'],
+        o_compound['mass'],
+        o_compound['defaultCharge'],
+        o_compound['deltaG'],
+        o_compound['deltaGErr'],
+      ])
+    });
+    table.rows.add(rows).draw();
+  };
+
+  const init_reaction_table = function(template_data, table) {
+    let rows = [];
+    _.each(template_data['reactions'], function(o_reaction) {
+      rows.push([
+        o_reaction['id'],
+        [o_reaction['name'], o_reaction['templateReactionReagents']],
+        o_reaction['direction'],
+        [o_reaction['forward_penalty'], o_reaction['reverse_penalty']],
+        [o_reaction['maxrevflux'], o_reaction['maxforflux']],
+        o_reaction['templatecompartment_ref'],
+        o_reaction['templatecomplex_refs'],
+      ])
+    });
+    table.rows.add(rows).draw();
+  };
+
+  const init_role_table = function(template_data, table) {
+    let rows = [];
+
+    _.each(template_data['roles'], function(o_role) {
+      rows.push([
+        o_role['id'],
+        o_role['name'],
+        o_role['source'],
+        o_role['aliases']
+      ])
+    });
+    table.rows.add(rows).draw();
+  };
+
+  const init_complex_table = function(template_data, table) {
+    let rows = [];
+    _.each(template_data['complexes'], function(o_complex) {
+      rows.push([
+        o_complex['id'],
+        o_complex['name'],
+        o_complex['complexroles'].length,
+        o_complex['complexroles'],
+        o_complex['source'],
+        o_complex['reference'],
+      ])
+    });
+    table.rows.add(rows).draw();
+  };
+
+  console.log('hey!');
+  $(function(){
+    if (token && object_id && object_workspace) {
+      kbaseApi.get_object(object_id, object_workspace, token, function(template_data) {
+        console.log(template_data);
+        init_table(template_data)
+      });
+    } else {
+
+      $.getJSON('data/GramNegModelTemplateV2.json', function(template_data) {
+        console.log(template_data);
+        init_table(template_data)
+      });
+    }
+
+  });
+</script>
+</html>

@@ -44,6 +44,17 @@ class CurationAPI {
     })
   }
 
+  post_escher_map_save(map, dataset_id, map_id, user_id, fn_success, fn_always, fn_error) {
+    let params = {
+      'map' : map,
+      'dataset_id' : dataset_id,
+      'map_id' : map_id,
+      'user_id' : user_id,
+    }
+    return this.post("/escher/dataset/" + dataset_id + "/map/" + map_id + "/save", params, fn_success, fn_always, fn_error)
+    //return this.get("/escher/dataset/" + dataset_id + "/map/" + map_id + "/save", fn_success, fn_always, fn_error)
+  }
+
   get_ortholog_annotation_from_rxn(rxn_id, fn_success) {
     return $.getJSON(this.base + "/annotation/ortholog/" + rxn_id, function(e) {
       if (fn_success) {

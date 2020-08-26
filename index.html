@@ -77,7 +77,6 @@
           <i class="fas fa-download"></i> Download Map
           <input type="file" id="download" style="display:none">
         </label>
-
         <!--
         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
     -->
@@ -87,7 +86,7 @@
         <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge-seed-large badge-seed">
           <i class="fas fa-question-circle"></i> Help
         </a>
-        <a href="config.html" class="badge-seed-large badge-seed" target="_blank">
+        <a href="#" data-toggle="modal" data-target="#modal-settings" class="badge-seed-large badge-seed">
           <i class="fas fa-cog"> </i> Settings
         </a>
         Biochemistry: <span id="label_model" class="badge badge-danger">ModelSEED</span>
@@ -100,8 +99,7 @@
 
           Display: <button id="display_toggle" type="button" class="btn btn-seed-sm btn-dark"><i class="fas fa-cog"> </i> ID </button>
     -->
-        <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
-        <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
+
       </div>
 
       <div id="left_panel" class="escher_right_panel"></div>
@@ -183,6 +181,86 @@ Load Map
     </div>
   </div>
 </div>
+
+    <!-- Modal Settings-->
+    <div class="modal fade" id="modal-settings" tabindex="-1" role="dialog" aria-labelledby="modal-settings-label" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-settings-label">Load Data</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <ul class="nav nav-tabs" id="tab-group-settings" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">System</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Tooltip</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Export Template</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="tab-content-settings">
+              <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <iframe src="config.html" style="width: 100%; height: 500px"></iframe>
+              </div>
+              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
+                <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
+              </div>
+              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <form target="#">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="export-namespace">Annotation Namespace</label>
+                      <input type="text" class="form-control" id="export-namespace" aria-describedby="export-namespace-help" required>
+                      <small id="export-namespace-help" class="form-text text-muted">Annotation Namespace to export</small>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="export-in-id">Input ID</label>
+                      <input type="text" class="form-control" id="export-in-id" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="export-in-ws">Input Workspace</label>
+                      <input type="text" class="form-control" id="export-in-ws" required>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="export-in-id">Output ID</label>
+                      <input type="text" class="form-control" id="export-out-id" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="export-in-ws">Output Workspace</label>
+                      <input type="text" class="form-control" id="export-out-ws" required>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="export-token">KBase TOKEN</label>
+                      <input type="password" class="form-control" id="export-token" aria-describedby="export-token-help" required>
+                      <small id="export-token-help" class="form-text text-muted">KBase Auth Token</small>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="export-button">Export</button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
     
       
       <!-- Modal Annotation Help-->
@@ -258,6 +336,7 @@ Load Map
   <script src="js/dropzone.js"></script>
   <script src="js/curation_env.js"></script>
   <script src="js/curation_api.js"></script>
+  <script src="js/kbase_api.js"></script>
   <script src="js/biochem_api.js"></script>
   <script src="js/chemdust_api.js"></script>
   <script src="js/tooltip_compound.js"></script>

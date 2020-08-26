@@ -1,21 +1,104 @@
+//@import('curation_api')
+
 class WidgetEscherMetadata {
   constructor(biochem_api, curation_api, env) {
     this.biochem_api = biochem_api;
     this.curation_api = curation_api;
     this.escher = null;
     this.env = env;
+    this.rxn_attributes = {}
+    this.groups = {'attributes' : {}}
+    this.drawing = false;
+    this.xhr_calls = 0
   }
 
   init_container() {
 
   }
 
-  refresh() {
+  delete_attributes() {
+    console.log('WidgetEscherMetadata', 'delete_attributes')
+    _.each(this.groups['attributes'], function(group_id) {
+      d3.select('#' + group_id).remove()
+    })
+  }
 
+  refresh() {
+    console.log('WidgetEscherMetadata', 'refresh')
+    this.display_attributes();
   }
 //#9a9a9a
   set_escher_widget(ew) {
     this.escher = ew;
+  }
+
+  get_database_id_to_node() {
+    let builder = this.escher.escher_builder
+    let database_id_to_node = {}
+    _.each(builder.map.reactions, function(node, uid) {
+      if (node.bigg_id) {
+        if (!database_id_to_node[node.bigg_id]) {
+          database_id_to_node[node.bigg_id] = {}
+        }
+        database_id_to_node[node.bigg_id][uid] = node
+      }
+    });
+    return database_id_to_node
+  }
+
+  draw_attributes(uid, attr) {
+    let that = this;
+    let y_position = 0
+    let x_position = 0
+    d3.select('#r' + uid).selectAll('.reaction-label-group').each(function (data) {
+      //console.log(uid, data);
+      let n = d3.select(this);
+      //console.log(uid, attr);
+      let group_id = 'n' + uid + '_label_meta_attributes';
+      let g = n.insert('g').attr('id', group_id).attr('transform', 'translate(' + (140) +',' + (0 + 20 * y_position) +')')
+      that.groups['attributes'][uid] = group_id;
+      if (attr.review) {
+          g.insert('text').attr('class', '').attr('x', 30 * x_position).attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px').attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf071'; });
+        x_position++;
+      }
+      if (attr['active'] === false) {
+        //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
+          g.insert('text').attr('class', '').attr('x', 30 * x_position).attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px').attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf05e'; });
+        x_position++;
+      }
+      if (attr.spontaneous) {
+        //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
+          g.insert('text').attr('class', '').attr('x', 30 * x_position).attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: green; font-size: 30px').attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf5d2'; });
+        x_position++;
+      }
+    });
+  }
+
+  display_attributes() {
+    if (!this.drawing) {
+      console.log('WidgetEscherMetadata', 'display_attributes')
+      this.drawing = true;
+      this.delete_attributes();
+      let that = this;
+      //template_id, rxn_id,
+      let database_id_to_node = this.get_database_id_to_node();
+      _.each(database_id_to_node, function(nodes, id) {
+        //console.log(id)
+        _.each(nodes, function(node, uid) {
+          that.xhr_calls++;
+          that.curation_api.get_template_reaction_attribute(that.env.config.target_template, id, function(e) {
+            that.rxn_attributes[id] = e
+            that.draw_attributes(uid, e);
+            that.xhr_calls--;
+            if (that.xhr_calls == 0) {
+              that.drawing = false;
+            } else {
+              that.drawing = true;
+            }
+          })
+        });
+      });
+    }
   }
 
   display_annotation() {

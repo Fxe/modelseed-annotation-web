@@ -31,6 +31,15 @@ class CurationEnvironment {
       w.update(that);
     });
   }
+
+
+  save_map(map, dataset_id, map_id) {
+    if (confirm("Save " + dataset_id + ": " + map_id)) {
+      this.api.post_escher_map_save(map, dataset_id, map_id, this.config['user'], function(o) {
+        console.log('fn_success', o)
+      })
+    }
+  }
     
   reset_config() {
     localStorage.removeItem(LOCALSTORAGE_KEY);
