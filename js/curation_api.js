@@ -5,6 +5,77 @@ class CurationAPI {
     this.base = '/annotation/api';
   }
 
+  post_get_biochem(config, fn_success, fn_always, fn_error) {
+    const params = {
+      'cmp_config': config
+    }
+    console.log('post_get_biochem', params)
+    return this.post('/escher/biochem', params, fn_success, fn_always, fn_error)
+  }
+
+  get_annotation_template_t_reaction_list(seed_id, template_id, fn_success, fn_always, fn_error) {
+    return this.get('/template/' + template_id + '/annotation/reaction/' + seed_id + '/list', fn_success, fn_always, fn_error)
+  }
+
+  post_get_refit_map(map_id, dataset, cmp_config, escher_map, fn_success, fn_always, fn_error) {
+    const params = {
+      'cmp_config': cmp_config
+    }
+    if (escher_map) {
+      params['escher_map'] = escher_map
+    }
+    return this.post('/escher/dataset/' + dataset + '/map/' + map_id, params, fn_success, fn_always, fn_error)
+  }
+
+  get_bios_model_list(cb) {
+    return this.get('/bios/sbml', cb)
+  }
+
+  get_bios_model_species(model_id, spi_id, cb, fn_always, fn_error) {
+    return this.get('/bios/sbml/' + model_id + '/spi/' + spi_id, cb, fn_always, fn_error)
+  }
+
+  get_bios_all_model_species(model_id, cb, fn_always, fn_error) {
+    return this.get('/bios/sbml/' + model_id + '/spi', cb, fn_always, fn_error)
+  }
+
+  get_bios_model_reaction(model_id, rxn_id, cb) {
+    return this.get('/bios/sbml/' + model_id + '/rxn/' + rxn_id, cb)
+  }
+
+  get_bios_database_metabolite(database_id, cpd_id, cb) {
+    return this.get('/bios/biodb/' + database_id + '/cpd/' + cpd_id, cb)
+  }
+
+  get_bios_database_reaction(database_id, rxn_id, cb) {
+    return this.get('/bios/biodb/' + database_id + '/rxn/' + rxn_id, cb)
+  }
+
+  post_bios_model_species_mapping_report(database_id, min_score, model_ids, fn_success, fn_always, fn_error) {
+    const params = {
+      'database': database_id,
+      'model_ids': model_ids,
+      'score': min_score
+    }
+    return this.post('/bios/sbml-spi-mapping-report', params, fn_success, fn_always, fn_error)
+  }
+
+  post_bios_model_species_mapping(mapping, score, user, fn_success, fn_always, fn_error) {
+    const params = {
+      'score': score,
+      'user': user,
+      'mapping-species': mapping
+    }
+    return this.post('/bios/sbml-spi-mapping', params, fn_success, fn_always, fn_error)
+  }
+
+  post_bios_build_merge_model(model_ids, fn_success, fn_always, fn_error) {
+    const params = {
+      'model_ids': model_ids
+    }
+    return this.post('/bios/merge-model', params, fn_success, fn_always, fn_error)
+  }
+
   get_server_status(cb) {
     return $.getJSON(this.base + "/status", function(e) {
       if (cb) {
@@ -120,8 +191,18 @@ class CurationAPI {
     return this.post("/template/" + template_id + "/annotation/reaction/" + reaction_id + "/ko/" + ko_id, params, fn_success, fn_always, fn_error)
   }
 
-  post_template_annotation_reaction_status(template_id, reaction_id, genome_set_id, fn_success, fn_always, fn_error) {
-    let params = {}
+  post_template_annotation_reaction_manual_function(template_id, reaction_id, function_id, user, value, fn_success, fn_always, fn_error) {
+    let params = {
+      'user' : user,
+      'value' : value
+    }
+    return this.post("/template/" + template_id + "/annotation/reaction/" + reaction_id + "/function/" + function_id, params, fn_success, fn_always, fn_error)
+  }
+
+  post_template_annotation_reaction_status(template_id, reaction_id, compartment_config, genome_set_id, fn_success, fn_always, fn_error) {
+    let params = {
+      'compartment_config' : compartment_config
+    }
     if (genome_set_id) {
       params['genome_set_id'] = genome_set_id;
     }
@@ -135,7 +216,7 @@ class CurationAPI {
       'template_id' : template_id,
       'logic' : logic
     }
-    return this.post("/template/" + template_id + "/reaction" + reaction_id, params, fn_success, fn_always, fn_error);
+    return this.post("/template/" + template_id + "/reaction/" + reaction_id, params, fn_success, fn_always, fn_error);
   }
 
   post_template_reaction_disable(template_id, reaction_id, fn_success, fn_always, fn_error) {
@@ -202,6 +283,10 @@ class CurationAPI {
     return $.getJSON(this.base + url, function(e) {
       if (fn_success) {
         fn_success(e);
+      }
+    }).fail(function(e) {
+      if (fn_error) {
+        fn_error(e);
       }
     })
   }

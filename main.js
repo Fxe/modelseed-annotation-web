@@ -98,7 +98,58 @@ const tooltip_metabolite = function(args) {
   //render_tooltip_compound();
 };
 
+const get_cmp_config = function(args) {
+  let cmp_config = {'0' : ''};
+  if (args.state.annotation && args.state.annotation['seed.compartment']) {
+    cmp_config = Object.fromEntries(args.state.annotation['seed.compartment'].split(';').map(x => x.split(':')));
+  }
+  return cmp_config;
+};
 
+const get_single_seed_id_from_args = function(args) {
+  let seed_id;
+  if (args.state.type === 'reaction') {
+    if (args.state.annotation && args.state.annotation['seed.reaction']) {
+      if (typeof args.state.annotation['seed.reaction'] === "string") {
+        seed_id = args.state.annotation['seed.reaction']
+      } else {
+        _.each(args.state.annotation['seed.reaction'], function(other_seed_id) {
+          seed_id = other_seed_id
+        });
+      }
+    } else if (args.state.biggId.startsWith("rxn")) {
+      seed_id = args.state.biggId
+    }
+  }
+
+  return seed_id;
+};
+
+const get_seed_id_from_args = function(args) {
+  let seed_ids = {};
+
+  let cmp_config = get_cmp_config(args);
+  console.log(args);
+  if (args.state.type === 'reaction') {
+    if (args.state.annotation && args.state.annotation['seed.reaction']) {
+      if (typeof args.state.annotation['seed.reaction'] === "string") {
+        seed_ids[args.state.annotation['seed.reaction']] = cmp_config
+      } else {
+        _.each(args.state.annotation['seed.reaction'], function(seed_id) {
+          seed_ids[seed_id] = cmp_config
+        });
+      }
+    } else if (args.state.biggId.startsWith("rxn")) {
+      seed_ids[args.state.biggId] = cmp_config
+    }
+  }
+
+  return seed_ids;
+};
+
+const is_generic = function (cmp_config) {
+  return _.values(cmp_config).indexOf('') >= 0
+};
 
 const tooltip_reaction = function(args) {
   if (reaction_tooltip.is_busy()) {
@@ -106,21 +157,11 @@ const tooltip_reaction = function(args) {
     return
   }
 
-  let seed_ids = [];
+  let cmp_config = get_cmp_config(args);
+  let seed_ids = get_seed_id_from_args(args);
+  let seed_id = get_single_seed_id_from_args(args);
+  let cmp_config_str = Object.keys(cmp_config).map(x=> x + ':' + cmp_config[x]).join(';');
 
-  if (args.state.type === 'reaction' && args.state.biggId.startsWith("rxn")) {
-    seed_ids.push(args.state.biggId)
-  }
-
-  /*
-  rxn = model_rxns[0]
-
-  if (rxn && rxn['dblinks'] && rxn['dblinks']['seed.reaction']) {
-    _.each(rxn['dblinks']['seed.reaction'], function(seed_id) {
-      seed_ids.push(seed_id)
-    })
-  }
-  */
   //console.log(seed_ids, rxn)
   tinier.render(
     args.el,
@@ -131,7 +172,7 @@ const tooltip_reaction = function(args) {
         'a',
         {
           class: 'badge badge-primary',
-          href: 'view_annotation.html?rxn=' + args.state.biggId,
+          href: 'view_annotation.html?rxn=' + args.state.biggId + '&seed_id=' + seed_id + '&config=' + cmp_config_str,
           target: '_blank'
         },
         tinier.createElement(
@@ -146,27 +187,34 @@ const tooltip_reaction = function(args) {
       'div',
       // Style the text based on our tooltip_style object
       { style: tooltip_style, id: 'tooltip_container'},
-/*
-      '!!!',
-
-      tinier.createElement(
-        'br'
-      ),
-      tinier.createElement(
-        'b',
-        {},
-        'NO SEED ID'
-      ),
-      // Update the text to read out the identifier biggId
-      '' //JSON.stringify(args.state)
-
- */
     ),
   );
-  if (seed_ids.length > 0) {
-    reaction_tooltip.ttt2(seed_ids, env.config['target_template'], env.config['genome_set']);
-  }
 
+  console.log(seed_ids);
+
+  if (_.size(seed_ids) > 0) {
+    let seed_id = _.keys(seed_ids)[0];
+    if (is_generic(cmp_config)) {
+      console.log('tooltip_reaction::generic', seed_id);
+      api.get_annotation_template_t_reaction_list(seed_id, env.config['target_template'], function(res) {
+        let ct = $('#' + reaction_tooltip.container_id);
+        _.each(res, function(cmp_config, trxn_id) {
+          let sub_ct = $('<div>');
+          console.log('tooltip_reaction::cmp_config', trxn_id, seed_id, cmp_config);
+          reaction_tooltip.ttt3(trxn_id, seed_id, cmp_config,
+            env.config['target_template'], env.config['genome_set'], sub_ct, false);
+          ct.append(sub_ct);
+        });
+        console.log('get_annotation_template_t_reaction_list', res);
+      })
+    } else {
+      console.log('tooltip_reaction::cmp_config', args.state.biggId, seed_id, seed_ids[seed_id]);
+      console.log(args.state.biggId, seed_id, seed_ids[seed_id], env.config['target_template'], env.config['genome_set']);
+
+      reaction_tooltip.ttt2(args.state.biggId, seed_id, seed_ids[seed_id],
+        env.config['target_template'], env.config['genome_set'], false);
+    }
+  }
 
   /*
   if (seed_ids.length > 0) {
@@ -357,26 +405,26 @@ var test = function() {
     })
 }
 
-var load_escher_map = function(dataset_id, map_id) {
-    console.log('load_escher_map', dataset_id, map_id)
-    api.get_escher_map(dataset_id, map_id, function(escher_map) {
-      widget_escher.change_map(escher_map)
-        //e_map = escher_map
-        //e_builder = escher.Builder(escher_map, e_model, null, d3.select('#map_container'), e_options)
-        
-        //widget_escher.escher_builder = e_builder
-      widget_escher.toggle_display();
-      $('#label_map').html(map_id);
-      env.set_config_property('default_map', dataset_id + '/' + map_id);
-    })
-    
-    /*
-    $.getJSON(map_src, function(map_data) {
-        e_map = map_data
-        e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
-    })
-    */
-}
+
+const page_change_map = function(escher_map, dataset_id, map_id) {
+  widget_escher.change_map(escher_map);
+  widget_escher.toggle_display();
+  $('#label_map').html(map_id);
+  env.set_config_property('default_map', dataset_id + '/' + map_id);
+};
+
+const load_escher_map = function(dataset_id, map_id) {
+    console.log('load_escher_map', dataset_id, map_id);
+    if (env['config'] && env['config']['biochem_config']) {
+      api.post_get_refit_map(map_id, dataset_id, env['config']['biochem_config'], null, function(escher_map) {
+        page_change_map(escher_map, dataset_id, map_id);
+      })
+    } else {
+      api.get_escher_map(dataset_id, map_id, function(escher_map) {
+        page_change_map(escher_map, dataset_id, map_id);
+      })
+    }
+};
 
 const load_catalog = function(catalog_dataset, result, cb) {
     
@@ -440,7 +488,7 @@ var load_config = function() {
   $('#label_target_template').html(cfg['target_template'])
     
   return cfg;
-}
+};
 
 var label_ids = true;
 
@@ -521,6 +569,34 @@ const validate = function(fn_valid, control) {
   }
 };
 
+let table_mapping_widget = undefined;
+
+const load_biochem_from_config = function(config_str, cb) {
+  let cmp_config = {};
+  let valid = true;
+  _.each(config_str.split(';'), function(s) {
+    let values = s.split(':');
+    if (values.length === 2) {
+      cmp_config[values[0]] = values[1]
+    } else {
+      valid = false
+    }
+  });
+  if (valid) {
+    api.post_get_biochem(cmp_config, function (res) {
+      env.set_config_property('biochem_config', config_str);
+      $('#label_model').html(res['id']);
+      widget_escher.change_model(res);
+      if (cb) {
+        cb(res);
+      }
+    })
+  } else {
+    alert('bad string: ' + cmp_config_str)
+  }
+};
+
+
 $(function() {
 
 /*
@@ -595,16 +671,11 @@ $(function() {
         });
     }
   });
-  load_catalog(['ModelSEED'], {}, function(catalog) {
-    /*
-
-    */
-
+  load_catalog(['ModelSEED', 'Test'], {}, function(catalog) {
       console.log(catalog);
       //first time table init
       var table = $("#table-escher-maps").DataTable();
-      
-        rows = []
+      let rows = []
       _.each(catalog, function(map_list, dataset_id) {
           _.each(map_list, function(map_id) {
             //button_html = $('a', {'href' : '#'}).html('<span class="oi oi-eye"></span>')
@@ -664,39 +735,49 @@ $(function() {
 
 
 
-    $.getJSON(default_map, function(map_data) {
+    $('#settings-biochem-build').click(function () {
+      let cmp_config_str = $('#settings-biochem-config').val();
+      load_biochem_from_config(cmp_config_str)
+    });
+
+    let cmp_config = env.config['biochem_config'] || "0:";
+    load_biochem_from_config(cmp_config, function(res) {
+      let b = widget_escher.escher_builder;
       if (env.config.default_map) {
         let map_id = env.config.default_map.split('/');
         load_escher_map(map_id[0], map_id[1]);
+        b.settings.set_conditional('show_gene_reaction_rules', true);
+        b.map.draw_everything();
       } else {
         console.log('default map not found. loading demo');
-        widget_escher.change_map(map_data);
-      }
-
-        $.getJSON(default_model, function(model_data) {
-              var a2 = document.getElementById("download_map");
-    a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));
-          //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
-          //widget_escher.escher_builder = e_builder
-          widget_escher.change_model(model_data);
-          let b = widget_escher.escher_builder;
-          b.settings.set_conditional('show_gene_reaction_rules', true);
-          b.map.draw_everything()
+        $.getJSON(default_map, function(map_data) {
           /*
-          d3.svg("data/reactome/R-ICO-012397.svg").then(function(xml) {
-            xml.documentElement.setAttribute('width', '100');
-            xml.documentElement.setAttribute('height', '100');
-            d3.select("#n4").each(function(data) {
-              console.log(xml.documentElement);
-              d3.select(this).insert('g').attr('transform', 'translate('
-                + (data.x) + ','
-                + (data.y) + ')').node().appendChild(xml.documentElement);
-            }).insert('g')
-          });
-          */
+                  $.getJSON(default_model, function(model_data) {
+                        //var a2 = document.getElementById("download_map");
+              //a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));
+                    //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+                    //widget_escher.escher_builder = e_builder
+                    //widget_escher.change_model(model_data);
+
+
+                    d3.svg("data/reactome/R-ICO-012397.svg").then(function(xml) {
+                      xml.documentElement.setAttribute('width', '100');
+                      xml.documentElement.setAttribute('height', '100');
+                      d3.select("#n4").each(function(data) {
+                        console.log(xml.documentElement);
+                        d3.select(this).insert('g').attr('transform', 'translate('
+                          + (data.x) + ','
+                          + (data.y) + ')').node().appendChild(xml.documentElement);
+                      }).insert('g')
+                    });
+
+                  });
+              */
+          widget_escher.change_map(map_data);
         });
-      })
-  })
+      }
+    });
+  });
 
   env = new CurationEnvironment(api, [
       new WidgetSystemStatus($('#top_bar')),
@@ -704,4 +785,116 @@ $(function() {
   env.load_config();
   env.init_ui();
   widget_escher_metadata.env = env;
+
+  class TableMappingWidget {
+    constructor(api, widget_escher) {
+      this.api = api;
+      this.widget_escher = widget_escher;
+      this.table = undefined;
+    }
+
+    button_fn_cluster_report = function() {
+      let that = this;
+      this.api.post_escher_cluster({'escher_map': that.widget_escher.escher_map, 'grid': []}, function(data) {
+        data['databases'] = ['seed.compound'];
+        that.table = new TableCompoundMapping($('#container-cpd-mapping-table'), data, that.api);
+        that.table.load_stuff();
+      })
+    };
+
+    button_fn_cluster_accept = function() {
+      this.api.post_bios_model_species_mapping(this.table.get_selected_mappings(), 5, 'fliu', function() {
+        alert('ok!')
+      })
+    }
+  }
+  table_mapping_widget = new TableMappingWidget(api, widget_escher);
+
+  api.get_bios_model_list(function(model_list) {
+
+    const manual_groups = {
+      'all_fungi' : [
+        'iNL895',
+        'iCT646',
+        'iMM904',
+        'iTO977',
+        'iSS884',
+        'iLC915',
+        'iWV1213',
+        'iAL1006',
+        'iRL766',
+        'iMA871',
+        'iJDZ836',
+        'iWV1314',
+        'iOD907',
+        'iJL1454',
+        'iNX804',
+        'yeast_6.06',
+        'yeast_7.6'
+      ],
+    };
+
+    let model_options = [];
+    _.each(model_list, function(m) {
+      //console.log(m);
+      if (!m['proxy']) {
+        let text = m['entry']
+        if (m['bios_tax_lineage']) {
+          text += ' (' + m['bios_tax_lineage'][1] + '; ' +  m['bios_tax_lineage'][0] + ')'
+        } else {
+          text += ' (?)'
+        }
+        model_options.push({
+          id : m['entry'], text : text
+        });
+      }
+    });
+
+    let cmp_model_options = [];
+    const select_model_comp = $("#select_model_cmp").select2({
+      width: '100%',
+      placeholder: "Select SBML compartment",
+      multiple: true,
+      allowClear: true,
+      maximumSelectionLength: 2,
+      data: cmp_model_options,
+      disabled : false,
+    });
+
+    const select_model = $("#select_model").select2({
+      width: '100%',
+      multiple: true,
+      allowClear: true,
+      maximumSelectionLength: 1,
+      placeholder: 'Select an option',
+      data: model_options
+    });
+
+    var get_model_data = function(model_id, cb) {
+      $.getJSON('/annotation/api/model/' + model_id + '/cmp',function(d) {
+        //e_model = model_data;
+        //e_builder.load_model(e_model, true);
+        cb(d);
+      });
+    };
+
+    select_model.on('select2:select', function (e) {
+      let data = e.params.data;
+      select_model_comp.empty();
+      select_model_comp.prop('disabled', false);
+      if (manual_groups[data.id]) {
+        select_model_comp.append(new Option('Match Standard Compartment', '*', true, true));
+      } else {
+        get_model_data(data.id, function(model_data) {
+          _.each(model_data, function(o) {
+            //console.log(o);
+            let t = o.name + ' (' + o.id + ')';
+            select_model_comp.append(new Option(t, o.id, false, false));
+          });
+          //console.log(model_data);
+        });
+      }
+    });
+    //console.log(select_model)
+  })
 });

@@ -362,7 +362,6 @@ $(function() {
         console.log(model_data);
       });
     }
-
   });
 
   $('#modal_builder').modal();

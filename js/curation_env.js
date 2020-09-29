@@ -32,6 +32,11 @@ class CurationEnvironment {
     });
   }
 
+  save_model(model, dataset_id, model_id) {
+    if (confirm("Save " + dataset_id + ": " + model_id)) {
+      alert('failed: function not implemented :)')
+    }
+  }
 
   save_map(map, dataset_id, map_id) {
     if (confirm("Save " + dataset_id + ": " + map_id)) {

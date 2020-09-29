@@ -11,12 +11,21 @@
     <link rel="stylesheet" href="css/fontawesome.min.css" />
     <link rel="stylesheet" href="css/solid.min.css" />
     <link rel="stylesheet" href="css/regular.min.css" />
+    <link rel="stylesheet" href="css/select2.min.css" />
     <link rel="stylesheet" href="css/seed.css" />
     <link rel="stylesheet" href="css/builder.css" />
     <link rel="stylesheet" href="css/builder-bootstrap.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 
     <style>
+      .omg {
+        position: absolute;
+        left: 3px;
+        /*top: 5%;*/
+        margin-top: 50px;
+        padding-left: 0;
+        z-index: 1;
+      }
         html, body {
     height: 100%;
     width: 100%;
@@ -61,6 +70,10 @@
       background: #00CC71;
     }
 
+      .nav-space > li {
+        margin: 1px;
+      }
+
     </style>
   </head>
   
@@ -69,26 +82,21 @@
 
     <div class="container-fluid wutt">
       <div id="top_bar" class="top-bar-seed">
-        <label for="upload" class="badge-seed-large badge-seed">
-          <i class="fas fa-upload"></i> Load Map
-          <input type="file" id="upload" style="display:none">
-        </label>
-        <label for="download" class="badge-seed-large badge-seed">
-          <i class="fas fa-download"></i> Download Map
-          <input type="file" id="download" style="display:none">
-        </label>
+
         <!--
         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
-    -->
+
         <a href="#" data-toggle="modal" data-target="#exampleModal" class="badge-seed-large badge-seed">
           <i class="fas fa-map"></i> Map
         </a>
+
         <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="badge-seed-large badge-seed">
           <i class="fas fa-question-circle"></i> Help
         </a>
         <a href="#" data-toggle="modal" data-target="#modal-settings" class="badge-seed-large badge-seed">
           <i class="fas fa-cog"> </i> Settings
         </a>
+        -->
         Biochemistry: <span id="label_model" class="badge badge-danger">ModelSEED</span>
         Map: <span id="label_map" class="badge badge-danger">example_map</span>
 
@@ -103,6 +111,35 @@
       </div>
 
       <div id="left_panel" class="escher_right_panel"></div>
+      <div class="escher-container omg">
+        <ul class="nav nav-pills nav-space">
+          <li>
+            <a href="#" data-toggle="modal" data-target="#modal-settings" class="btn btn-default simple-button" title="Settings">
+              <i class="fas fa-cog"> </i>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="btn btn-default simple-button" title="Help">
+              <i class="fas fa-question-circle"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-default simple-button" title="Map Catalog">
+              <i class="fas fa-map"></i>
+            </a>
+          </li>
+          <li>
+            <button id="btn_test" class="btn btn-default simple-button" title="Load Map">
+              <i class="fas fa-upload"></i>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-download"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
       <div id="map_container">Loading map ...</div>
     </div>
 
@@ -199,20 +236,88 @@ Load Map
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">System</a>
               </li>
               <li class="nav-item" role="presentation">
+                <a class="nav-link" id="biochem-tab" data-toggle="tab" href="#settings-biochem" role="tab" aria-controls="profile" aria-selected="false">Biochemistry</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="map-tab" data-toggle="tab" href="#settings-map" role="tab" aria-controls="profile" aria-selected="false">Map</a>
+              </li>
+              <li class="nav-item" role="presentation">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Tooltip</a>
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Export Template</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="cpd-map-tab" data-toggle="tab" href="#settings-cpd-map" role="tab" aria-controls="contact" aria-selected="false">Compound Map</a>
               </li>
             </ul>
             <div class="tab-content" id="tab-content-settings">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <iframe src="config.html" style="width: 100%; height: 500px"></iframe>
               </div>
+
+              <div class="tab-pane fade" id="settings-biochem" role="tabpanel" aria-labelledby="biochem-tab">
+                <div>
+                <label for="settings-biochem-config">Compartment Config</label>
+                <input type="text" class="form-control" id="settings-biochem-config" value="0:c" required>
+                <button id="settings-biochem-build" class="btn btn-success">Set</button>
+                </div>
+
+                <div>
+                <label for="select_model">SBML Model</label>
+                <div id="select_model"></div>
+
+                <label for="select_model_cmp">SBML Compartment</label>
+                <div id="select_model_cmp"></div>
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="settings-map" role="tabpanel" aria-labelledby="map-tab">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12"></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <form target="#">
+                        <div class="form-row">
+                          <label for="settings-map-meta-name">Map Name</label>
+                          <input type="text" class="form-control" id="settings-map-meta-name" required>
+                        </div>
+                        <div class="form-row">
+                          <label for="settings-map-meta-desc">Map Description</label>
+                          <input type="text" class="form-control" id="settings-map-meta-desc">
+                        </div>
+                        <div class="form-row">
+                          <label for="settings-map-meta-authors">Authors</label>
+                          <input type="text" class="form-control" id="settings-map-meta-authors">
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label for="upload" class="badge-seed-large badge-seed" style="cursor: pointer">
+                        <i class="fas fa-upload"></i> Load Map
+                        <input type="file" id="upload" style="display:none">
+                      </label>
+                      <label for="download" class="badge-seed-large badge-seed" style="cursor: pointer">
+                        <i class="fas fa-download"></i> Download Map
+                        <input type="file" id="download" style="display:none">
+                      </label>
+                      <a href="#" class="badge-seed-large badge-seed">
+                        <i class="fas fa-save"></i> Save Map
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
                 <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
               </div>
+
               <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                 <form target="#">
                   <div class="form-row">
@@ -251,6 +356,14 @@ Load Map
                   </div>
                   <button type="submit" class="btn btn-primary" id="export-button">Export</button>
                 </form>
+              </div>
+
+              <div class="tab-pane fade" id="settings-cpd-map" role="tabpanel" aria-labelledby="cpd-map-tab">
+                <button onclick="table_mapping_widget.button_fn_cluster_report()">yay</button>
+                <div id="container-cpd-mapping-table"></div>
+                <button onclick="table_mapping_widget.button_fn_cluster_accept()">push mapping</button>
+                <button onclick="get_merge_model_test()">get merge model</button>
+                <button onclick="seed_model()">get seed model</button>
               </div>
             </div>
 
@@ -329,6 +442,7 @@ Load Map
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/underscore-1.9.1.min.js"></script>
   <script src="js/popper.min.js"></script>
+  <script src="js/select2.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/jquery.dataTables.min.js"></script>
   <script src="js/dataTables.bootstrap4.min.js"></script>
@@ -347,8 +461,40 @@ Load Map
   <script src="js/widget_escher_plot.js"></script>
   <script src="js/widget_escher_description.js"></script>
   <script src="js/escher_tooltip_annotation.js"></script>
+  <script src="js/table_compound_mapping.js"></script>
 
   <script>
+
+
+    const get_merge_model_test = function() {
+      const model_ids = [
+        'iMM904',
+        'yeast_8',
+        'iCT646',
+        'iAL1006',
+        'iLC915',
+        'iRL766',
+        'iSS884',
+        'iWV1213',
+        'iJDZ836',
+        'iMA871',
+        'iNL895'];
+      api.post_bios_build_merge_model(model_ids, function(res) {
+        $('#label_model').html('Fungi Merge Model');
+        widget_escher.change_model(res)
+      })
+    };
+
+    const seed_model = function() {
+      const default_model = "data/ModelSEED2.json";
+      $.getJSON(default_model, function(res) {
+        $('#label_model').html(res['id']);
+        widget_escher.change_model(res)
+      });
+    };
+
+
+
     $('#upload').on('change', function() {
       console.log(this);
       let file = this.files[0];
@@ -372,15 +518,23 @@ Load Map
       reader.readAsText(file);
     });
 
-$('#exampleModal').on('hide.bs.modal', function (e) {
-  // do something...
-    widget_escher.escher_builder.map.key_manager.toggle(true)
-})
-      $('#exampleModal').on('show.bs.modal', function (e) {
-  // do something...
-        widget_escher.escher_builder.map.key_manager.toggle(false)
-})
-    
+    $('#btn_test').click(function() {
+      alert('!')
+      //widget_escher.escher_builder.map.save()
+    });
+
+    $('#exampleModal').on('hide.bs.modal', function (e) {
+      widget_escher.escher_builder.map.key_manager.toggle(true)
+    });
+    $('#exampleModal').on('show.bs.modal', function (e) {
+      widget_escher.escher_builder.map.key_manager.toggle(false)
+    });
+    $('#modal-settings').on('hide.bs.modal', function (e) {
+      widget_escher.escher_builder.map.key_manager.toggle(true)
+    });
+    $('#modal-settings').on('show.bs.modal', function (e) {
+      widget_escher.escher_builder.map.key_manager.toggle(false)
+    });
       
     Dropzone.autoDiscover = false;
    var myDropzone = new Dropzone("#dropzone_load_map", { url: "/file/post", autoProcessQueue: false, maxFiles:1});

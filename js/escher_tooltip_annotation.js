@@ -71,14 +71,23 @@ class EscherTooltipAnnotation {
   }
 
   set_annotation(function_id, reaction_id, user_id, template_id, logic) {
-    this.curation_api = post_template_reaction_function(function_id, reaction_id, user_id, template_id, logic)
+    console.log('set_annotation', function_id, reaction_id, user_id, template_id, logic)
+    this.curation_api.post_template_reaction_function(function_id, reaction_id, user_id,
+      template_id, logic, function() {
+        console.log('s');
+      }, function() {
+        console.log('a');
+      }, function () {
+        alert('server failed to set annotation')
+      })
   }
 
-  set_annotation_temp(function_id, reaction_id, logic) {
-    set_annotation(function_id, reaction_id, env.config['user'], env.config['target_template'], logic)
+  xset_annotation_temp(function_id, reaction_id, logic) {
+    this.set_annotation(function_id, reaction_id, env.config['user'], env.config['target_template'], logic)
   }
 
   create_control_group(opts, def_opt, target_id, seed_id, user, is_system) {
+    let that = this;
     if (!def_opt) {
       def_opt = this.default_option;
     }
@@ -107,7 +116,8 @@ class EscherTooltipAnnotation {
       label.append(icon)
 
       label.on("change", function(e) {
-        set_annotation_temp(target_id, seed_id, v);
+        console.log('label.on::change', target_id, seed_id, v)
+        that.xset_annotation_temp(target_id, seed_id, v);
       });
 
       base.append(label)
@@ -247,16 +257,20 @@ class EscherTooltipAnnotation {
     });
   }
 
-  build_annotation_container(container, rxn_id, template_id, genome_set_id, wide) {
+  build_annotation_container(container, rxn_id, seed_id, cmp_config, template_id, genome_set_id, wide) {
     let that = this;
     this.active_xhr += 1;
-    this.curation_api.post_template_annotation_reaction_status(template_id, rxn_id, genome_set_id, function(e) {
+    this.curation_api.post_template_annotation_reaction_status(template_id, rxn_id, cmp_config, genome_set_id, function(e) {
       container.html('');
       container.append(that.escher_tooltip_annotation(
         rxn_id,
+        seed_id,
+        cmp_config,
         'seed.reaction',
         e.annotation,
         e.curation,
+        e.manual_function,
+        e.manual_ko,
         e.function_rxns,
         wide));
       //console.log('post_template_annotation_reaction_status', e);
@@ -269,46 +283,45 @@ class EscherTooltipAnnotation {
     });
   }
 
-  ttt2(rxn_ids, template_id, genome_set_id, wide = false) {
-    let rxn_id = rxn_ids[0];
+  ttt3(rxn_id, seed_id, cmp_config, template_id, genome_set_id, ct, wide) {
     let that = this
-    let ct = $('#' + this.container_id);
     if (ct.length) {
-      _.each(rxn_ids, function(rxn_id) {
-        let rxn_annotation_container = $('<div>', {'class' : 'annotation-section'}).html('<i class="fas fa-spinner fa-spin"></i> Loading: ' + rxn_id);
-        if (wide) {
-          let left_section = $('<div>', {'class' : 'col-md-3'})
-          let center_section = $('<div>', {'class' : 'col-md-6'})
-          let right_section = $('<div>', {'class' : 'col-md-3'})
-          let section = $('<div>', {'class' : 'row'}).append(left_section).append(center_section).append(right_section)
+      let rxn_annotation_container = $('<div>', {'class' : 'annotation-section'}).html('<i class="fas fa-spinner fa-spin"></i> Loading: ' + rxn_id);
+      console.log('ttt2', rxn_id, seed_id, cmp_config, template_id);
+      if (wide) {
+        let left_section = $('<div>', {'class' : 'col-md-3'})
+        let center_section = $('<div>', {'class' : 'col-md-6'})
+        let right_section = $('<div>', {'class' : 'col-md-3'})
+        let section = $('<div>', {'class' : 'row'}).append(left_section).append(center_section).append(right_section)
 
-          let rxn_controls_container = $('<div>').html('Loading data ...');
-          let rxn_comments_container = $('<div>').html('Loading comments ...');
+        let rxn_controls_container = $('<div>').html('Loading data ...');
+        let rxn_comments_container = $('<div>').html('Loading comments ...');
 
-          left_section.html('big phat species tree')
-          center_section.append(rxn_annotation_container);
-          right_section.append(rxn_controls_container);
-          right_section.append(rxn_comments_container);
-          ct.append(section);
+        left_section.html('big phat species tree')
+        center_section.append(rxn_annotation_container);
+        right_section.append(rxn_controls_container);
+        right_section.append(rxn_comments_container);
+        ct.append(section);
 
-          that.build_annotation_container(rxn_annotation_container, rxn_id, template_id, genome_set_id, wide);
-          that.build_controls_container(rxn_controls_container, rxn_id, template_id);
-          that.build_comments_container(rxn_comments_container, rxn_id, template_id);
-        } else {
-          let center_section = $('<div>', {'class' : 'col-md-12'})
-          let section = $('<div>', {'class' : 'row'}).append(center_section);
-          center_section.append(rxn_annotation_container);
-          ct.append(section);
+        that.build_annotation_container(rxn_annotation_container, rxn_id, seed_id, cmp_config, template_id, genome_set_id, wide);
+        that.build_controls_container(rxn_controls_container, rxn_id, template_id);
+        that.build_comments_container(rxn_comments_container, rxn_id, template_id);
+      } else {
+        let center_section = $('<div>', {'class' : 'col-md-12'})
+        let section = $('<div>', {'class' : 'row'}).append(center_section);
+        center_section.append(rxn_annotation_container);
+        ct.append(section);
 
-          that.build_annotation_container(rxn_annotation_container, rxn_id, template_id, genome_set_id, wide);
-        }
-
-      });
+        that.build_annotation_container(rxn_annotation_container, rxn_id, seed_id, cmp_config, template_id, genome_set_id, wide);
+      }
     }
-
-    /*
-*/
   }
+
+  ttt2(rxn_id, seed_id, cmp_config, template_id, genome_set_id, wide = false) {
+    let ct = $('#' + this.container_id);
+    this.ttt3(rxn_id, seed_id, cmp_config, template_id, genome_set_id, ct, wide)
+  }
+
   ttt(rxn_ids, template_id) {
     let rxn_id = rxn_ids[0];
     let that = this
@@ -356,14 +369,15 @@ class EscherTooltipAnnotation {
     if (source[0] == 'template') {
       return $('<span>', {'text' : source[1], 'class' : 'label label-annotation-evi'});
     }
+    if (source[0] == 'manual') {
+      return $('<span>', {'text' : source[1], 'class' : 'label badge-info'});
+    }
     return source
   }
 
   build_source_tags(source_tags) {
 
   }
-
-
 
   build_annotation_row(default_opt, seed_id, annotation, annotation_id, subsystems, source, evidence, user, is_system, other_rxns) {
     let that = this;
@@ -418,9 +432,63 @@ class EscherTooltipAnnotation {
     return result;
   }
 
-  build_reaction_section(rxn_id, database_id, rxn_data, wide) {
+  get_annotation_control_option(curation_data, annotation_id) {
+    let default_opt = this.default_option;
+    if (curation_data) {
+      default_opt = curation_data['functions'][annotation_id];
+    }
+    return default_opt
+  }
+
+  build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, result_container) {
+    let annotation_str = function_name;
+    let annotation_id = annotation_data.id;
+    let that = this;
+    let subsystems = annotation_data.subsystems;
+    let annotation_source = annotation_data.sources;
+    let user = undefined;
+    let default_opt = that.get_annotation_control_option(template_rxns, annotation_data.id);
+    let others = {}
+    if (other_rxns[annotation_id]) {
+      _.each(other_rxns[annotation_id], function(other_rxn_opt, other_rxn_id) {
+        if (other_rxn_id !== rxn_id) {
+          let icon = $('<div>').append($('<i>', {'class' : that.control_options[other_rxn_opt]}))
+          console.log(icon.html() + ' ' + other_rxn_id)
+          let cmp_config_str = Object.keys(cmp_config).map(x=> x + ':' + cmp_config[x]).join(';')
+          others[icon.html() + ' ' + other_rxn_id] = 'view_annotation.html?rxn=' + other_rxn_id +
+            '&seed_id=' + seed_id + '&config=' +cmp_config_str
+        }
+      });
+    }
+    if (curation_data[annotation_id]) {
+      user = curation_data[annotation_id].user;
+    }
+    let annotation_row = that.build_annotation_row(
+      default_opt,
+      rxn_id,
+      annotation_str,
+      annotation_id,
+      subsystems,
+      annotation_source,
+      {},
+      user,
+      that.system_users[user],
+      others);
+    result_container.append(annotation_row);
+
+    let row_container = $('<div>', {'class' : 'seed-annotation-group-second'})
+    _.each(annotation_data.hits, function(hit) {
+      row_container.append(that.render_source_tag(hit));
+      row_container.append(' ')
+    });
+    result_container.append(row_container);
+
+    return annotation_id
+  }
+
+  build_reaction_section(rxn_id, database_id, label, wide) {
     let container_section = $('<div>', {'class' : 'seed-annotation-group'})
-    container_section.append(this.build_link_span(rxn_id, 'http://modelseed.org/biochem/reactions/' + rxn_id));
+    container_section.append(this.build_link_span(label, 'http://modelseed.org/biochem/reactions/' + rxn_id));
     //$('<div>', {'id' : 'rxn_container_' + rxn_id})
 
     api.get_modelseed_reaction(rxn_id, function(o) {
@@ -430,20 +498,29 @@ class EscherTooltipAnnotation {
   }
 
   //https://www.uniprot.org/uniprot/?query=AMED_2634&sort=score
-  escher_tooltip_annotation(rxn_id, database_id, data, template_rxns, other_rxns, wide) {
+  escher_tooltip_annotation(rxn_id, seed_id, cmp_config, database_id,
+                            data, template_rxns, manual_functions, manual_kos, other_rxns, wide) {
     let that = this;
     let result_container = $('<div>');
-
-    result_container.append(this.build_reaction_section(rxn_id, database_id, {}, wide));
+    result_container.append(this.build_reaction_section(seed_id, database_id, rxn_id, wide));
+    let star3_container = $('<div>');
+    let star2_container = $('<div>');
+    let star1_container = $('<div>');
+    let star_null_container = $('<div>');
+    let star_rej_container = $('<div>');
+    result_container.append(star3_container)
+    result_container.append(star2_container)
+    result_container.append(star1_container)
+    result_container.append(star_null_container)
+    result_container.append(star_rej_container)
+    //console.log('escher_tooltip_annotation',rxn_id, database_id, data)
+    console.log('escher_tooltip_annotation',manual_functions, manual_kos)
 
 
     let curation_data = this.get_last_users(template_rxns);
 
-    //console.log(template_rxns);
-    //console.log(other_rxns);
-    //console.log(curation_data);
-
     let kegg_kos = {}
+    let functions_display = {}
     _.each(data, function(annotation_data, function_name) {
       _.each(annotation_data.hits, function(hit) {
         if (hit['source'][0] == 'KEGG') {
@@ -453,56 +530,63 @@ class EscherTooltipAnnotation {
     });
 
     _.each(data, function(annotation_data, function_name) {
-      let annotation_str = function_name;
-      let annotation_id = annotation_data.id;
-
-      let subsystems = annotation_data.subsystems;
-      let annotation_source = annotation_data.sources;
-      let user = undefined;
-      let default_opt = that.default_option;
-      if (template_rxns) {
-        default_opt = template_rxns['functions'][annotation_id];
+      let default_opt = that.get_annotation_control_option(template_rxns, annotation_data.id);
+      console.log(default_opt)
+      if (default_opt === 'opt_score1') {
+        let annotation_id = that.build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, star3_container)
+        functions_display[annotation_id] = true;
+      } else if (default_opt === 'opt_score2') {
+        let annotation_id = that.build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, star2_container)
+        functions_display[annotation_id] = true;
+      } else if (default_opt === 'opt_score3') {
+        let annotation_id = that.build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, star1_container)
+        functions_display[annotation_id] = true;
+      } else if (default_opt === 'opt_rej') {
+        let annotation_id = that.build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, star_rej_container)
+        functions_display[annotation_id] = true;
+      } else {
+        let annotation_id = that.build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, star_null_container)
+        functions_display[annotation_id] = true;
       }
-      let others = {}
-      if (other_rxns[annotation_id]) {
-        _.each(other_rxns[annotation_id], function(other_rxn_opt, other_rxn_id) {
-          if (other_rxn_id !== rxn_id) {
-            let icon = $('<div>').append($('<i>', {'class' : that.control_options[other_rxn_opt]}))
-            console.log(icon.html() + ' ' + other_rxn_id)
-            others[icon.html() + ' ' + other_rxn_id] = 'view_annotation.html?rxn=' + other_rxn_id
-          }
-        });
-      }
-      if (curation_data[annotation_id]) {
-        user = curation_data[annotation_id].user;
-      }
-      let annotation_row = that.build_annotation_row(
-        default_opt,
-        rxn_id,
-        annotation_str,
-        annotation_id,
-        subsystems,
-        annotation_source,
-        {},
-        user,
-        that.system_users[user],
-        others);
-      result_container.append(annotation_row);
-
-      let row_container = $('<div>', {'class' : 'seed-annotation-group-second'})
-      _.each(annotation_data.hits, function(hit) {
-        row_container.append(that.render_source_tag(hit));
-        row_container.append(' ')
-      });
-      result_container.append(row_container);
     });
+
+
+    _.each(manual_functions.functions, function(value, function_id) {
+      if (!functions_display[function_id] && value) {
+        let default_opt = that.default_option;
+        if (template_rxns) {
+          default_opt = template_rxns['functions'][function_id];
+        }
+        let user = undefined;
+        if (curation_data[function_id]) {
+          user = curation_data[function_id].user;
+        }
+        let annotation_row = that.build_annotation_row(
+          default_opt,
+          rxn_id,
+          'manual ' + function_id,
+          function_id,
+          {},
+          {},
+          {},
+          user,
+          that.system_users[user],
+          {});
+        result_container.append(annotation_row);
+        let row_container = $('<div>', {'class' : 'seed-annotation-group-second'})
+         row_container.append(that.render_source_tag({'score': 0, 'source': ['manual', 'Manual']}));
+        row_container.append(' ')
+
+        result_container.append(row_container);
+      }
+    });
+    console.log('escher_tooltip_annotation', functions_display)
 
 
     if (wide) {
       let ko_icons = $('<div>', {'class' : 'float-left', 'style' : 'padding: 5px'});
       let ko_container = $('<div>', {'class' : 'seed-annotation-group', style : 'height: 50px;'})
 
-      ko_container.append(ko_icons)
       _.each(kegg_kos, function(v, ko_id) {
         ko_icons.append(that.build_link_span(ko_id, 'https://www.kegg.jp/dbget-bin/www_bget?ko:' + ko_id))
                 .append(' ');
@@ -533,106 +617,155 @@ class EscherTooltipAnnotation {
           .append($('<div>', {'class' : 'input-group-prepend'}).append($('<span>', {'class' : 'input-group-text', 'text' : 'Add'})))
           .append(input_add_ko)
           .append($('<div>', {'class' : 'input-group-append'}).append(button_add_ko))));
-
+      ko_container.append(ko_icons)
       result_container.append(ko_container);
+
+      let fn_container = $('<div>', {'class' : 'seed-annotation-group', style : 'height: 50px;'})
+      let input_add_fn = $('<input>', {'class' : 'e-block', placeholder : "Function ID"});
+      let button_add_fn = $('<button>', {'class' : 'btn btn-outline-secondary', 'text' : '+'});
+      button_add_fn.click(function() {
+        if (input_add_fn.val()) {
+          that.curation_api.post_template_annotation_reaction_manual_function(that.env.config['target_template'], rxn_id, input_add_fn.val(), that.env.config['user'], true, function(e) {
+            console.log(e);
+            console.log('post_template_annotation_reaction_ko', e)
+
+          }, undefined, function() {
+            alert('error: ' + input_add_fn.val());
+          });
+        }
+      })
+      fn_container.append($('<div>', {'class' : 'float-left'}).append(
+        $('<div>', {'class' : 'input-group mb-3'})
+          .append($('<div>', {'class' : 'input-group-prepend'}).append($('<span>', {'class' : 'input-group-text', 'text' : 'Add'})))
+          .append(input_add_fn)
+          .append($('<div>', {'class' : 'input-group-append'}).append(button_add_fn))));
+      fn_container.append(JSON.stringify(manual_functions.functions))
+      result_container.append(fn_container);
     }
 
     return result_container;
-    /*
-    _.each(data, function(v, function_name) {
-      var annotation_el = $('<div>', {'class' : 'e-block'})
-
-      var default_opt = "opt_null"
-      if (template_rxns) {
-        //console.log('escher_tooltip_annotation', 'template_rxns', template_rxns)
-        _.each(template_rxns, function(template_rxn_data, rxn_id) {
-          if (template_rxn_data && template_rxn_data['functions'] && template_rxn_data['functions'][v['id']]) {
-            default_opt = template_rxn_data['functions'][v['id']]
-          }
-          //default_opt = template_rxn_data['log'][template_rxn_data['log'].length - 1]['action']
-          //console.log(template_rxn_data['log'][template_rxn_data['log'].length - 1])
-        });
-      }
-
-      var controls = create_control_group({
-        'opt_score1' : 'fas fa-star', 'opt_score2' : 'fas fa-star-half-alt', 'opt_score3' : 'far fa-star',
-        'opt_rej' : 'fas fa-ban', 'opt_null' : 'fas fa-question'}, default_opt, v['id'], seed_ids)
-      annotation_el.append(controls)
-      annotation_el.append(render_function(function_name, v))
-      _.each(v.sources, function(source_data, source_id) {
-
-        annotation_el.append(' ')
-        annotation_el.append($('<span>',
-          {
-            'text' : source_id + ' (' + source_data[0] + '/' + source_data[1] + ')',
-            'class' : 'label label-annotation-source'
-          }))
-
-        //console.log(source_id, source_data)
-      })
-      if (other_rxns) {
-        if (v['id'] && other_rxns[v['id']]) {
-          _.each(other_rxns[v['id']], function(other_rxn_id_score, other_rxn_id) {
-            let other_rxn_label = $('<span>',
-              {
-                'class' : 'label label-annotation-evi'
-              })
-            other_rxn_label.append($('<a>',
-              {
-                'href' : 'view_annotation.html?rxn=' + other_rxn_id,
-                'target' : '_blank',
-                'text' : other_rxn_id
-              }))
-            if (seed_ids.indexOf(other_rxn_id) < 0) {
-              annotation_el.append(' ')
-                .append(other_rxn_label)
-            }
-          });
-        }
-        //_.each()
-      }
-
-      annotation_el.append('<br>')
-      //console.log(function_name, v);
-      _.each(v.hits, function(hit) {
-        //var source_tag = $('<span>', {'text' : '', 'class' : 'label label-annotation-evi'})
-        //source_tag.append(render_source(hit))
-
-        annotation_el.append(that.render_source_tag(hit));
-        annotation_el.append(' ')
-        if (hit['source'][0] == 'KEGG') {
-          sources[hit['source'][1]] = true;
-        }
-      })
-
-      container.append(annotation_el)
-      container.append('<br>')
-    });
-    */
-
-
-
-/*
-    _.each(databases, function(uri, db) {
-      if (ref[1] == db) {
-        var database_link_el = $('<div>', {'class' : 'e-block'})
-
-          var ref_el = $('<button>', {'class' : 'seed-button-ref btn btn-sm btn-secondary', 'text' : ref})
-          ref_el.on("click", function(e) {
-            window.open(uri + ref, '_blank');
-          })
-          database_link_el.append(ref_el)
-          database_link_el.append(' ')
-        container.append(database_link_el)
-      }
-    })*/
-    //var template = "yay!"
-    //console.log(data)
-    //container.append(tooltip_el)
   }
 
-  tooltip(args) {
+  get_cmp_config(args) {
+    let cmp_config = {'0' : ''};
+    if (args.state.annotation && args.state.annotation['seed.compartment']) {
+      cmp_config = Object.fromEntries(args.state.annotation['seed.compartment'].split(';').map(x => x.split(':')));
+    }
+    return cmp_config;
+  };
 
+  get_single_seed_id_from_args(args) {
+    let seed_id;
+    if (args.state.type === 'reaction') {
+      if (args.state.annotation && args.state.annotation['seed.reaction']) {
+        if (typeof args.state.annotation['seed.reaction'] === "string") {
+          seed_id = args.state.annotation['seed.reaction']
+        } else {
+          _.each(args.state.annotation['seed.reaction'], function(other_seed_id) {
+            seed_id = other_seed_id
+          });
+        }
+      } else if (args.state.biggId.startsWith("rxn")) {
+        seed_id = args.state.biggId
+      }
+    }
+
+    return seed_id;
+  };
+
+  get_seed_id_from_args(args) {
+    let seed_ids = {};
+
+    let cmp_config = get_cmp_config(args);
+    console.log(args);
+    if (args.state.type === 'reaction') {
+      if (args.state.annotation && args.state.annotation['seed.reaction']) {
+        if (typeof args.state.annotation['seed.reaction'] === "string") {
+          seed_ids[args.state.annotation['seed.reaction']] = cmp_config
+        } else {
+          _.each(args.state.annotation['seed.reaction'], function(seed_id) {
+            seed_ids[seed_id] = cmp_config
+          });
+        }
+      } else if (args.state.biggId.startsWith("rxn")) {
+        seed_ids[args.state.biggId] = cmp_config
+      }
+    }
+
+    return seed_ids;
+  };
+
+  is_generic = function (cmp_config) {
+    return _.values(cmp_config).indexOf('') >= 0
+  };
+
+  tooltip(args) {
+    if (this.is_busy()) {
+      console.log('reaction_tooltip', this.is_busy());
+      return
+    }
+
+    let cmp_config = get_cmp_config(args);
+    let seed_ids = get_seed_id_from_args(args);
+    let seed_id = get_single_seed_id_from_args(args);
+    let cmp_config_str = Object.keys(cmp_config).map(x=> x + ':' + cmp_config[x]).join(';');
+
+    this.tinier.render(
+      args.el,
+      this.tinier.createElement(
+        'div',
+        {style: tooltip_style},
+        this.tinier.createElement(
+          'a',
+          {
+            class: 'badge badge-primary',
+            href: 'view_annotation.html?rxn=' + args.state.biggId + '&seed_id=' + seed_id + '&config=' + cmp_config_str,
+            target: '_blank'
+          },
+          this.tinier.createElement(
+            'i',
+            {class: 'fas fa-external-link-alt'}
+          )
+        ),
+        ' '+ args.state.biggId + ": " + args.state.name
+      ),
+      // Create a new div element inside args.el
+      this.tinier.createElement(
+        'div',
+        // Style the text based on our tooltip_style object
+        { style: tooltip_style, id: 'tooltip_container'},
+      ),
+    );
+
+    console.log(seed_ids);
+
+    if (_.size(seed_ids) > 0) {
+      let seed_id = _.keys(seed_ids)[0];
+      if (is_generic(cmp_config)) {
+        console.log('tooltip_reaction::generic', seed_id);
+        this.curation_api.get_annotation_template_t_reaction_list(seed_id, env.config['target_template'], function(res) {
+          console.log('get_annotation_template_t_reaction_list', res);
+        })
+      } else {
+        console.log('tooltip_reaction::cmp_config', seed_id);
+        console.log(args.state.biggId, seed_id, seed_ids[seed_id], env.config['target_template'], env.config['genome_set']);
+
+        this.ttt2(args.state.biggId, seed_id, seed_ids[seed_id],
+          env.config['target_template'], env.config['genome_set'], false);
+      }
+    }
+
+    /*
+    if (seed_ids.length > 0) {
+      get_annotation_status(env.config['target_template'], JSON.parse(JSON.stringify(seed_ids)), {}, function(template_rxns) {
+        console.log('template_rxns', template_rxns);
+        server_render_tooltip(seed_ids[0], $('#tooltip_container'), template_rxns)
+      }, function() {
+        console.log('!!! FAIL')
+      })
+    }
+
+     */
   }
 }
 

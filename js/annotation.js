@@ -37,6 +37,7 @@ var get_server_status = function(cb) {
     })
 }
 
+/*
 var set_annotation = function(function_id, reaction_id, user_id, template_id, logic) {
     post_annotation(function_id, reaction_id, user_id, template_id, logic)
 }
@@ -55,7 +56,7 @@ var post_annotation = function(function_id, reaction_id, user_id, template_id, l
     $.post("/annotation/api/template/" + template_id + "/reaction/" + reaction_id, data, function(o) {
         console.log(o)
     }, 'json');
-}
+}*/
 
 var render_function = function(function_str, metadata) {
     

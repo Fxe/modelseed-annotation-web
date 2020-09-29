@@ -235,22 +235,19 @@
     env.load_config();
     env.init_ui();
 
-
-
-    let rxn_data = getUrlParameter('rxn');
-    if (rxn_data) {
-
-      //$('#button-comment-post').click(post_comment);
-
-      let rxn_ids = rxn_data.split(';');
+    let rxn_id = getUrlParameter('rxn');
+    let seed_id = getUrlParameter('seed_id');
+    let cmp_config_str = getUrlParameter('config');
+    if (rxn_id && seed_id && cmp_config_str) {
+      let cmp_config = Object.fromEntries(cmp_config_str.split(';').map(x => x.split(':')).map(x => x));
 
       let template_id = env.config['target_template'];
       let t = new EscherTooltipAnnotation(null, api, env, 'view_container');
-
-
-      t.ttt2(rxn_ids, template_id, env.config['genome_set'], true);
+      console.log(rxn_id, seed_id, cmp_config, template_id);
+      t.ttt2(rxn_id, seed_id, cmp_config, template_id, env.config['genome_set'], true);
     } else {
-      $('#view_container').html('Missing reaction parameter');
+      $('#view_container').html('Missing parameters: rxn_id=' + rxn_id +
+        ", seed_id=" + seed_id + ", config=" + cmp_config_str);
     }
   })
 </script>

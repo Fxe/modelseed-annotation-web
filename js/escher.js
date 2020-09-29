@@ -6244,6 +6244,7 @@ function _extend_and_draw_metabolite (new_nodes, selected_node_id) {
  */
 function new_reaction_from_scratch (starting_reaction, coords, direction) {
   // If there is no cobra model, error
+  console.log('new_reaction_from_scratch')
   if (!this.cobra_model) {
     console.error('No CobraModel. Cannot build new reaction')
     return
@@ -9977,6 +9978,7 @@ function get_met_label_loc (angle, index, count, is_primary, bigg_id,
 function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
                        selected_node_id, selected_node,
                        largest_ids, cofactors, angle) {
+  console.log('escher.js:new_reaction')
   // Convert to radians, and force to domain - PI/2 to PI/2
   angle = utils.to_radians_norm(angle)
 
@@ -10008,6 +10010,7 @@ function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
   var new_reaction = {
     name: cobra_reaction.name,
     bigg_id: cobra_reaction.bigg_id,
+    lol: 'lololo',
     reversibility: cobra_reaction.reversibility,
     gene_reaction_rule: cobra_reaction.gene_reaction_rule,
     genes: utils.clone(cobra_reaction.genes),

@@ -15,7 +15,6 @@
 
   <div class="row">
     <div class="col-md-12">
-
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
           <a class="nav-link active" id="base-tab" data-toggle="tab" href="#base" role="tab" aria-controls="home" aria-selected="true">Object</a>
@@ -447,13 +446,11 @@
         init_table(template_data)
       });
     } else {
-
       $.getJSON('data/GramNegModelTemplateV2.json', function(template_data) {
         console.log(template_data);
         init_table(template_data)
       });
     }
-
   });
 </script>
 </html>

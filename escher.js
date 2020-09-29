@@ -7006,7 +7006,7 @@ function save () {
 }
 
 function map_for_export () {
-  var out = [{ map_name: this.map_name,
+  let out = [{ map_name: this.map_name,
                map_id: this.map_id,
                map_description: this.map_description,
                homepage: "https://escher.github.io",
@@ -7016,14 +7016,14 @@ function map_for_export () {
                nodes: utils.clone(this.nodes),
                text_labels: utils.clone(this.text_labels),
                canvas: this.canvas.size_and_location() }
-            ]
+            ];
 
   // remove extra data
   for (var r_id in out[1].reactions) {
     var reaction = out[1].reactions[r_id]
     var new_reaction = {}
     var attrs = [ 'name', 'bigg_id','reversibility', 'label_x', 'label_y',
-                  'gene_reaction_rule', 'genes', 'metabolites' ]
+                  'gene_reaction_rule', 'genes', 'metabolites', 'annotation' ]
     attrs.forEach(function(attr) {
       new_reaction[attr] = reaction[attr]
     })
@@ -7045,7 +7045,7 @@ function map_for_export () {
     var attrs
     if (node.node_type === 'metabolite') {
       attrs = ['node_type', 'x', 'y', 'bigg_id', 'name', 'label_x', 'label_y',
-               'node_is_primary']
+               'node_is_primary', 'annotation']
     } else {
       attrs = ['node_type', 'x', 'y']
     }
@@ -9294,6 +9294,7 @@ function show (type, d) {
     this.placed_div.place(coords)
     const data = {
       biggId: d.bigg_id,
+      annotation: d.annotation,
       name: d.name,
       loc: coords,
       data: d.data_string,
@@ -9982,6 +9983,7 @@ function get_met_label_loc (angle, index, count, is_primary, bigg_id,
 function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
                        selected_node_id, selected_node,
                        largest_ids, cofactors, angle) {
+  // console.log('new_reaction', cobra_reaction)
   // Convert to radians, and force to domain - PI/2 to PI/2
   angle = utils.to_radians_norm(angle)
 
@@ -10013,6 +10015,7 @@ function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
   var new_reaction = {
     name: cobra_reaction.name,
     bigg_id: cobra_reaction.bigg_id,
+    annotation: cobra_reaction.annotation,
     reversibility: cobra_reaction.reversibility,
     gene_reaction_rule: cobra_reaction.gene_reaction_rule,
     genes: utils.clone(cobra_reaction.genes),

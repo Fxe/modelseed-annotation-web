@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo</title>
+
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/select2.min.css" />
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+          <th>kegg</th>
+          <th>seed</th>
+          <th></th>
+          <th>iMM904</th>
+          <th>iGG123</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td rowspan="3"><div>C12345 <span class="badge badge-secondary"><i class="fas fa-ban"></i></span></div><div>C1234X <span class="badge badge-danger"><i class="fas fa-ban"></i></span> </div></td>
+          <td rowspan="3">cpd12345</td>
+          <td>c</td>
+          <td>M_omg_c</td>
+          <td>OMGc</td>
+        </tr>
+        <tr>
+          <td>x</td>
+          <td>
+            <div>
+              <div class="clearfix">
+                <div class="text-dark float-left">Example Button floated left</div>
+                <div class="text-muted float-right">Example Button floated right</div>
+              </div>
+              <div>
+                asdasdasd
+              </div>
+              <div class="text-warning">
+                <span>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="far fa-star"></i>
+                  <i class="far fa-star"></i>
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>OMGx</td>
+        </tr>
+        <tr>
+          <td>v</td>
+          <td>M_omg_v</td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div id="container-mapping-table"></div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/underscore-1.9.1.min.js"></script>
+<script src="js/curation_api.js"></script>
+<script src="js/table_compound_mapping.js"></script>
+<script>
+
+api = new CurationAPI();
+
+  let data = {'models': ['iWV1213',
+      'iMM904',
+      'iRL766',
+      'iAL1006',
+      'iSS884',
+      'iJDZ836',
+      'iNL895',
+      'yeast_8',
+      'iLC915',
+      'iMA871',
+      'iCT646'],
+    'records': [{'model_data': {'?': {'iWV1213': ['M_PHPYR_c'],
+          'iMA871': ['M_PHPYR'],
+          'iAL1006': ['M_PHPYR'],
+          'iCT646': ['M_phpyr_c'],
+          'iSS884': ['M_m205'],
+          'iJDZ836': ['M_PHENYL__45__PYRUVATE'],
+          'iRL766': ['M_m703'],
+          'iMM904': ['M_phpyr_c'],
+          'iLC915': ['M_m271'],
+          'yeast_8': ['s_0951__91__c__93__'],
+          'iNL895': ['s_0859']}},
+      'database': {'seed.compound': ['cpd00143']}},
+      {'model_data': {
+        '?': {'iWV1213': ['M_AN_c'],
+            'iNL895': ['s_0439'],
+            'iRL766': ['M_m856'],
+            'iMM904': ['M_anth_c'],
+            'yeast_8': ['s_0427__91__c__93__'],
+            'iSS884': ['M_m209'],
+            'iLC915': ['M_m275'],
+            'iJDZ836': ['M_ANTHRANILATE'],
+            'iCT646': ['M_anth_c'],
+            'iMA871': ['M_AN'],
+            'iAL1006': ['M_AN']},
+        'o' : {'iMM904' : ['M_oooo_o']}},
+        'database': {'seed.compound': ['cpd00093']}},
+      {'model_data': {'?': {'iRL766': ['M_m153'],
+            'iWV1213': ['M_DQT_c'],
+            'iMA871': ['M_DQT'],
+            'iSS884': ['M_m198'],
+            'iMM904': ['M_3dhq_c'],
+            'yeast_8': ['s_0210__91__c__93__'],
+            'iLC915': ['M_m264'],
+            'iNL895': ['s_0216'],
+            'iCT646': ['M_3dhq_c'],
+            'iAL1006': ['M_DQT'],
+            'iJDZ836': ['M_DEHYDROQUINATE']}},
+        'database': {'seed.compound': ['cpd00699']}},
+      {'model_data': {'?': {'iMA871': ['M_DHSK'],
+            'iLC915': ['M_m265'],
+            'iNL895': ['s_0217'],
+            'iAL1006': ['M_DHSK'],
+            'iJDZ836': ['M_3__45__DEHYDRO__45__SHIKIMATE'],
+            'iSS884': ['M_m199'],
+            'iMM904': ['M_3dhsk_c'],
+            'yeast_8': ['s_0211__91__c__93__'],
+            'iCT646': ['M_3dhsk_c'],
+            'iWV1213': ['M_DHSK_c', 'M_DHSK_m'],
+            'iRL766': ['M_m154']}},
+        'database': {'seed.compound': ['cpd01716']}},
+      {'model_data': {'?': {'iRL766': ['M_m155'],
+            'iSS884': ['M_m200'],
+            'iAL1006': ['M_SME'],
+            'iCT646': ['M_skm_c'],
+            'yeast_8': ['s_1429__91__c__93__'],
+            'iWV1213': ['M_SME_c', 'M_SME_m'],
+            'iJDZ836': ['M_SHIKIMATE'],
+            'iLC915': ['M_m266'],
+            'iMA871': ['M_SME'],
+            'iNL895': ['s_1306'],
+            'iMM904': ['M_skm_c']}},
+        'database': {'seed.compound': ['cpd00383']}},
+      {'model_data': {'?': {'iNL895': ['s_0924'],
+            'iMM904': ['M_Lkynr_c'],
+            'iLC915': ['M_m290'],
+            'iSS884': ['M_m224'],
+            'iMA871': ['M_KYN'],
+            'iWV1213': ['M_KYN_c'],
+            'iAL1006': ['M_KYN'],
+            'yeast_8': ['s_1020__91__c__93__'],
+            'iRL766': ['M_m786'],
+            'iCT646': ['M_Lkynr_c'],
+            'iJDZ836': ['M_L__45__KYNURENINE']}},
+        'database': {'seed.compound': ['cpd00275']}},
+      {'model_data': {'?': {'iMA871': ['M_FKYN'],
+            'iLC915': ['M_m288'],
+            'iJDZ836': ['M_N__45__FORMYLKYNURENINE'],
+            'iCT646': ['M_Lfmkynr_c'],
+            'iSS884': ['M_m222'],
+            'iMM904': ['M_Lfmkynr_c'],
+            'iWV1213': ['M_FKYN_c'],
+            'yeast_8': ['s_1195__91__c__93__'],
+            'iAL1006': ['M_FKYN'],
+            'iNL895': ['s_1074'],
+            'iRL766': ['M_m785']}},
+        'database': {'seed.compound': ['cpd27595']}},
+      {'model_data': {'c': {'iMA871': ['M_FOR'],
+            'iLC915': ['M_m140'],
+            'iWV1213': ['M_FOR_c'],
+            'iSS884': ['M_m119'],
+            'iCT646': ['M_for_c'],
+            'iRL766': ['M_m56'],
+            'iJDZ836': ['M_FORMATE'],
+            'iNL895': ['s_0689'],
+            'iAL1006': ['M_FOR']}},
+        'database': {'seed.compound': ['cpd00047']}},
+      {'model_data': {'c': {'iJDZ836': ['M_L__45__ALPHA__45__ALANINE']}},
+        'database': {'seed.compound': ['cpd00035']}},
+      {'model_data': {'?': {'iCT646': ['M_34hpp_c'],
+            'iNL895': ['s_0209'],
+            'iMM904': ['M_34hpp_c']}},
+        'database': {}},
+      {'model_data': {'c': {'iNL895': ['s_0936'],
+            'iJDZ836': ['M_PHE'],
+            'iLC915': ['M_m272'],
+            'iMA871': ['M_PHE'],
+            'yeast_8': ['s_1032__91__c__93__']}},
+        'database': {'seed.compound': ['cpd00066']}},
+      {'model_data': {'c': {'iNL895': ['s_0955']}},
+        'database': {'seed.compound': ['cpd00069']}}]};
+
+  let data_small = {'models': ['iWV1213',
+      'iMM904',
+      'iSS884',
+      'iJDZ836',
+      'iNL895',
+      'iMA871',
+      'iCT646'],
+    'records': [{'model_data': {'?': {'iWV1213': ['M_PHPYR_c'],
+          'iMA871': ['M_PHPYR'],
+          'iSS884': ['M_m205'],
+          'iJDZ836': ['M_PHENYL__45__PYRUVATE'],
+          'iMM904': ['M_phpyr_c'],
+          'iNL895': ['s_0859']}},
+      'database': {'seed.compound': ['cpd00143', 'cpd00022']}},
+      {'model_data': {
+          '?': {'iWV1213': ['M_AN_c'],
+            'iNL895': ['s_0439'],
+            'iMM904': ['M_anth_c'],
+            'iSS884': ['M_m209'],
+            'iJDZ836': ['M_ANTHRANILATE'],
+            'iCT646': ['M_anth_c'],
+            'iMA871': ['M_AN']},
+          'o' : {'iMM904' : ['M_oooo_o']}},
+        'database': {'seed.compound': ['cpd00093']}},
+      {'model_data': {'?': {'iCT646': ['M_34hpp_c'],
+            'iNL895': ['s_0209'],
+            'iMM904': ['M_34hpp_c']}},
+        'database': {}},
+      {'model_data': {'c': {'iNL895': ['s_0955']}},
+        'database': {'seed.compound': ['cpd00069']}}]};
+
+  data['databases'] = ['seed.compound'];
+data_small['databases'] = ['seed.compound'];
+
+  //const table = new TableCompoundMapping($('#container-mapping-table'), data_small, api);
+  //table.load_stuff()
+
+let model_list = ['iWV1213',
+  'iMM904',
+  'iRL766',
+  'iAL1006',
+  'iSS884',
+  'iJDZ836',
+  'iNL895',
+  'yeast_8',
+  'iLC915',
+  'iMA871',
+  'iCT646']
+  api.post_bios_model_species_mapping_report('ModelSeed', 5, model_list, function(data) {
+    data['databases'] = ['ModelSeed'];
+    const table = new TableCompoundMapping($('#container-mapping-table'), data, api);
+    table.load_stuff()
+  })
+</script>
+</html>
