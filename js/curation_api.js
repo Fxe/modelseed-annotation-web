@@ -76,12 +76,8 @@ class CurationAPI {
     return this.post('/bios/merge-model', params, fn_success, fn_always, fn_error)
   }
 
-  get_server_status(cb) {
-    return $.getJSON(this.base + "/status", function(e) {
-      if (cb) {
-        cb(e);
-      }
-    })
+  get_server_status(fn_success, fn_always, fn_error) {
+    return this.get("/status", fn_success, fn_always, fn_error)
   }
 
   get_modelseed_compound(seed_id, fn_success) {

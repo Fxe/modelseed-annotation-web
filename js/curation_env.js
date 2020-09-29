@@ -14,7 +14,9 @@ class CurationEnvironment {
       this.api.get_server_status(function(e) {
         that.server_status = e;
         that.update_ui();
-      });
+      }, undefined, function (e) {
+          alert('unable to connect to server.')
+        });
     }
   }
 
