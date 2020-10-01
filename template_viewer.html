@@ -6,6 +6,9 @@
 
   <link rel="stylesheet" href="css/bootstrap.css" />
   <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
 </head>
 <body>
 
@@ -110,6 +113,7 @@
 <script src="js/jquery.dataTables.min.js"></script>
 <script src="js/dataTables.bootstrap4.min.js"></script>
 <script src="js/dataTables.scroller.min.js"></script>
+<script src="js/curation_env.js"></script>
 <script src="js/kbase_api.js"></script>
 <script>
 
@@ -300,7 +304,7 @@
           bSearchable : true,
           bSortable : true,
           "mRender": function (data) {
-            return data[0] + '<br>' + JSON.stringify(data[1])
+            return data[0] + '<br>' + render_eq(data[1]).get(0).outerHTML
           }
         },
         {
@@ -371,7 +375,7 @@
 
   let object_id = getUrlParam('object');
   let object_workspace = getUrlParam('workspace');
-  let token = 'DGXHUU34PUCT2V5JGUYA23P6TMQJM3FK';
+
 
 
 
@@ -439,18 +443,80 @@
   };
 
   console.log('hey!');
+  const example_eq = [{"coefficient":-1,"templatecompcompound_ref":"~/compcompounds/id/cpd00067_e"},{"coefficient":-1,"templatecompcompound_ref":"~/compcompounds/id/cpd00182_e"},{"coefficient":1,"templatecompcompound_ref":"~/compcompounds/id/cpd00067_c"},{"coefficient":1,"templatecompcompound_ref":"~/compcompounds/id/cpd00182_c"}]
+  const render_eq_compound_block = function(o) {
+    let block = $('<div>', {'class' : 'float-left'});
+    block.append(o['coefficient']);
+    block.append(o['templatecompcompound_ref'].split('/').slice(-1)[0]);
+    return block;
+  };
+  const render_eq = function(reaction_reagents) {
+    //plus-square
+    //equals
+    let ct = $('<div>', {'class' : 'clearfix'});
+    let lhs = [];
+    let rhs = [];
+
+    _.each(reaction_reagents, function(o) {
+      if (o['coefficient'] && o['coefficient'] < 0) {
+        lhs.push(o);
+      }
+    });
+
+    _.each(reaction_reagents, function(o) {
+      if (o['coefficient'] && o['coefficient'] > 0) {
+        rhs.push(o);
+      }
+    });
+    if (lhs.length > 0) {
+      let o = lhs[0];
+      ct.append(render_eq_compound_block(o));
+    }
+    for (let i = 1; i < lhs.length; i++) {
+      let o = lhs[i];
+      ct.append($('<div>', {'class' : 'float-left'}).append($('<i>', {'class' : 'fas fa-plus-square'})));
+      ct.append(render_eq_compound_block(o));
+    }
+    ct.append($('<div>', {'class' : 'float-left'}).append($('<i>', {'class' : 'fas fa-equals'})));
+    if (rhs.length > 0) {
+      let o = rhs[0];
+      ct.append(render_eq_compound_block(o));
+    }
+    for (let i = 1; i < rhs.length; i++) {
+      let o = rhs[i];
+      ct.append($('<div>', {'class' : 'float-left'}).append($('<i>', {'class' : 'fas fa-plus-square'})));
+      ct.append(render_eq_compound_block(o));
+    }
+    return ct;
+  };
+  const kbaseApi = new KBaseAPI();
+  const env = new CurationEnvironment();
+  env.load_config();
   $(function(){
+    //$(document.body).append(render_eq(example_eq).get(0).outerHTML)
+    let token = undefined;
+    if (env.config['kbase_token']) {
+      token = env.config['kbase_token'];
+    } else {
+
+    }
+
+    const default_template = true;
     if (token && object_id && object_workspace) {
       kbaseApi.get_object(object_id, object_workspace, token, function(template_data) {
         console.log(template_data);
         init_table(template_data)
       });
     } else {
-      $.getJSON('data/GramNegModelTemplateV2.json', function(template_data) {
-        console.log(template_data);
-        init_table(template_data)
-      });
+      if (default_template) {
+        $.getJSON('data/GramNegModelTemplateV2.json', function(template_data) {
+          console.log(template_data);
+          init_table(template_data)
+        });
+      }
     }
+
+
   });
 </script>
 </html>

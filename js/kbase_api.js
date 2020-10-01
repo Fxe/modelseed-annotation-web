@@ -5,12 +5,18 @@ class KBaseAPI {
     this.base = '/annotation/api/kbase';
   }
 
+  get_object_list(workspace_id, token, fn_success, fn_always, fn_error) {
+    let url = '/ws/' + workspace_id + '?token=' + token;
+    return this.get(url, fn_success, fn_always, fn_error);
+  }
+
   get_object(id, workspace_id, token, fn_success, fn_always, fn_error) {
     let url = '/ws/' + workspace_id + '/' + id + '?token=' + token;
     return this.get(url, fn_success, fn_always, fn_error);
   }
 
   post_export_template(annotation_namespace, input_id, input_workspace, output_id, output_workspace, token,
+                       clear_reactions, clear_roles, clear_complexes, rxn_ids,
                        fn_success, fn_always, fn_error) {
     let body = {
       annotation_namespace : annotation_namespace,
@@ -18,7 +24,11 @@ class KBaseAPI {
       input_workspace : input_workspace,
       output_id : output_id,
       output_workspace : output_workspace,
-      token : token
+      token : token,
+      clear_reactions: clear_reactions,
+      clear_roles: clear_roles,
+      clear_complexes: clear_complexes,
+      rxn_ids: rxn_ids
     }
     return this.post("/export/template", body, fn_success, fn_always, fn_error, "PUT", 600000);
   }

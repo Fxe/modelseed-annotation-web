@@ -21,3 +21,42 @@ var render_tooltip_compound = function(refs, data, svg_data, container, width = 
 
   container.append(base_container);
 }
+
+const tooltip_metabolite = function(args) {
+  tinier.render(
+    args.el,
+    // Create a new div element inside args.el
+    tinier.createElement(
+      'div',
+      // Style the text based on our tooltip_style object
+      { style: tooltip_style, id: 'tooltip_container'},
+      'Metabolite',
+
+      tinier.createElement(
+        'br'
+      ),
+      tinier.createElement(
+        'b',
+        {},
+        args.state['name']
+      ),
+      // Update the text to read out the identifier biggId
+      '' //JSON.stringify(args.state)
+    ),
+  );
+  let cpd_id = biochem_api.detect_id(args.state.biggId);
+  biochem_api.get_compound(cpd_id, null, function (data) {
+    if (data && data.smiles) {
+      chem_api.get_depict(data.smiles, 'smi', {}, function(svg_data) {
+        //console.log(data);
+        //console.log(svg_data);
+        render_tooltip_compound({'seed.compound' : cpd_id}, data, svg_data, $('#tooltip_container'));
+      });
+    } else {
+      render_tooltip_compound({'seed.compound' : cpd_id}, data, "", $('#tooltip_container'));
+    }
+
+  });
+  //console.log(biochem_api.detect_id(args.state.biggId));
+  //render_tooltip_compound();
+};

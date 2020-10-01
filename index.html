@@ -129,13 +129,50 @@
             </a>
           </li>
           <li>
-            <button id="btn_test" class="btn btn-default simple-button" title="Load Map">
+            <label for="upload" class="btn btn-default simple-button" style="cursor: pointer">
               <i class="fas fa-upload"></i>
+              <input type="file" id="upload" style="display:none">
+            </label>
+          </li>
+          <li>
+            <label for="download" class="btn btn-default simple-button" style="cursor: pointer">
+              <i class="fas fa-download"></i>
+              <input type="file" id="downloadx" style="display:none">
+            </label>
+          </li>
+          <li>
+            <button id="btn_test"  class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-angry"></i>
             </button>
           </li>
           <li>
             <button class="btn btn-default simple-button" title="Download Map">
-              <i class="fas fa-download"></i>
+              <i class="fas fa-flask"></i>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-vial"></i>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-seedling"></i>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-route"></i>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-dna"></i>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default simple-button" title="Download Map">
+              <i class="fas fa-microscope"></i>
             </button>
           </li>
         </ul>
@@ -250,6 +287,9 @@ Load Map
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="cpd-map-tab" data-toggle="tab" href="#settings-cpd-map" role="tab" aria-controls="contact" aria-selected="false">Compound Map</a>
               </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="kbase-tab" data-toggle="tab" href="#settings-kbase" role="tab" aria-controls="contact" aria-selected="false"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+              </li>
             </ul>
             <div class="tab-content" id="tab-content-settings">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -297,10 +337,6 @@ Load Map
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <label for="upload" class="badge-seed-large badge-seed" style="cursor: pointer">
-                        <i class="fas fa-upload"></i> Load Map
-                        <input type="file" id="upload" style="display:none">
-                      </label>
                       <label for="download" class="badge-seed-large badge-seed" style="cursor: pointer">
                         <i class="fas fa-download"></i> Download Map
                         <input type="file" id="download" style="display:none">
@@ -314,6 +350,9 @@ Load Map
               </div>
 
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div id="fn-tooltip-options">
+
+                </div>
                 <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
                 <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
               </div>
@@ -321,10 +360,36 @@ Load Map
               <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                 <form target="#">
                   <div class="form-row">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-6">
                       <label for="export-namespace">Annotation Namespace</label>
                       <input type="text" class="form-control" id="export-namespace" aria-describedby="export-namespace-help" required>
                       <small id="export-namespace-help" class="form-text text-muted">Annotation Namespace to export</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <div style="margin: 20px">
+                        <div>
+                          <input id="filter_reactions_to_map" type="checkbox">
+                          <label for="filter_reactions_to_map">Export only reactions in current map</label>
+                        </div>
+                        <div>
+                          <input id="clear_template_reactions" type="checkbox">
+                          <label for="clear_template_reactions">Clear previous reactions</label>
+                        </div>
+                        <div>
+                          Clear previous roles and/or complexes:<br>
+                          <input type="radio" id="rad-clear_role_complex-none"
+                                 name="clear_role_complex" value="none" checked>
+                          <label for="rad-clear_role_complex-none">None</label>
+
+                          <input type="radio" id="rad-clear_role_complex-cpx"
+                                 name="clear_role_complex" value="cpx">
+                          <label for="rad-clear_role_complex-cpx">Complexes</label>
+
+                          <input type="radio" id="rad-clear_role_complex-ftr"
+                                 name="clear_role_complex" value="ftr">
+                          <label for="rad-clear_role_complex-ftr">Roles and Complexes</label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="form-row">
@@ -359,11 +424,31 @@ Load Map
               </div>
 
               <div class="tab-pane fade" id="settings-cpd-map" role="tabpanel" aria-labelledby="cpd-map-tab">
+                DO NOT TOUCH THIS ! (under dev)
                 <button onclick="table_mapping_widget.button_fn_cluster_report()">yay</button>
                 <div id="container-cpd-mapping-table"></div>
                 <button onclick="table_mapping_widget.button_fn_cluster_accept()">push mapping</button>
                 <button onclick="get_merge_model_test()">get merge model</button>
                 <button onclick="seed_model()">get seed model</button>
+              </div>
+              <div class="tab-pane fade" id="settings-kbase" role="tabpanel" aria-labelledby="kbase-tab">
+                kbase
+                <input id="narrative"><button id="show_narrative">list narrative</button>
+                <table id="table-kbase-narrative" class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Object ID</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Created</th>
+                      <th scope="col">v</th>
+                      <th scope="col">User</th>
+                      <th scope="col">Size</th>
+                      <th scope="col">Metadata</th>
+                      <th scope="col">Reference</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                </table>
               </div>
             </div>
 

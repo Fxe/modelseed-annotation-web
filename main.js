@@ -57,45 +57,6 @@ const tooltip_gene = function(args) {
       '' //JSON.stringify(args.state)
     ),
   );
-}
-
-const tooltip_metabolite = function(args) {
-  tinier.render(
-    args.el,
-    // Create a new div element inside args.el
-    tinier.createElement(
-      'div',
-      // Style the text based on our tooltip_style object
-      { style: tooltip_style, id: 'tooltip_container'},
-      'Metabolite',
-
-      tinier.createElement(
-        'br'
-      ),
-      tinier.createElement(
-        'b',
-        {},
-        args.state['name']
-      ),
-      // Update the text to read out the identifier biggId
-      '' //JSON.stringify(args.state)
-    ),
-  );
-  let cpd_id = biochem_api.detect_id(args.state.biggId);
-  biochem_api.get_compound(cpd_id, null, function (data) {
-    if (data && data.smiles) {
-      chem_api.get_depict(data.smiles, 'smi', {}, function(svg_data) {
-        //console.log(data);
-        //console.log(svg_data);
-        render_tooltip_compound({'seed.compound' : cpd_id}, data, svg_data, $('#tooltip_container'));
-      });
-    } else {
-      render_tooltip_compound({'seed.compound' : cpd_id}, data, "", $('#tooltip_container'));
-    }
-
-  });
-  //console.log(biochem_api.detect_id(args.state.biggId));
-  //render_tooltip_compound();
 };
 
 const get_cmp_config = function(args) {
@@ -232,12 +193,12 @@ const tooltip_reaction = function(args) {
 const tooltip = function (args) {
   if (args.state.type === 'metabolite') {
     //tooltip_metabolite(args);
-    widget_escher.fn_tooltip_cpd(args);
+    widget_escher.tooltip['fn_tooltip_cpd'](args);
   } else if (args.state.type === 'reaction') {
     //tooltip_reaction(args, seed_ids);
-    widget_escher.fn_tooltip_rxn(args);
+    widget_escher.tooltip['fn_tooltip_rxn'](args);
   } else if (args.state.type === 'gene') {
-    widget_escher.fn_tooltip_gene(args);
+    widget_escher.tooltip['fn_tooltip_gene'](args);
   } else {
     console.log(args.state.type)
   }
@@ -490,6 +451,8 @@ var load_config = function() {
   return cfg;
 };
 
+/*
+//old stuff delete if not needed
 var label_ids = true;
 
 var toggle_label = function() {
@@ -501,6 +464,7 @@ var toggle_label = function() {
   }
   e_builder.map.draw_everything()
 }
+ */
 
 const kbaseApi = new KBaseAPI();
 const chem_api = new ChemAPI();
@@ -547,15 +511,16 @@ const widget_escher = new WidgetEscherModelseed($('#top_bar'), d3.select('#map_c
   widget_escher_left_panel,
   widget_escher_plot,
   widget_escher_metadata]);
-widget_escher.fn_tooltip_options.reaction['annotation'] = tooltip_reaction;
+widget_escher.fn_tooltip_options['reaction']['annotation'] = tooltip_reaction;
+widget_escher.fn_tooltip_options['compound']['structure'] = tooltip_metabolite;
 var waaaa = null;
 
 const temp_save_map = function() {
   let m = widget_escher.escher_map;
   let ids = widget_escher.escher_map[0]['map_name'].split('.');
+  m[1]['canvas'] = widget_escher.escher_builder.map.canvas.size_and_location();
   env.save_map(m, ids[0], ids[1])
 };
-
 
 const validate = function(fn_valid, control) {
   if (fn_valid()) {
@@ -596,8 +561,80 @@ const load_biochem_from_config = function(config_str, cb) {
   }
 };
 
+const update_narrative_table = function(workspace_id, table) {
+  let token = undefined;
+  if (env.config['kbase_token']) {
+    token = env.config['kbase_token'];
+  } else {
 
+  }
+  if (token) {
+    kbaseApi.get_object_list(workspace_id, token, function(res) {
+      let rows = [];
+      _.each(res, function(o_info) {
+        let o_type = o_info[2];
+        let button_html = "";
+        if (o_type.startsWith("KBaseFBA.NewModelTemplate")) {
+          button_html = '<a href="template_viewer.html?object=' + o_info[1] + '&workspace=' + workspace_id + '" target="_blank"><span class="oi oi-eye"></span></a>'
+        }
+        let row_data = [
+          o_info[1],
+          o_type,
+          o_info[3],
+          o_info[4],
+          o_info[5],
+          o_info[9],
+          o_info[10],
+          o_info[6] + '/' + o_info[0] + '/' + o_info[4],
+          button_html
+        ];
+        rows.push(row_data)
+      });
+      table.clear();
+      table.rows.add(rows).draw();
+    })
+  }
+};
+
+$('#show_narrative').click(function() {
+  let workspace_id = $('#narrative').val();
+  update_narrative_table(workspace_id, kbase_table);
+});
+
+const ui_tooltip_options = function(ct) {
+  let config = env.config.tooltip || {'compound': 'default', 'reaction': 'default', 'gene': 'default'}
+  const tooltip_fn_map = {
+    'compound': 'fn_tooltip_cpd',
+    'reaction': 'fn_tooltip_rxn',
+    'gene' : 'fn_tooltip_gene'
+  };
+  _.each(tooltip_fn_map, function(target_prop, option_group) {
+    let options = widget_escher.fn_tooltip_options[option_group];
+
+    if (options) {
+      let radioGroupName = 'rad-tooltip-' + option_group;
+      ct.append($('<h4>').html('Tooltip: ' + option_group));
+      _.each(options, function(fn, options_name) {
+        let rad = $('<input>', {'type': 'radio', 'name': radioGroupName, 'value': options_name});
+        if (config[option_group] === options_name) {
+          rad.attr('checked', 'checked');
+          widget_escher.tooltip[target_prop] = fn
+        }
+        let lbl = $('<label>').html(options_name);
+        ct.append(rad).append(lbl).append($('<br>'))
+      });
+      $('input:radio[name="' + radioGroupName + '"]').change(function() {
+        let tooltip_name = $(this).val();
+        env.set_tooltip(option_group, tooltip_name);
+        widget_escher.tooltip[target_prop] = widget_escher.fn_tooltip_options[option_group][tooltip_name]
+      });
+    }
+  });
+};
+
+let kbase_table = $("#table-kbase-narrative").DataTable();
 $(function() {
+
 
 /*
 
@@ -654,23 +691,51 @@ $(function() {
     }, exportOutputWorkspace);
 
     if (valid) {
-      $(this).attr("disabled","disabled");
-      console.log(exportNamespaceVal, exportInputIdVal, exportInputWorkspaceVal, exportOutputIdVal, exportOutputWorkspaceVal, tokenVal);
+      let clear_reactions = $('#clear_template_reactions').is(':checked');
+      let clear_opt = $("input[name='clear_role_complex']:checked").val();
+      let clear_roles = false;
+      let clear_complexes = false;
+      if (clear_opt === 'cpx') {
+        clear_complexes = true;
+      } else {
+        clear_roles = true;
+      }
+      let rxn_ids = undefined;
+      let filter_reactions = $('#filter_reactions_to_map').is(':checked');
+      if (filter_reactions) {
+        rxn_ids = Object.values(widget_escher.escher_map[1].reactions).map(x => x['bigg_id'])
+      }
+      let button = $(this);
+      button.attr("disabled","disabled");
+      console.log(exportNamespaceVal, exportInputIdVal, exportInputWorkspaceVal, exportOutputIdVal,
+        exportOutputWorkspaceVal, tokenVal);
       kbaseApi.post_export_template(exportNamespaceVal,
         exportInputIdVal, exportInputWorkspaceVal,
         exportOutputIdVal, exportOutputWorkspaceVal, tokenVal,
+        clear_reactions, clear_roles, clear_complexes, rxn_ids,
         function(result) {
           console.log(result);
-          $(this).removeAttr("disabled");
+          button.removeAttr("disabled");
         },
         function() {
-          $(this).removeAttr("disabled");
+          button.removeAttr("disabled");
         },
         function() {
-          $(this).removeAttr("disabled");
+          button.removeAttr("disabled");
         });
     }
   });
+
+  $('#settings-biochem-build').click(function () {
+    let cmp_config_str = $('#settings-biochem-config').val();
+    load_biochem_from_config(cmp_config_str)
+  });
+
+
+
+
+
+
   load_catalog(['ModelSEED', 'Test'], {}, function(catalog) {
       console.log(catalog);
       //first time table init
@@ -695,19 +760,6 @@ $(function() {
           rows.push(row_data)
           });
       });
-      /*
-        for (map_id in e_catalog) {
-          map_data = e_catalog[map_id]
-          button_html = '<a href="#" onclick="load_escher_map(\'' + map_data["src"] +'\');"><span class="oi oi-eye"></span></a>'
-          row_data = [
-            map_id, 
-            '-', 
-            '-', 
-            '-', 
-            button_html
-          ];
-          //rows.push(row_data)
-        }*/
         
         table.rows.add(rows).draw();
       const default_map = 'data/ModelSEED/demo_map.json';
@@ -731,52 +783,49 @@ $(function() {
         }
       }
     };
+    /*
+            $.getJSON(default_model, function(model_data) {
+                  //var a2 = document.getElementById("download_map");
+        //a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));
+              //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
+              //widget_escher.escher_builder = e_builder
+              //widget_escher.change_model(model_data);
 
 
+              d3.svg("data/reactome/R-ICO-012397.svg").then(function(xml) {
+                xml.documentElement.setAttribute('width', '100');
+                xml.documentElement.setAttribute('height', '100');
+                d3.select("#n4").each(function(data) {
+                  console.log(xml.documentElement);
+                  d3.select(this).insert('g').attr('transform', 'translate('
+                    + (data.x) + ','
+                    + (data.y) + ')').node().appendChild(xml.documentElement);
+                }).insert('g')
+              });
 
-
-    $('#settings-biochem-build').click(function () {
-      let cmp_config_str = $('#settings-biochem-config').val();
-      load_biochem_from_config(cmp_config_str)
-    });
+            });
+        */
 
     let cmp_config = env.config['biochem_config'] || "0:";
-    load_biochem_from_config(cmp_config, function(res) {
-      let b = widget_escher.escher_builder;
-      if (env.config.default_map) {
-        let map_id = env.config.default_map.split('/');
-        load_escher_map(map_id[0], map_id[1]);
-        b.settings.set_conditional('show_gene_reaction_rules', true);
-        b.map.draw_everything();
-      } else {
-        console.log('default map not found. loading demo');
-        $.getJSON(default_map, function(map_data) {
-          /*
-                  $.getJSON(default_model, function(model_data) {
-                        //var a2 = document.getElementById("download_map");
-              //a2.href = URL.createObjectURL(new Blob([JSON.stringify(e_map)]));
-                    //e_builder = escher.Builder(e_map, e_model, null, d3.select('#map_container'), e_options)
-                    //widget_escher.escher_builder = e_builder
-                    //widget_escher.change_model(model_data);
+    const auto_load = true;
+    if (auto_load) {
+      load_biochem_from_config(cmp_config, function(res) {
+        let b = widget_escher.escher_builder;
+        if (env.config.default_map) {
+          let map_id = env.config.default_map.split('/');
+          load_escher_map(map_id[0], map_id[1]);
+          b.settings.set_conditional('show_gene_reaction_rules', true);
+          b.map.draw_everything();
+        } else {
+          console.log('default map not found. loading demo');
+          $.getJSON(default_map, function(map_data) {
 
+            widget_escher.change_map(map_data);
+          });
+        }
+      });
+    }
 
-                    d3.svg("data/reactome/R-ICO-012397.svg").then(function(xml) {
-                      xml.documentElement.setAttribute('width', '100');
-                      xml.documentElement.setAttribute('height', '100');
-                      d3.select("#n4").each(function(data) {
-                        console.log(xml.documentElement);
-                        d3.select(this).insert('g').attr('transform', 'translate('
-                          + (data.x) + ','
-                          + (data.y) + ')').node().appendChild(xml.documentElement);
-                      }).insert('g')
-                    });
-
-                  });
-              */
-          widget_escher.change_map(map_data);
-        });
-      }
-    });
   });
 
   env = new CurationEnvironment(api, [
@@ -785,6 +834,9 @@ $(function() {
   env.load_config();
   env.init_ui();
   widget_escher_metadata.env = env;
+
+  // ui_tooltip_options must be called after env.load_config !
+  ui_tooltip_options($('#fn-tooltip-options'));
 
   class TableMappingWidget {
     constructor(api, widget_escher) {

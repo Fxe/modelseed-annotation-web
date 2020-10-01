@@ -78,6 +78,20 @@ class CurationEnvironment {
     this.set_config_property('target_template', template_id)
   }
 
+  set_tooltip(t, value) {
+    let cfg = this.load_config_from_localstorage();
+    if (!cfg['tooltip']) {
+      cfg['tooltip'] = {
+        'compound': 'default',
+        'reaction': 'default',
+        'gene': 'default'
+      }
+    }
+    cfg['tooltip'][t] = value
+    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(cfg))
+    this.load_config();
+  }
+
   load_config_from_localstorage() {
 
     let cfg = {
@@ -87,6 +101,11 @@ class CurationEnvironment {
       'kbase_token' : null,
       'default_map' : null,
       'default_model' : null,
+      'tooltip' : {
+        'compound': 'default',
+        'reaction': 'default',
+        'gene': 'default'
+      }
     }
 
     if (!localStorage.getItem(LOCALSTORAGE_KEY)) {

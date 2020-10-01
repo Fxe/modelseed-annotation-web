@@ -456,7 +456,7 @@ class EscherTooltipAnnotation {
           console.log(icon.html() + ' ' + other_rxn_id)
           let cmp_config_str = Object.keys(cmp_config).map(x=> x + ':' + cmp_config[x]).join(';')
           others[icon.html() + ' ' + other_rxn_id] = 'view_annotation.html?rxn=' + other_rxn_id +
-            '&seed_id=' + seed_id + '&config=' +cmp_config_str
+            '&seed_id=' + other_rxn_id.split('_')[0] + '&config=' +cmp_config_str
         }
       });
     }
@@ -549,7 +549,6 @@ class EscherTooltipAnnotation {
         functions_display[annotation_id] = true;
       }
     });
-
 
     _.each(manual_functions.functions, function(value, function_id) {
       if (!functions_display[function_id] && value) {

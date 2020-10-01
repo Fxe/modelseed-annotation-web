@@ -45,9 +45,10 @@
           <span class="input-group-text">@</span>
         </div>
         -->
-        <input id="text_token" class="form-control" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="?" disabled>
+        <input id="text_token" class="form-control" type="password" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="?" disabled>
         <div class="input-group-append">
-          <button class="btn btn-danger">x</button>
+          <button id="set-text_token" class="btn btn-success">+</button>
+          <button id="clear-text_token" class="btn btn-danger">x</button>
         </div>
       </div>
     </div>
@@ -107,7 +108,18 @@ let select_genome_set = $("#select_genome_set").select2({
     maximumSelectionLength: 10,
     data: []
   });
-        
+      $('#text_token').change(function() {
+        console.log('!');
+      });
+        $('#clear-text_token').click(function() {
+          env.set_config_property('kbase_token', undefined);
+          $('#text_token').val('');
+          $('#text_token').prop('disabled', false);
+        });
+      $('#set-text_token').click(function() {
+        env.set_config_property('kbase_token', $('#text_token').val());
+        $('#text_token').prop('disabled', true);
+      });
         
       if (env.config['user']) {
         $('#text_user').val(env.config['user']);

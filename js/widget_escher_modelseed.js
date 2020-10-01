@@ -91,9 +91,11 @@ class WidgetEscherModelseed {
       }
     }
 
-    this.fn_tooltip_cpd = default_tooltip;
-    this.fn_tooltip_rxn = default_tooltip;
-    this.fn_tooltip_gene = default_tooltip;
+    this.tooltip = {
+      'fn_tooltip_cpd': default_tooltip,
+      'fn_tooltip_rxn': default_tooltip,
+      'fn_tooltip_gene': default_tooltip
+    };
   }
 
 

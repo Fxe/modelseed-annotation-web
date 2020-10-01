@@ -238,6 +238,9 @@
     let rxn_id = getUrlParameter('rxn');
     let seed_id = getUrlParameter('seed_id');
     let cmp_config_str = getUrlParameter('config');
+
+
+
     if (rxn_id && seed_id && cmp_config_str) {
       let cmp_config = Object.fromEntries(cmp_config_str.split(';').map(x => x.split(':')).map(x => x));
 
