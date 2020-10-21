@@ -160,8 +160,9 @@ class EscherMapAdapter {
       if (reactionObjects[reactionAnnotation]) {
         _.each(reactionObjects[reactionAnnotation], function(reaction_uid) {
           let mapReaction = that.map[1].reactions[reaction_uid]
-
-          if (that.isMatchMetabolites(mapReaction, r, {'M_h_c':true, 'M_h_m':true, 'M_h_e':true})) {
+          let match = that.isMatchMetabolites(mapReaction, r, {'M_h_c':true, 'M_h_m':true, 'M_h_e':true})
+          console.log(r.id, reaction_uid, match)
+          if (match) {
             that.renameReaction(reaction_uid, r.id)
             mappedReactions[reaction_uid] = true
           }

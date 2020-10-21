@@ -944,14 +944,7 @@ $(function() {
       }
     });
     //console.log(select_model)
-    $('#btn_test').click(function() {
-      alert('!')
-      let ema = new EscherMapAdapter(widget_escher.escher_map);
-      let reaction_uids = ema.adaptToModel(widget_escher.escher_model, 'c');
-      widget_escher.escher_builder.map.delete_reaction_data(reaction_uids);
-      widget_escher.escher_builder.map.draw_everything()
-      //widget_escher.escher_builder.map.save()
-    });
+
     $('#load_sbml_model').click(function() {
       let model_id = undefined;
       _.each(select_model.children(), function(opts) {
@@ -968,4 +961,21 @@ $(function() {
     });
 
   })
+});
+//
+// DEBUG TRASH TO BE REMOVED
+let DEBUG_adapt_cmp = 'c0';
+$('#btn_test2').click(function() {
+  let base_map_copy = JSON.parse(JSON.stringify(widget_escher.base_map));
+  widget_escher.change_map(base_map_copy);
+});
+
+$('#btn_test1').click(function() {
+  alert('!')
+  widget_escher.base_map = JSON.parse(JSON.stringify(widget_escher.escher_map));
+  let ema = new EscherMapAdapter(widget_escher.escher_map);
+  let reaction_uids = ema.adaptToModel(widget_escher.escher_model, DEBUG_adapt_cmp);
+  widget_escher.escher_builder.map.delete_reaction_data(reaction_uids);
+  widget_escher.escher_builder.map.draw_everything()
+  //widget_escher.escher_builder.map.save()
 });
