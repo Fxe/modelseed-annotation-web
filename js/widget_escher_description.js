@@ -48,8 +48,9 @@ class WidgetEscherMetadata {
 
   draw_attributes(uid, attr) {
     let that = this;
-    let y_position = 0
-    let x_position = 0
+    let y_position = 0;
+    let x_offset = 40;
+    let x_position = 0;
     d3.select('#r' + uid).selectAll('.reaction-label-group').each(function (data) {
       //console.log(uid, data);
       let n = d3.select(this);
@@ -58,17 +59,23 @@ class WidgetEscherMetadata {
       let g = n.insert('g').attr('id', group_id).attr('transform', 'translate(' + (140) +',' + (0 + 20 * y_position) +')')
       that.groups['attributes'][uid] = group_id;
       if (attr.review) {
-          g.insert('text').attr('class', '').attr('x', 30 * x_position).attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px').attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf071'; });
+          g.insert('text').attr('class', '').attr('x', x_offset + 30 * x_position)
+                                            .attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px')
+            .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf071'; });
         x_position++;
       }
       if (attr['active'] === false) {
         //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
-          g.insert('text').attr('class', '').attr('x', 30 * x_position).attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px').attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf05e'; });
+          g.insert('text').attr('class', '').attr('x', x_offset + 30 * x_position)
+            .attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px')
+            .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf05e'; });
         x_position++;
       }
       if (attr.spontaneous) {
         //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
-          g.insert('text').attr('class', '').attr('x', 30 * x_position).attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: green; font-size: 30px').attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf5d2'; });
+          g.insert('text').attr('class', '').attr('x', x_offset + 30 * x_position)
+            .attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: green; font-size: 30px')
+            .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf5d2'; });
         x_position++;
       }
     });
@@ -83,7 +90,7 @@ class WidgetEscherMetadata {
       //template_id, rxn_id,
       let database_id_to_node = this.get_database_id_to_node();
       _.each(database_id_to_node, function(nodes, id) {
-        //console.log(id)
+        console.log('display_attributes', id)
         _.each(nodes, function(node, uid) {
           that.xhr_calls++;
           that.curation_api.get_template_reaction_attribute(that.env.config.target_template, id, function(e) {
@@ -99,6 +106,37 @@ class WidgetEscherMetadata {
         });
       });
     }
+    if (this.xhr_calls == 0) {
+      this.drawing = false;
+    }
+  }
+
+  get_database_id_to_node_reaction() {
+    let builder = this.escher.escher_builder
+    let database_id_to_node = {}
+    _.each(builder.map.reactions, function(node, uid) {
+      if (node.annotation && node.annotation['seed.reaction']) {
+        let database_id = undefined
+        if (typeof (node.annotation['seed.reaction']) === 'string') {
+          database_id = node.annotation['seed.reaction']
+        } else {
+          database_id = node.annotation['seed.reaction'][0]
+        }
+        if (database_id) {
+          if (!database_id_to_node[database_id]) {
+            database_id_to_node[database_id] = {}
+          }
+          database_id_to_node[database_id][uid] = node
+        }
+      } else if (node.bigg_id) {
+        if (!database_id_to_node[node.bigg_id]) {
+          database_id_to_node[node.bigg_id] = {}
+        }
+        database_id_to_node[node.bigg_id][uid] = node
+      }
+    });
+
+    return database_id_to_node
   }
 
   display_annotation() {
@@ -113,7 +151,6 @@ class WidgetEscherMetadata {
         database_id_to_node[node.bigg_id][uid] = node
       }
     });
-
 
     const score_order = ['opt_score1', 'opt_score2', 'opt_score3']
     _.each(database_id_to_node, function(nodes, id) {
@@ -156,7 +193,35 @@ class WidgetEscherMetadata {
     });
   }
 
-  omg(primary = true) {
+  display_ec() {
+    let that = this;
+    let database_id_to_node = this.get_database_id_to_node_reaction();
+
+    _.each(database_id_to_node, function(nodes, seed_id) {
+      let x = that.curation_api.get_modelseed_reaction(seed_id, function(rxn) {
+        let ec_str = "no ec";
+        if (rxn.ec_numbers && rxn.ec_numbers.length > 0) {
+          ec_str = rxn.ec_numbers;
+        }
+        _.each(nodes, function(v, uid) {
+          d3.select('#r' + uid).each(function (data) {
+            let y_position = 0;
+            let group_id = 'n' + uid + '_label_lower_meta_attributes';
+            let n = d3.select(this);
+            let g = n.insert('g').attr('id', group_id).attr('transform', 'translate(' + (0) +',' + (0 + 20 * y_position) +')')
+            g.insert('g').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 25) +')').insert('text')
+              .attr('class', 'node-label label')
+              .attr('visibility', 'visible')
+              .html(ec_str)
+          });
+        });
+      });
+    });
+
+    return database_id_to_node;
+  }
+
+  display_bigg_kegg_meta(primary = true) {
     let builder = this.escher.escher_builder
     let that = this;
     let database_id_to_node = {}
@@ -192,16 +257,20 @@ class WidgetEscherMetadata {
               if (cpd && cpd.aliases && cpd.aliases['BiGG']) {
                 alias_bigg = cpd.aliases['BiGG']
               }
+              let y_position = 0;
+              let group_id = 'n' + uid + '_label_lower_meta_attributes';
               let n = d3.select(this);
-              n.insert('g').attr('id', 'n' + uid + '_label_meta').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 20) +')').insert('text')
+              let g = n.insert('g').attr('id', group_id).attr('transform', 'translate(' + (0) +',' + (0 + 20 * y_position) +')')
+
+              g.insert('g').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 25) +')').insert('text')
                 .attr('class', 'node-label label')
                 .attr('visibility', 'visible')
                 .html(alias_kegg.join(';'))
-              n.insert('g').attr('id', 'n' + uid + '_label_meta').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 50) +')').insert('text')
+              g.insert('g').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 55) +')').insert('text')
                 .attr('class', 'node-label label')
                 .attr('visibility', 'visible')
                 .html(alias_meta.join(';'))
-              n.insert('g').attr('id', 'n' + uid + '_label_meta').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 80) +')').insert('text')
+              g.insert('g').attr('transform', 'translate(' + data.label_x +',' + (data.label_y + 85) +')').insert('text')
                 .attr('class', 'node-label label')
                 .attr('visibility', 'visible')
                 .html(alias_bigg.join(';'))

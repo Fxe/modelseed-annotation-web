@@ -9,12 +9,10 @@ class WidgetEscherDepict {
     this.display_depict = false;
 
     window.fn_node_label_drag_end = function(d) {
-      if (d.label_x && d.label_y) {
+      if (d && d.label_x && d.label_y) {
         $('#n' + d.node_id + '_label_meta').attr(
           'transform', 'translate('+ d.label_x + ',' + (d.label_y + 10) + ')')
       }
-
-
       //console.log('change of coord', d.label_x, d.label_y)
     }
   }

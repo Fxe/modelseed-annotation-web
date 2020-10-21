@@ -563,7 +563,7 @@ class EscherTooltipAnnotation {
         let annotation_row = that.build_annotation_row(
           default_opt,
           rxn_id,
-          'manual ' + function_id,
+          manual_functions.function_values[function_id],
           function_id,
           {},
           {},

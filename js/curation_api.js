@@ -5,6 +5,11 @@ class CurationAPI {
     this.base = '/annotation/api';
   }
 
+  post_get_biochem_sbml(model_id, fn_success, fn_always, fn_error) {
+    let params = {}
+    return this.post('/escher/biochem/sbml/' + model_id, params, fn_success, fn_always, fn_error)
+  }
+
   post_get_biochem(config, fn_success, fn_always, fn_error) {
     const params = {
       'cmp_config': config

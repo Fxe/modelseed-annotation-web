@@ -339,48 +339,6 @@ Load Map
 
   <script>
 
-    const y_vars = {};
-    const x_vars = {};
-
-    const build_heat_map_data = function(min_v, max_v, datasets) {
-      let d_values = widget_escher_plot.datasets.gene
-
-      let dataset = {
-        'min' : min_v,
-        'max' : max_v,
-        'sets' : datasets,
-        'rxn' : {}
-      };
-
-
-
-      _.each(widget_escher.escher_builder.cobra_model.reactions, function(reaction, reaction_id) {
-        let d_set_rxn_data = {};
-        _.each(reaction.genes, function(oGene) {
-          if (y_vars[oGene.bigg_id] || true) {
-            let gene_id = oGene.bigg_id;
-            d_set_rxn_data[gene_id] = [];
-            _.each(dataset.sets, function(x_var) {
-              if (d_values[x_var] && d_values[x_var].values[gene_id]) {
-                d_set_rxn_data[gene_id].push(d_values[x_var].values[gene_id])
-              } else {
-                d_set_rxn_data[gene_id].push('nan')
-              }
-            });
-          }
-        });
-        dataset['rxn'][reaction_id] = d_set_rxn_data
-      });
-      /*
-      if not len(d_set_rxn_data) == 0:
-      dataset['rxn'][rxn.id] = d_set_rxn_data
-      */
-
-
-
-      return dataset;
-    }
-
     $('#escher-plots-button-paint-map').on('click', function() {
       if (!$('#lower_bound').val() || !$('#upper_bound').val()) {
         alert('missing either min or max')
@@ -391,7 +349,6 @@ Load Map
         widget_escher_plot.dataset = build_heat_map_data(lower_bound, upper_bound, _.keys(widget_escher_plot.datasets.gene));
         widget_escher_plot.refresh()
       }
-
     });
 
     $('#upload').on('change', function() {
@@ -416,33 +373,6 @@ Load Map
       };
       reader.readAsText(file);
     });
-
-    const parse_file = function(data_as_string) {
-      let lines = data_as_string.split(/\r?\n/);
-      console.log(lines);
-      let d_values = {};
-
-      let v_min = 10000;
-      let v_max = -10000;
-      for (let i = 1; i < lines.length; i++) {
-        let row = lines[i].split(',');
-        let val = parseFloat(row[1])
-        d_values[row[0]] = val;
-        if (val < v_min) {
-          v_min = val;
-        }
-        if (val > v_max) {
-          v_max = val;
-        }
-      }
-
-      return {
-        'name' : lines[0].split(',')[1],
-        'min' : v_min,
-        'max' : v_max,
-        'values' : d_values,
-      }
-    };
 
     $('#upload_gene_data').on('change', function() {
       let file = this.files[0];

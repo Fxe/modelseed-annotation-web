@@ -4,10 +4,12 @@ const LOCALSTORAGE_KEY = 'config';
 class CurationEnvironment {
 
   constructor(api, ui) {
+    this.modelInfo = undefined
     this.config = null;
     this.server_status = null;
     this.api = api;
     this.ui = ui || [];
+
 
     let that = this;
     if (this.api) {

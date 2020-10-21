@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/seed.css" />
     <link rel="stylesheet" href="css/builder.css" />
     <link rel="stylesheet" href="css/builder-bootstrap.css" />
+    <link rel="stylesheet" href="css/escher-shadow.css" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 
     <style>
@@ -83,6 +84,24 @@
     <div class="container-fluid wutt">
       <div id="top_bar" class="top-bar-seed">
 
+          <div class="float-left"><img src="media/seed_logo.png" alt="ModelSEED" width="174"></div>
+          <div class="float-left">
+            <div>Biochemistry: </div>
+            <div>Map: </div>
+          </div>
+          <div class="float-left">
+            <div class="clearfix">
+              <div class="float-left"><span id="label_model" class="badge badge-danger"> ModelSEED</span></div>
+              <div class="float-left" style="height: 22px"><span id="label_model_icon" ><img src="media/seed_icon.png" alt="source" style="height: 100%"></span></div>
+            </div>
+            <div class="clearfix">
+              <div class="float-left"><span id="label_map" class="badge badge-danger"> example_map</span></div>
+              <div class="float-left" style="height: 22px"><span id="label_map_icon"><img src="media/k-base_logo.svg" alt="source" style="height: 100%"></span></div>
+            </div>
+          </div>
+          <div class="float-right">RRRRRRRRRR</div>
+
+
         <!--
         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"> Settings</button>
 
@@ -97,8 +116,8 @@
           <i class="fas fa-cog"> </i> Settings
         </a>
         -->
-        Biochemistry: <span id="label_model" class="badge badge-danger">ModelSEED</span>
-        Map: <span id="label_map" class="badge badge-danger">example_map</span>
+
+
 
         <!--
           <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_data_load"><i class="fas fa-bars"> </i> Load Data</button>
@@ -270,10 +289,14 @@ Load Map
 
             <ul class="nav nav-tabs" id="tab-group-settings" role="tablist">
               <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">System</a>
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                  System
+                </a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link" id="biochem-tab" data-toggle="tab" href="#settings-biochem" role="tab" aria-controls="profile" aria-selected="false">Biochemistry</a>
+                <a class="nav-link" id="biochem-tab" data-toggle="tab" href="#settings-biochem" role="tab" aria-controls="profile" aria-selected="false">
+                  Biochemistry
+                </a>
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="map-tab" data-toggle="tab" href="#settings-map" role="tab" aria-controls="profile" aria-selected="false">Map</a>
@@ -289,6 +312,11 @@ Load Map
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="kbase-tab" data-toggle="tab" href="#settings-kbase" role="tab" aria-controls="contact" aria-selected="false"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="data-tab" data-toggle="tab" href="#settings-data" role="tab" aria-controls="contact" aria-selected="false">
+                  Data
+                </a>
               </li>
             </ul>
             <div class="tab-content" id="tab-content-settings">
@@ -309,6 +337,9 @@ Load Map
 
                 <label for="select_model_cmp">SBML Compartment</label>
                 <div id="select_model_cmp"></div>
+                </div>
+                <div>
+                  <button id="load_sbml_model">Load Model</button>
                 </div>
               </div>
 
@@ -450,6 +481,12 @@ Load Map
                   </thead>
                 </table>
               </div>
+
+              <div class="tab-pane fade" id="settings-data" role="tabpanel" aria-labelledby="data-tab">
+                <div id="data-tab-ui">
+
+                </div>
+              </div>
             </div>
 
           </div>
@@ -525,6 +562,7 @@ Load Map
   <script src="js/d3-5.16.0.js"></script>
   <script src="escher.js"></script>
   <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/jquery.MultiFile.min.js"></script>
   <script src="js/underscore-1.9.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/select2.min.js"></script>
@@ -539,6 +577,7 @@ Load Map
   <script src="js/biochem_api.js"></script>
   <script src="js/chemdust_api.js"></script>
   <script src="js/tooltip_compound.js"></script>
+  <script src="js/escher_shadow.js"></script>
   <script src="js/widget_system_status.js"></script>
   <script src="js/widget_escher_modelseed.js"></script>
   <script src="js/widget_escher_depict_compound.js"></script>
@@ -547,10 +586,12 @@ Load Map
   <script src="js/widget_escher_description.js"></script>
   <script src="js/escher_tooltip_annotation.js"></script>
   <script src="js/table_compound_mapping.js"></script>
+  <script src="js/map_adapter.js"></script>
+  <script src="js/model_loader.js"></script>
+  <script src="js/map_loader.js"></script>
 
   <script>
-
-
+    console.log('index.js');
     const get_merge_model_test = function() {
       const model_ids = [
         'iMM904',
@@ -603,10 +644,7 @@ Load Map
       reader.readAsText(file);
     });
 
-    $('#btn_test').click(function() {
-      alert('!')
-      //widget_escher.escher_builder.map.save()
-    });
+
 
     $('#exampleModal').on('hide.bs.modal', function (e) {
       widget_escher.escher_builder.map.key_manager.toggle(true)

@@ -59,7 +59,7 @@ const tooltip_gene = function(args) {
   );
 }
 
-const tooltip_metabolite = function(args) {
+const tooltip_metabolite2 = function(args) {
   tinier.render(
     args.el,
     // Create a new div element inside args.el
@@ -171,6 +171,19 @@ const tooltip_reaction = function(args, ids) {
 };
 
 const tooltip = function (args) {
+  if (args.state.type === 'metabolite') {
+    //tooltip_metabolite(args);
+    widget_escher.tooltip['fn_tooltip_cpd'](args);
+  } else if (args.state.type === 'reaction') {
+    //tooltip_reaction(args, seed_ids);
+    widget_escher.tooltip['fn_tooltip_rxn'](args);
+  } else if (args.state.type === 'gene') {
+    widget_escher.tooltip['fn_tooltip_gene'](args);
+  } else {
+    console.log(args.state.type)
+  }
+};
+const tooltip_old = function (args) {
   if (reaction_tooltip.is_busy()) {
     console.log('reaction_tooltip', reaction_tooltip.is_busy());
     return

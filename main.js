@@ -522,6 +522,8 @@ const temp_save_map = function() {
   env.save_map(m, ids[0], ids[1])
 };
 
+
+
 const validate = function(fn_valid, control) {
   if (fn_valid()) {
     control.removeClass("is-invalid");
@@ -537,28 +539,7 @@ const validate = function(fn_valid, control) {
 let table_mapping_widget = undefined;
 
 const load_biochem_from_config = function(config_str, cb) {
-  let cmp_config = {};
-  let valid = true;
-  _.each(config_str.split(';'), function(s) {
-    let values = s.split(':');
-    if (values.length === 2) {
-      cmp_config[values[0]] = values[1]
-    } else {
-      valid = false
-    }
-  });
-  if (valid) {
-    api.post_get_biochem(cmp_config, function (res) {
-      env.set_config_property('biochem_config', config_str);
-      $('#label_model').html(res['id']);
-      widget_escher.change_model(res);
-      if (cb) {
-        cb(res);
-      }
-    })
-  } else {
-    alert('bad string: ' + cmp_config_str)
-  }
+  biochemLoader.load_modelseed(config_str, cb);
 };
 
 const update_narrative_table = function(workspace_id, table) {
@@ -576,6 +557,18 @@ const update_narrative_table = function(workspace_id, table) {
         let button_html = "";
         if (o_type.startsWith("KBaseFBA.NewModelTemplate")) {
           button_html = '<a href="template_viewer.html?object=' + o_info[1] + '&workspace=' + workspace_id + '" target="_blank"><span class="oi oi-eye"></span></a>'
+        }
+        if (o_type.startsWith("KBaseMatrices.ChemicalAbundanceMatrix")) {
+          let js = "load_chem_matrix('" + o_info[1] +"','" + o_info[7] + "')";
+          button_html = '<a onclick="' + js +'" href="#"><i class="fas fa-file-download"></i></a>';
+        }
+        if (o_type.startsWith("KBaseFBA.FBA")) {
+          let js = "kbase_load_fba('" + o_info[1] +"','" + o_info[7] + "')";
+          button_html = '<a onclick="' + js +'" href="#"><i class="fas fa-file-download"></i></a>';
+        }
+        if (o_type.startsWith("KBaseFBA.FBAModel")) {
+          let js = "biochemLoader.load_kbase('" + o_info[1] +"','" + o_info[7] + "')";
+          button_html = '<a onclick="' + js +'" href="#"><i class="fas fa-file-download"></i></a>';
         }
         let row_data = [
           o_info[1],
@@ -633,8 +626,10 @@ const ui_tooltip_options = function(ct) {
 };
 
 let kbase_table = $("#table-kbase-narrative").DataTable();
-$(function() {
+let biochemLoader = undefined;
 
+$(function() {
+  console.log('index.js');
 
 /*
 
@@ -728,13 +723,23 @@ $(function() {
 
   $('#settings-biochem-build').click(function () {
     let cmp_config_str = $('#settings-biochem-config').val();
-    load_biochem_from_config(cmp_config_str)
+    load_biochem_from_config(cmp_config_str, function () {
+      alert('loaded!')
+    })
   });
 
 
 
 
-
+  env = new CurationEnvironment(api, [
+    new WidgetSystemStatus($('#top_bar')),
+    widget_escher]);
+  env.load_config();
+  env.init_ui();
+  widget_escher_metadata.env = env;
+  biochemLoader = new BiochemLoader(widget_escher, api, kbaseApi, env);
+  // ui_tooltip_options must be called after env.load_config !
+  ui_tooltip_options($('#fn-tooltip-options'));
 
   load_catalog(['ModelSEED', 'Test'], {}, function(catalog) {
       console.log(catalog);
@@ -806,10 +811,10 @@ $(function() {
             });
         */
 
-    let cmp_config = env.config['biochem_config'] || "0:";
+    //let cmp_config = env.config['biochem_config'] || "0:";
     const auto_load = true;
     if (auto_load) {
-      load_biochem_from_config(cmp_config, function(res) {
+      biochemLoader.load_env(function() {
         let b = widget_escher.escher_builder;
         if (env.config.default_map) {
           let map_id = env.config.default_map.split('/');
@@ -819,7 +824,6 @@ $(function() {
         } else {
           console.log('default map not found. loading demo');
           $.getJSON(default_map, function(map_data) {
-
             widget_escher.change_map(map_data);
           });
         }
@@ -828,15 +832,7 @@ $(function() {
 
   });
 
-  env = new CurationEnvironment(api, [
-      new WidgetSystemStatus($('#top_bar')),
-      widget_escher]);
-  env.load_config();
-  env.init_ui();
-  widget_escher_metadata.env = env;
 
-  // ui_tooltip_options must be called after env.load_config !
-  ui_tooltip_options($('#fn-tooltip-options'));
 
   class TableMappingWidget {
     constructor(api, widget_escher) {
@@ -948,5 +944,28 @@ $(function() {
       }
     });
     //console.log(select_model)
+    $('#btn_test').click(function() {
+      alert('!')
+      let ema = new EscherMapAdapter(widget_escher.escher_map);
+      let reaction_uids = ema.adaptToModel(widget_escher.escher_model, 'c');
+      widget_escher.escher_builder.map.delete_reaction_data(reaction_uids);
+      widget_escher.escher_builder.map.draw_everything()
+      //widget_escher.escher_builder.map.save()
+    });
+    $('#load_sbml_model').click(function() {
+      let model_id = undefined;
+      _.each(select_model.children(), function(opts) {
+        if (opts.selected) {
+          model_id = opts.value;
+        }
+      });
+
+      if (model_id) {
+        biochemLoader.load_bios(model_id);
+      } else {
+        alert('select a model first')
+      }
+    });
+
   })
 });

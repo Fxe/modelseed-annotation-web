@@ -26,6 +26,9 @@ const default_tooltip = function(args) {
   );
 }
 
+
+
+
 class WidgetEscherModelseed {
 
   constructor(container, map_container, e_options, has_modelselect = true, has_display_toggle = true, plugins = []) {
@@ -34,6 +37,7 @@ class WidgetEscherModelseed {
     this.model = null;
     this.escher_model = null;
     this.submodels = {}
+    this.biochem = null;
     this.toggle_escher_label = null;
     this.escher_builder = escher.Builder(null, null, null, map_container, e_options);
     this.escher_builder.options.cofactors = [
@@ -194,7 +198,6 @@ class WidgetEscherModelseed {
       this.escher_display = "name"
       this.toggle_display()
     }
-    
   }
     
   load_catalog(dataset_id_list, fn_success) {
