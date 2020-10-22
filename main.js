@@ -964,6 +964,8 @@ $(function() {
 });
 //
 // DEBUG TRASH TO BE REMOVED
+let mapLoader = new MapLoader(widget_escher, api, kbaseApi, env);
+
 let DEBUG_adapt_cmp = 'c0';
 $('#btn_test2').click(function() {
   let base_map_copy = JSON.parse(JSON.stringify(widget_escher.base_map));
@@ -971,11 +973,15 @@ $('#btn_test2').click(function() {
 });
 
 $('#btn_test1').click(function() {
-  alert('!')
   widget_escher.base_map = JSON.parse(JSON.stringify(widget_escher.escher_map));
+  draw_shadow_map(widget_escher.base_map, 0, 0)
   let ema = new EscherMapAdapter(widget_escher.escher_map);
-  let reaction_uids = ema.adaptToModel(widget_escher.escher_model, DEBUG_adapt_cmp);
-  widget_escher.escher_builder.map.delete_reaction_data(reaction_uids);
-  widget_escher.escher_builder.map.draw_everything()
+  let uid = ema.adaptToModel(widget_escher.escher_model, DEBUG_adapt_cmp);
+  let uidNodes = uid[0];
+  let uidReactions = uid[1];
+  widget_escher.escher_builder.map.delete_node_data(uidNodes);
+  widget_escher.escher_builder.map.delete_reaction_data(uidReactions);
+  widget_escher.escher_builder.map.convert_map();
+  widget_escher.escher_builder.map.draw_everything();
   //widget_escher.escher_builder.map.save()
 });

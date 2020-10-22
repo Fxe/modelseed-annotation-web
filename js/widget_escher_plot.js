@@ -140,6 +140,28 @@ const button_paint_map = function(input_lb, input_ub) {
 let load_chem_matrix = undefined
 let kbase_load_fba = undefined
 
+const radio_metabolite_toggle_change = function() {
+  if ($(this).is(':checked')) {
+    console.log('radio_metabolite_toggle_change', $(this).val())
+    if ($(this).val() === 'none') {
+      widget_escher.escher_builder.set_metabolite_data(null)
+    } else {
+      widget_escher_plot.display_compound_dataset($(this).val());
+    }
+  }
+}
+
+const radio_reaction_toggle_change = function() {
+  if ($(this).is(':checked')) {
+    console.log('radio_reaction_toggle_change', $(this).val())
+    if ($(this).val() === 'none') {
+      widget_escher.escher_builder.set_reaction_data(null)
+    } else {
+      widget_escher_plot.display_reaction_dataset($(this).val());
+    }
+  }
+}
+
 const init_ui = function(ct) {
   let btn_upload_gene_data_input = $('<input>', {'type':'file', 'style': '', 'accept': '.csv'}) // display:none
   let btn_upload_gene_data = $('<label>', {'for':'upload_gene_data', 'class': 'badge badge-primary'})
@@ -159,6 +181,18 @@ const init_ui = function(ct) {
     .append(input_lb).append(input_ub).append(btn_display_heat_map).append(ct_display_dataset);
   //btn_upload_gene_data_input.MultiFile();
 
+  ct_reaction_datasets.append(
+    $('<input>', {'type' : 'radio', 'id' : 'rxn-none', 'name' : 'dataset-reaction', 'value' : 'none'}))
+    .append($('<label>', {'for' : 'rxn-none'}).append('none')).append('<br>');
+  ct_compound_datasets.append(
+    $('<input>', {'type' : 'radio', 'id' : 'none', 'name' : 'dataset-compound', 'value' : 'none'}))
+    .append($('<label>', {'for' : 'none'}).append('none')).append('<br>');
+  ct_gene_datasets.append(
+    $('<input>', {'type' : 'radio', 'id' : 'none', 'name' : 'dataset-gene', 'value' : 'none'}))
+    .append($('<label>', {'for' : 'none'}).append('none')).append('<br>');
+  $('input:radio[name="dataset-reaction"]').change(radio_reaction_toggle_change);
+  $('input:radio[name="dataset-compound"]').change(radio_metabolite_toggle_change);
+
   kbase_load_fba = function(id, ws) {
     kbaseApi.get_object(id, ws, env.config.kbase_token, function(fba) {
       let res = {}
@@ -176,13 +210,8 @@ const init_ui = function(ct) {
           'value' :  fba.id
         })
       ct_reaction_datasets.append(input).append($('<label>', {'for' : radioId}).append(' ' +  fba.id)).append('<br>');
-      $('input:radio[name="dataset-reaction"]').change(
-        function(){
-          if ($(this).is(':checked')) {
-            console.log($(this).val())
-            widget_escher_plot.display_reaction_dataset($(this).val());
-          }
-        });
+      input.change(radio_reaction_toggle_change)
+
     });
     //$.getJSON('../annotation/data/FBA.ecoli.json', function(fba) {});
   }
@@ -201,13 +230,8 @@ const init_ui = function(ct) {
           'value' :  dataset.id
         })
       ct_compound_datasets.append(input).append($('<label>', {'for' : radioId}).append(' ' +  dataset.id)).append('<br>');
+      input.change(radio_metabolite_toggle_change)
     });
-    $('input:radio[name="dataset-compound"]').change(
-      function(){
-        if ($(this).is(':checked')) {
-          widget_escher_plot.display_compound_dataset($(this).val());
-        }
-      });
     //console.log('compound_datasets', compound_datasets)
   }
   load_chem_matrix = function(id, ws) {

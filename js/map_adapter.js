@@ -25,6 +25,24 @@ class EscherMapAdapter {
     console.log(this.nodeToReaction)
   }
 
+  getProtonCompounds(model) {
+    let protons = {}
+    widget_escher.escher_model.metabolites.forEach(function(o) {
+      if (o.annotation && o.annotation['seed.compound']) {
+        if (Array.isArray(o.annotation['seed.compound'])) {
+          if (o.annotation['seed.compound'].indexOf('cpd00067') >= 0) {
+            protons[o.id] = true;
+          }
+        } else {
+          if (o.annotation['seed.compound'] === 'cpd00067') {
+            protons[o.id] = true;
+          }
+        }
+      }
+    })
+    return protons;
+  }
+
   renameReaction(uid, value) {
     this.map[1].reactions[uid].bigg_id = value;
   }
@@ -154,31 +172,49 @@ class EscherMapAdapter {
       }
     })
 
+
+    let protons = this.getProtonCompounds(model);
+    let cpdUidKeep = {}
     _.each(model.reactions, function(r) {
       let reactionAnnotation = that.getReactionAnnotation(r, targetReactionDatabase)
       //console.log(r.id, reactionAnnotation)
       if (reactionObjects[reactionAnnotation]) {
         _.each(reactionObjects[reactionAnnotation], function(reaction_uid) {
           let mapReaction = that.map[1].reactions[reaction_uid]
-          let match = that.isMatchMetabolites(mapReaction, r, {'M_h_c':true, 'M_h_m':true, 'M_h_e':true})
-          console.log(r.id, reaction_uid, match)
+          let match = that.isMatchMetabolites(mapReaction, r, protons)
+          //console.log(r.id, reaction_uid, match)
           if (match) {
             that.renameReaction(reaction_uid, r.id)
             mappedReactions[reaction_uid] = true
+
+            _.each(mapReaction.segments, function(s, segment_uid) {
+              cpdUidKeep[s.from_node_id] = true;
+              cpdUidKeep[s.to_node_id] = true;
+            })
           }
         })
       }
     });
 
     let toDelete = []
+    let toDeleteNodes = []
     _.each(mappedReactions, function(v, reaction_uid) {
       if (!v) {
         toDelete.push(reaction_uid);
+        let r = that.map[1].reactions[reaction_uid];
+        _.each(r.segments, function(s, segment_uid) {
+          if (!cpdUidKeep[s.from_node_id]) {
+            toDeleteNodes[s.from_node_id] = true;
+          }
+          if (!cpdUidKeep[s.to_node_id]) {
+            toDeleteNodes[s.to_node_id] = true;
+          }
+        })
         //delete that.map[1].reactions[reaction_uid];
       }
     })
 
 
-    return toDelete
+    return [_.keys(toDeleteNodes), toDelete];
   }
 }
