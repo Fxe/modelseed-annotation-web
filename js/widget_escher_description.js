@@ -154,16 +154,17 @@ class WidgetEscherMetadata {
 
     const score_order = ['opt_score1', 'opt_score2', 'opt_score3']
     _.each(database_id_to_node, function(nodes, id) {
-      console.log(id)
-      that.curation_api.post_template_annotation_reaction_status(that.env.config.target_template, id, that.env.config.genome_set, function(e) {
+      //console.log('display_annotation', id)
+      let cmp_config = Object.fromEntries(that.env.config.biochem_config.split(';').map(x => x.split(':')))
+      that.curation_api.post_template_annotation_reaction_status(that.env.config.target_template, id, cmp_config, that.env.config.genome_set, function(e) {
 
         let id_to_function_str = {}
         _.each(e.annotation, function(v, function_str) {
           id_to_function_str[v.id] = function_str
         });
-        console.log(id_to_function_str);
+        //console.log('display_annotation', 'post_template_annotation_reaction_status', id_to_function_str);
         _.each(nodes, function(node, uid) {
-          console.log(node);
+          //console.log('display_annotation', 'post_template_annotation_reaction_status', node);
           let y_position = 1
           d3.select('#r' + uid).selectAll('.reaction-label-group').each(function (data) {
             if (data.bigg_id === id) {
@@ -184,7 +185,7 @@ class WidgetEscherMetadata {
           });
         })
 
-        console.log(e);
+        //console.log(e);
       }, undefined, function (e) {
         console.log('@@@', e)
       }).always(function() {

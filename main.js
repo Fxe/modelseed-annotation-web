@@ -974,7 +974,7 @@ $('#btn_test2').click(function() {
 
 $('#btn_test1').click(function() {
   widget_escher.base_map = JSON.parse(JSON.stringify(widget_escher.escher_map));
-  draw_shadow_map(widget_escher.base_map, 0, 0)
+  draw_shadow_map(widget_escher.base_map, 0, 0);
   let ema = new EscherMapAdapter(widget_escher.escher_map);
   let uid = ema.adaptToModel(widget_escher.escher_model, DEBUG_adapt_cmp);
   let uidNodes = uid[0];
@@ -984,4 +984,12 @@ $('#btn_test1').click(function() {
   widget_escher.escher_builder.map.convert_map();
   widget_escher.escher_builder.map.draw_everything();
   //widget_escher.escher_builder.map.save()
+});
+
+$('#btn_test3').click(function() {
+  widget_escher_metadata.display_annotation()
+});
+
+$('#btn_test4').click(function() {
+  widget_escher_metadata.display_ec()
 });
