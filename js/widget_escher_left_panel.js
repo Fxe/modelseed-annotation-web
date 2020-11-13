@@ -5,6 +5,7 @@ class WidgetEscherLeftPanel {
     this.escher = null;
     this.section_pwy = null
     this.toggle_reaction = {}
+    this.metaboliteContainer = undefined;
   }
 
   init_container() {
@@ -12,12 +13,16 @@ class WidgetEscherLeftPanel {
     this.container.append($('<div>', {}).html('Pathways'));
     this.section_pwy = $('<div>', {'class' : 'seed-escher-panel-right-content'});
     this.container.append(this.section_pwy);
-
-
     let section_rxn = $('<div>', {}).html('Reaction')
     let section_met = $('<div>', {}).html('Metabolite')
-    this.container.append(section_rxn);
-    this.container.append(section_met);
+    this.metaboliteContainer = $('<div>', {'class' : 'seed-escher-panel-right-content'})
+    this.container.append(section_rxn)
+                  .append(section_met)
+                  .append(this.metaboliteContainer);
+  }
+
+  getMetaboliteContainer() {
+    return this.metaboliteContainer;
   }
 
   refresh() {

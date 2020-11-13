@@ -22,6 +22,57 @@ class CurationEnvironment {
     }
   }
 
+  load_catalog(catalog_dataset, fn_success, result={}) {
+    let that = this;
+    if (catalog_dataset.length > 0) {
+      let dataset_id = catalog_dataset.pop()
+
+      that.api.get_escher_map_list(dataset_id, function(res) {
+        result[dataset_id] = res;
+        that.load_catalog(catalog_dataset, fn_success, result)
+      })
+    } else {
+      fn_success(result);
+    }
+  }
+
+  load_escher_map = function(dataset_id, map_id) {
+    console.log('load_escher_map', dataset_id, map_id);
+    if (this.config && this.config['biochem_config']) {
+      this.api.post_get_refit_map(map_id, dataset_id, env['config']['biochem_config'], null, function(escher_map) {
+        page_change_map(escher_map, dataset_id, map_id);
+      })
+    } else {
+      this.api.get_escher_map(dataset_id, map_id, function(escher_map) {
+        page_change_map(escher_map, dataset_id, map_id);
+      })
+    }
+  };
+
+  init_catalog_table(tableId, catalog) {
+    let table = $("#" +  tableId).DataTable();
+    let rows = []
+    _.each(catalog, function(map_list, dataset_id) {
+      _.each(map_list, function(map_id) {
+        //button_html = $('a', {'href' : '#'}).html('<span class="oi oi-eye"></span>')
+        button_html = '<a href="#" onclick="load_escher_map(\'' + dataset_id +'\', \'' + map_id + '\');"><span class="oi oi-eye"></span></a>'
+
+        let map_str = map_id
+        if (map_id.indexOf(dataset_id) == 0) {
+          map_str = map_id.substring(dataset_id.length + 1)
+        }
+        row_data = [
+          dataset_id,
+          map_str,
+          '-',
+          '-',
+          button_html
+        ];
+        rows.push(row_data)
+      });
+    });
+  }
+
   init_ui() {
     let that = this;
     this.ui.forEach(function(w) {

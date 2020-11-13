@@ -276,7 +276,9 @@ class EscherTooltipAnnotation {
       //console.log('post_template_annotation_reaction_status', e);
     }, undefined, function (e) {
       console.log('@@@', e)
-      container.html('<span class="badge badge-danger"><i class="fas fa-bug"></i> Error: ' + rxn_id + '</span> Try refresh the page. If this problem persist contact page admin.');
+      container.html(
+        '<span class="badge badge-danger"><i class="fas fa-bug"></i> ' + e.status + ' Error: ' + rxn_id + ': ' + e.responseText + '</span> ' +
+        'Try refresh the page. If this problem persist contact page admin.');
     }).always(function() {
       that.active_xhr -= 1;
       console.log('done', rxn_id, 'remaing:', that.loading_count);
@@ -453,7 +455,7 @@ class EscherTooltipAnnotation {
       _.each(other_rxns[annotation_id], function(other_rxn_opt, other_rxn_id) {
         if (other_rxn_id !== rxn_id) {
           let icon = $('<div>').append($('<i>', {'class' : that.control_options[other_rxn_opt]}))
-          console.log(icon.html() + ' ' + other_rxn_id)
+          //console.log(icon.html() + ' ' + other_rxn_id)
           let cmp_config_str = Object.keys(cmp_config).map(x=> x + ':' + cmp_config[x]).join(';')
           others[icon.html() + ' ' + other_rxn_id] = 'view_annotation.html?rxn=' + other_rxn_id +
             '&seed_id=' + other_rxn_id.split('_')[0] + '&config=' +cmp_config_str
@@ -531,7 +533,7 @@ class EscherTooltipAnnotation {
 
     _.each(data, function(annotation_data, function_name) {
       let default_opt = that.get_annotation_control_option(template_rxns, annotation_data.id);
-      console.log(default_opt)
+      //console.log(default_opt)
       if (default_opt === 'opt_score1') {
         let annotation_id = that.build_annotation_row_section(rxn_id, annotation_data, function_name, curation_data, other_rxns, cmp_config, template_rxns, star3_container)
         functions_display[annotation_id] = true;
@@ -579,7 +581,7 @@ class EscherTooltipAnnotation {
         result_container.append(row_container);
       }
     });
-    console.log('escher_tooltip_annotation', functions_display)
+    //console.log('escher_tooltip_annotation', functions_display)
 
 
     if (wide) {
