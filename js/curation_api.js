@@ -244,6 +244,13 @@ class CurationAPI {
     return this.get("/template/" + template_id + "/reaction/" + reaction_id + '/attributes', fn_success, fn_always, fn_error)
   }
 
+  get_template_reactions_attribute(template_id, reaction_ids, fn_success, fn_always, fn_error) {
+    let params = {
+      'rxn_ids' : reaction_ids
+    }
+    return this.post("/template/" + template_id + "/reactions/get/attributes", params, fn_success, fn_always, fn_error)
+  }
+
   post_template_reaction_attribute(template_id, reaction_id, attr, value, fn_success, fn_always, fn_error) {
     let params = {
       'attribute' : attr,

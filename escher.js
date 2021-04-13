@@ -1686,7 +1686,7 @@ function init (map_data, model_data, embedded_css, selection, options) {
     highlight_missing: false,
     allow_building_duplicate_reactions: false,
     cofactors: [ 'atp', 'adp', 'nad', 'nadh', 'nadp', 'nadph', 'gtp', 'gdp',
-                 'h', 'coa', 'ump', 'h20', 'ppi' ],
+                 'h', 'coa', 'ump', 'h20', 'ppi', 'cpd00007'],
     // Extensions
     tooltip_component: DefaultTooltip,
     enable_tooltips: true,
@@ -9985,14 +9985,14 @@ function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
                        largest_ids, cofactors, angle) {
   // console.log('new_reaction', cobra_reaction)
   // Convert to radians, and force to domain - PI/2 to PI/2
-  angle = utils.to_radians_norm(angle)
+  angle = utils.to_radians_norm(angle);
 
   // Generate a new integer id
-  var new_reaction_id = String(++largest_ids.reactions)
+  var new_reaction_id = String(++largest_ids.reactions);
 
   // Calculate coordinates of reaction
   var selected_node_coords = { x: selected_node.x,
-                               y: selected_node.y }
+                               y: selected_node.y };
 
   // Rotate main axis around angle with distance
   var reaction_length = 350
@@ -10044,11 +10044,15 @@ function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
       coefficient: coefficient,
       bigg_id: met_bigg_id,
       name: metabolite.name
-    }
+    };
+    //console.log(met_bigg_id, formula);
+    let carbons = /C([0-9]+)/.exec(formula);
+    //console.log(met_bigg_id, carbons, utils.decompartmentalize(new_metabolite.bigg_id));
     if (coefficient < 0) {
-      new_metabolite.index = reactant_count
+      new_metabolite.index = reactant_count;
       // score the metabolites. Infinity == selected, >= 1 == carbon containing
-      var carbons = /C([0-9]+)/.exec(formula)
+
+
       if (selected_node.bigg_id === new_metabolite.bigg_id) {
         reactant_ranks.push([ new_metabolite.index, Infinity ])
       } else if (carbons && cofactors.indexOf(utils.decompartmentalize(new_metabolite.bigg_id)[0]) === -1) {
@@ -10057,7 +10061,6 @@ function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
       reactant_count++
     } else {
       new_metabolite.index = product_count
-      var carbons = /C([0-9]+)/.exec(formula)
       if (selected_node.bigg_id === new_metabolite.bigg_id) {
         product_ranks.push([ new_metabolite.index, Infinity ])
         reaction_is_reversed = true
@@ -10069,11 +10072,13 @@ function new_reaction (bigg_id, cobra_reaction, cobra_metabolites,
     new_reaction.metabolites[met_bigg_id] = new_metabolite
   }
 
+
   // get the rank with the highest score
   var max_rank = function (old, current) { return current[1] > old[1] ? current : old }
   var primary_reactant_index = reactant_ranks.reduce(max_rank, [ 0, 0 ])[0]
   var primary_product_index = product_ranks.reduce(max_rank, [ 0, 0 ])[0]
-
+  //console.log(reactant_ranks, primary_reactant_index)
+  //console.log(product_ranks, primary_product_index)
   // set primary metabolites, and keep track of the total counts
   for (var met_bigg_id in new_reaction.metabolites) {
     var metabolite = new_reaction.metabolites[met_bigg_id]

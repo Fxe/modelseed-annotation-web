@@ -993,3 +993,11 @@ $('#btn_test4').click(function() {
 $('#btn_test5').click(function() {
   widget_escher_optimization.display(widget_escher_optimization.map_net_conversion())
 });
+
+$('#btn_test6').click(function() {
+  let escherDesign = new EscherDesign(widget_escher.escher_builder);
+  escherDesign.init_ui();
+});
+
+
+

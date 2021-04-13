@@ -77,7 +77,7 @@ class EscherMapAdapter {
       if (c.bigg_id.startsWith('cpd') && c.bigg_id.indexOf('_') == 8) {
         return c.bigg_id.split('_')[0];
       }
-      return r.bigg_id
+      return c.bigg_id
     }
 
     return c.id

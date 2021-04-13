@@ -897,3 +897,38 @@ var mock_mine_reactions = {'3a5038983d4271f6daddd8bf805e54aa694b5a473059fd7c29f7
     'X02d08e7f7bc205a9c4c26b9c9e0932aef7e2d538': -1,
     'Cde14c7246083a3c03ce28e0745cb266b6d07fa92': 1,
     'X31d44edb4ecca1e7ab7f3815f05b375924e3b643': 1}}
+
+const mock_map_1 = [{"map_name":"dummy1","map_id":"56FKemv4hwlk","map_description":"","homepage":"https://escher.github.io","schema":"https://escher.github.io/escher/jsonschema/1-0-0#"},{"reactions":{
+  "245":
+    {
+      "name":"crxn00004","bigg_id":"crxn00004","reversibility":true,"label_x":-9420.0,"label_y":88.0,"gene_reaction_rule":"","genes":[],
+      "metabolites":[
+        {"bigg_id":"cpd00005","coefficient":1},
+        {"bigg_id":"cpd00006","coefficient":-1},
+        {"bigg_id":"cpd00067","coefficient":-1},
+        {"bigg_id":"cpd11620","coefficient":-2},
+        {"bigg_id":"cpd11621","coefficient":2}],
+      "annotation":{"seed.compartment":"0:","seed.reaction":"crxn00004"},
+      "segments":{
+        "1735":{"from_node_id":"1792","to_node_id":"1795","b1":{"x":-9271.0,"y":-43.0},"b2":{"x":-9077.0,"y":-41.0}},
+        "1736":{"from_node_id":"1792","to_node_id":"1791","b1":{"x":-9545.0,"y":55.0},"b2":{"x":-9788.0,"y":10.0}},
+        "1737":{"from_node_id":"1792","to_node_id":"1796","b1":{"x":-9643.0,"y":-135.0},"b2":{"x":-9845.0,"y":-53.0}},
+        "1738":{"from_node_id":"1792","to_node_id":"1797","b1":{"x":-9543.0,"y":-189.0},"b2":{"x":-9765.0,"y":-167.0}},
+        "1739":{"from_node_id":"1792","to_node_id":"1798","b1":{"x":-9340.0,"y":-242.0},"b2":{"x":-9290.0,"y":-198.0}}
+      }},
+    "246":{"name":"rxn00078","bigg_id":"rxn00078","reversibility":false,"label_x":-8858.0,"label_y":-36.0,"gene_reaction_rule":"","genes":[],"metabolites":[{"bigg_id":"cpd00002","coefficient":-1},{"bigg_id":"cpd00004","coefficient":-1},{"bigg_id":"cpd00005","coefficient":1},{"bigg_id":"cpd00008","coefficient":1},{"bigg_id":"cpd00067","coefficient":1}],"annotation":{"seed.compartment":"0:","seed.reaction":"rxn00078"},"segments":{"1740":{"from_node_id":"1799","to_node_id":"1800","b1":null,"b2":null},"1741":{"from_node_id":"1801","to_node_id":"1800","b1":null,"b2":null},"1742":{"from_node_id":"1799","to_node_id":"1802","b1":{"x":-8757.0,"y":-162.0},"b2":{"x":-8328.0,"y":112.0}},"1743":{"from_node_id":"1799","to_node_id":"1803","b1":{"x":-8753.0,"y":-162.0},"b2":{"x":-8469.0,"y":-299.0}},"1744":{"from_node_id":"1801","to_node_id":"1795","b1":{"x":-8881.0,"y":-162.0},"b2":{"x":-8935.0,"y":-162.0}},"1745":{"from_node_id":"1801","to_node_id":"1804","b1":{"x":-8885.0,"y":-162.0},"b2":{"x":-8748.5556640625,"y":-341.0}},"1746":{"from_node_id":"1801","to_node_id":"1805","b1":{"x":-8885.0,"y":-162.0},"b2":{"x":-8860.0,"y":-398.0}}}}},"nodes":
+    {"1791":
+        {"node_type":"metabolite","x":-9800.0,"y":200.0,"bigg_id":"cpd00006","name":"NADP","label_x":-9906.0,"label_y":225.0,"node_is_primary":true},
+      "1792": {"node_type":"midmarker","x":-9400.0,"y":-100.0},
+      "1795":{"node_type":"metabolite","x":-9000.0,"y":200.0,"bigg_id":"cpd00005","name":"NADPH","label_x":-9037.0,"label_y":-122.0,"node_is_primary":true},
+      "1796":{"node_type":"metabolite","x":-9800.0,"y":-400.0,"bigg_id":"cpd00067","name":"H+","label_x":-9852.0,"label_y":-241.0,"node_is_primary":true},
+      "1797":{"node_type":"metabolite","x":-9672.0,"y":-384.0,"bigg_id":"cpd11620","name":"Reducedferredoxin","label_x":-9715.0,"label_y":-344.0,"node_is_primary":false},
+      "1798":{"node_type":"metabolite","x":-9000.0,"y":-400.0,"bigg_id":"cpd11621","name":"Oxidizedferredoxin","label_x":-9221.0,"label_y":-303.0,"node_is_primary":true},
+      "1799":{"node_type":"multimarker","x":-8799.0,"y":-162.0},
+      "1800":{"node_type":"midmarker","x":-8819.0,"y":-162.0},
+      "1801":{"node_type":"multimarker","x":-8839.138671875,"y":-162.0},
+      "1802":{"node_type":"metabolite","x":-8269.0,"y":112.0,"bigg_id":"cpd00002","name":"ATP","label_x":-8312.0,"label_y":152.0,"node_is_primary":true},
+      "1803":{"node_type":"metabolite","x":-8435.0,"y":-237.0,"bigg_id":"cpd00004","name":"NADH","label_x":-8479.0,"label_y":-197.0,"node_is_primary":false},
+      "1804":{"node_type":"metabolite","x":-8782.0,"y":-403.0,"bigg_id":"cpd00008","name":"ADP","label_x":-8825.0,"label_y":-423.0,"node_is_primary":false},
+      "1805":{"node_type":"metabolite","x":-8894.0,"y":-336.0,"bigg_id":"cpd00067","name":"H+","label_x":-8937.0,"label_y":-296.0,"node_is_primary":false}},
+  "text_labels":{},"canvas":{"x":-10102.0,"y":-726.0,"width":2652.0,"height":1203.0}}]

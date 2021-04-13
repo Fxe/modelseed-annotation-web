@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>AnotherSEED</title>
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+  <link rel="stylesheet" href="../css/dataTables.bootstrap4.min.css" />
+  <style>
+    .monospace {
+      font-family: "Lucida Console", "Courier New", monospace;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <table id="table-cpd" class="table">
+    <thead class="thead-light">
+    <tr>
+
+    </tr>
+    </thead>
+  </table>
+  <table id="table-rxn" class="table">
+    <thead class="thead-light">
+    <tr>
+
+    </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>ID</th>
+        <th>Abbreviation</th>
+        <th>Equation</th>
+        <th>Class</th>
+        <th>Aliases</th>
+        <th>Ontology</th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+
+</body>
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script src="../js/underscore-1.9.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/jquery.dataTables.min.js"></script>
+<script src="../js/dataTables.bootstrap4.min.js"></script>
+<script>
+  const tableCompounds = $("#table-cpd").DataTable(
+    {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Abbr',
+          sName : 'abbr',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Compound',
+          sName : 'structure',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+          "mRender": function (data, type, row) {
+            let inchi = '<span class="badge badge-secondary monospace">**************-**********-*</span>';
+            let smiles = '<span class="badge badge-secondary monospace">SMILES</span>';
+            if (data[0] && data[0].length > 0) {
+              inchi = '<span class="badge badge-primary monospace">' + data[1] + '</span>';
+            }
+            if (data[2] && data[2].length > 0) {
+              smiles = '<span class="badge badge-warning monospace">SMILES</span>';
+            }
+            //console.log(data);
+            return inchi + " " + smiles
+          }
+        },
+        {
+          sTitle : 'Formula',
+          sName : 'formula',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Charge',
+          sName : 'charge',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Synonyms',
+          sName : 'syn',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Aliases',
+          sName : 'alias',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false,
+          "mRender": function (data, type, row) {
+            let res = "";
+            if (data['KEGG']) {
+              _.each(data['KEGG'], function(v) {
+                let url = `<a href="https://www.kegg.jp/dbget-bin/www_bget?${v}" target="_blank">${v}</a>`;
+                res += " " + url;
+              });
+            }
+            if (data['MetaCyc']) {
+              _.each(data['MetaCyc'], function(v) {
+                res += " " + v;
+              });
+            }
+            if (data['BiGG']) {
+              _.each(data['BiGG'], function(v) {
+                res += " " + v;
+              });
+            }
+            //console.log(data);
+            return res
+          }
+        },
+        {
+          sTitle : 'Ontology',
+          sName : 'ontology',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false,
+          "mRender": function (data, type, row) {
+            return "not implemented"
+          }
+        }
+      ],
+      dom: '<"row"<"col-sm-12 col-md-3"l><"col-sm-12 col-md-6"<"#cpd-controls">><"col-sm-12 col-md-3"f>>rt<"bottom"ip><"clear">',
+      processing: true,
+      searchDelay: 2000,
+
+      serverSide: true,
+      ajax: {
+        url : '/annotation/api/biochem/seed/compounds',
+        type: 'POST'
+      }
+    }
+  );
+  $('#table-rxn tfoot th').each( function () {
+    var title = $(this).text();
+    $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+  } );
+  const tableReactions = $("#table-rxn").DataTable(
+    {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Equation',
+          sName : 'eq',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false,
+          "mRender": function (data, type, row) {
+            return data[0] + ' ' + data[1]
+          }
+        },
+        {
+          sTitle : 'Map',
+          sName : 'map',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'E.C.Number',
+          sName : 'ecn',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false
+        },
+        {
+          sTitle : 'Class',
+          sName : 'clazz',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false
+        },
+        {
+          sTitle : 'Aliases',
+          sName : 'alias',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false,
+          "mRender": function (data, type, row) {
+            let res = "";
+            if (data['KEGG']) {
+              _.each(data['KEGG'], function(v) {
+                let url = `<a href="https://www.kegg.jp/dbget-bin/www_bget?${v}" target="_blank">${v}</a>`;
+                res += " " + url;
+              });
+            }
+            if (data['MetaCyc']) {
+              _.each(data['MetaCyc'], function(v) {
+                res += " " + v;
+              });
+            }
+            if (data['BiGG']) {
+              _.each(data['BiGG'], function(v) {
+                res += " " + v;
+              });
+            }
+            //console.log(data);
+            return res
+          }
+        },
+        {
+          sTitle : 'Ontology',
+          sName : 'ontology',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : false
+        }
+      ],
+      processing: true,
+      searchDelay: 2000,
+
+      serverSide: true,
+      ajax: {
+        url : '/annotation/api/biochem/seed/reactions',
+        type: 'POST'
+      },
+      initComplete: function() {
+        $('#cpd-controls').append('!!!');
+        this.api().columns().every( function () {
+          let that = this;
+          $( 'input', this.footer() ).on( 'keyup change clear', function () {
+            if ( that.search() !== this.value ) {
+              console.log(this.value)
+              that.search( this.value ).draw();
+            }
+          } );
+        } );
+      }
+    }
+  );
+</script>
+</html>

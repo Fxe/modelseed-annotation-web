@@ -146,6 +146,54 @@ class EscherTooltipAnnotation {
     }
   }
 
+  build_select_controls(id, values, default_value, f) {
+    let tag_select = $('<select>', {'id' : id, 'class' : 'form-control'});
+    _.each(values, function(label, value) {
+      let params = {'value': value}
+      if (value === default_value) {
+        params['selected'] = true;
+      }
+      let opt = $('<option>', params);
+
+      tag_select.append(opt.text(label))
+    })
+    if (f) {
+      tag_select.change(f);
+    }
+    return tag_select;
+  }
+
+  build_radio_controls(id, values, default_value, f) {
+    let container = $('<div>');
+    let counter = 0;
+    _.each(values, function(label, value) {
+      let opt_id = id + '_option' +counter
+      let params = {'type': 'radio', 'name': id, 'value': value, 'id': opt_id};
+      if (value === default_value) {
+        params['checked'] = true;
+      }
+      let option_input = $('<input>', params)
+      let option = $('<div>', {'class': 'form-check'}).append(option_input).append(
+        $('<label>', {'for': opt_id}).text(label))
+      if (f) {
+        option_input.change(f);
+      }
+      container.append(option);
+    })
+
+    return container;
+  }
+
+  build_form_group(label, body) {
+    let tag_body_div = $('<div>', {'class': 'col-sm-9'});
+    if (body) {
+      tag_body_div.append(body);
+    }
+    let container = $('<div>', {'class': 'form-group row'}).append($('<div>', {'class': 'col-sm-3'}).text(label))
+                                                         .append(tag_body_div)
+    return container;
+  }
+
   build_controls_container(container, rxn_id, template_id) {
     let that = this;
     this.active_xhr += 1;
@@ -154,9 +202,19 @@ class EscherTooltipAnnotation {
       if (o.active === undefined) {
         o.active = true;
       }
+      console.log('build_controls_container', o);
       let active = o.active;
       let is_review = o.review;
       let is_spontaneous = o.spontaneous;
+
+      let base_cost = o.base_cost;
+      let for_cost = o.forward_penalty;
+      let rev_cost = o.reverse_penalty;
+
+      let input_base_c = $('<input>', {'type' : 'number', 'value' : base_cost})
+      let input_for_c = $('<input>', {'type' : 'number', 'value' : for_cost})
+      let input_rev_c = $('<input>', {'type' : 'number', 'value' : rev_cost})
+
       let check_active = $('<input>', {'type' : 'checkbox', 'checked' : active})
       let check_spont = $('<input>', {'type' : 'checkbox', 'checked' : is_spontaneous})
       let check_review = $('<input>', {'type' : 'checkbox', 'checked' : is_review})
@@ -197,6 +255,28 @@ class EscherTooltipAnnotation {
         }
       })
        */
+
+      let rev_options = {'=': '= Reversible', '>': '> Forward', '<': '< Reverse'};
+      container.append(that.build_form_group('Gapfilling:', that.build_select_controls('select_gf', rev_options, o.gapfill_direction, function() {
+        that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'gapfill_direction', $(this).val())
+      })))
+      container.append(that.build_form_group('Direction:', that.build_select_controls('select_dir', rev_options, o.direction, function() {
+        that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'direction', $(this).val())
+      })))
+      let type_options = {
+        'conditional': 'Conditional',
+        'gapfilling': 'Gapfilling',
+        'spontaneous': 'Spontaneous',
+        'universal': 'Universal'
+      };
+      container.append(that.build_form_group('Type:', that.build_radio_controls('select_type', type_options, o.type, function() {
+        that.curation_api.post_template_reaction_attribute(template_id, rxn_id, 'type', $(this).val())
+      })))
+
+
+      container.append($('<div>').append('Base cost: ').append(input_base_c))
+               .append($('<div>').append('Forward cost: ').append(input_for_c))
+               .append($('<div>').append('Reverse cost: ').append(input_rev_c))
 
       container.append($('<div>').append('Include reaction in template? ').append(check_active))
                .append($('<div>').append('Spontaneous ? ').append(check_spont))
@@ -261,6 +341,7 @@ class EscherTooltipAnnotation {
     let that = this;
     this.active_xhr += 1;
     this.curation_api.post_template_annotation_reaction_status(template_id, rxn_id, cmp_config, genome_set_id, function(e) {
+      console.log('post_template_annotation_reaction_status', e)
       container.html('');
       container.append(that.escher_tooltip_annotation(
         rxn_id,
@@ -289,8 +370,9 @@ class EscherTooltipAnnotation {
     let that = this
     if (ct.length) {
       let rxn_annotation_container = $('<div>', {'class' : 'annotation-section'}).html('<i class="fas fa-spinner fa-spin"></i> Loading: ' + rxn_id);
-      console.log('ttt2', rxn_id, seed_id, cmp_config, template_id);
+      console.log('ttt3', rxn_id, seed_id, cmp_config, template_id);
       if (wide) {
+        console.log('wide')
         let left_section = $('<div>', {'class' : 'col-md-3'})
         let center_section = $('<div>', {'class' : 'col-md-6'})
         let right_section = $('<div>', {'class' : 'col-md-3'})
@@ -309,6 +391,7 @@ class EscherTooltipAnnotation {
         that.build_controls_container(rxn_controls_container, rxn_id, template_id);
         that.build_comments_container(rxn_comments_container, rxn_id, template_id);
       } else {
+        console.log('simple')
         let center_section = $('<div>', {'class' : 'col-md-12'})
         let section = $('<div>', {'class' : 'row'}).append(center_section);
         center_section.append(rxn_annotation_container);

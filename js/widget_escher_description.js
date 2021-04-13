@@ -71,17 +71,32 @@ class WidgetEscherMetadata {
             .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf05e'; });
         x_position++;
       }
-      if (attr.spontaneous) {
+      if (attr.type && attr.type === 'spontaneous') {
         //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
           g.insert('text').attr('class', '').attr('x', x_offset + 30 * x_position)
             .attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: green; font-size: 30px')
             .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf5d2'; });
         x_position++;
       }
+      if (attr.type && attr.type === 'universal') {
+        //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
+        g.insert('text').attr('class', '').attr('x', x_offset + 30 * x_position)
+          .attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: blue; font-size: 30px')
+          .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf069'; });
+        x_position++;
+      }
+      if (attr.type && attr.type === 'gapfilling') {
+        //n.insert('g').attr('id', 'n' + uid + '_label_meta_attributes').attr('transform', 'translate(' + (140 + 30 * x_position) +',' + (0 + 20 * y_position) +')')
+        g.insert('text').attr('class', '').attr('x', x_offset + 30 * x_position)
+          .attr('style', 'font-family: "Font Awesome 5 Free" !important; font-weight: 900; fill: red; font-size: 30px')
+          .attr("font-family","Font Awesome 5 Free").attr('visibility', 'visible').text(function(d) { return '\uf542'; });
+        x_position++;
+      }
     });
   }
 
   display_attributes() {
+    console.log('display attributes:')
     if (!this.drawing) {
       console.log('WidgetEscherMetadata', 'display_attributes')
       this.drawing = true;
@@ -89,10 +104,14 @@ class WidgetEscherMetadata {
       let that = this;
       //template_id, rxn_id,
       let database_id_to_node = this.get_database_id_to_node();
+      let ids = {}
       _.each(database_id_to_node, function(nodes, id) {
         console.log('display_attributes', id)
+
         _.each(nodes, function(node, uid) {
           that.xhr_calls++;
+          ids[id] = undefined;
+          /*
           that.curation_api.get_template_reaction_attribute(that.env.config.target_template, id, function(e) {
             that.rxn_attributes[id] = e
             that.draw_attributes(uid, e);
@@ -103,6 +122,33 @@ class WidgetEscherMetadata {
               that.drawing = true;
             }
           })
+          */
+        });
+
+      });
+      that.curation_api.get_template_reactions_attribute(that.env.config.target_template, _.keys(ids), function(e) {
+        _.each(e, function(attributes, rxn_id) {
+          ids[rxn_id] = attributes;
+        })
+        _.each(database_id_to_node, function(nodes, id) {
+          _.each(nodes, function(node, uid) {
+            if (ids[id]) {
+              that.draw_attributes(uid, ids[id]);
+            }
+            /*
+            that.curation_api.get_template_reaction_attribute(that.env.config.target_template, id, function(e) {
+              that.rxn_attributes[id] = e
+              that.draw_attributes(uid, e);
+              that.xhr_calls--;
+              if (that.xhr_calls == 0) {
+                that.drawing = false;
+              } else {
+                that.drawing = true;
+              }
+            })
+            */
+          });
+
         });
       });
     }

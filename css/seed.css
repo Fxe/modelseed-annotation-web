@@ -1,3 +1,5 @@
+
+
 .top-bar-seed {
     font-size: 1em;
     background-color: #2D224E;
@@ -39,8 +41,8 @@
 }
 
 .btn-seed-sm {
-    padding: 2px 2px;
-    font-size: 10px;
+    padding: 2px 2px !important;
+    font-size: 10px !important;
 }
 
 .btn-seed-md {
@@ -78,11 +80,15 @@
 }
 .label-annotation-source {
     background-color:black;
+    color: #fff !important;
+    font-size: x-small !important;
 }
 
 .label-annotation-evi {
-    color: #000;
+    /*color: #000; */
     background-color:darkolivegreen;
+    color: #fff !important;
+    font-size: x-small !important;
 }
 
 .badge-annotation-evi {
@@ -109,7 +115,7 @@
 .label {
     display: inline;
     padding: .2em .6em .3em;
-    font-size: 75%;
+    /*font-size: 75%;*/
     font-weight: 700;
     line-height: 1;
     color: #fff;
@@ -118,6 +124,11 @@
     vertical-align: baseline;
     border-radius: .25em;
     font-size: x-small;
+}
+
+.seed-annotation-group > span {
+    color: #fff !important;
+    font-size: x-small !important;
 }
 
 .seed-annotation-group-second {
@@ -142,14 +153,14 @@
     border: 2px solid #fff;
 }
 .seed-annotation-control-label {
-    font-size: 8px;
+    font-size: 8px !important;
     position: absolute;
     white-space: nowrap;
     line-height: 6px;
     top: -5px;
     height: 10px;
     background-color: #fff;
-    color: #04A0B5;
+    color: #04A0B5 !important;
     font-weight: bold;
     left: 4px;
 }
@@ -163,7 +174,7 @@
 .escher_right_panel {
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     background-color: #30BCCF !important;
-    color: #fff;
+    color: #fff !important;
     border: solid 1px #2D224E;
     position: absolute;
     top: 80px;
@@ -274,3 +285,8 @@
     margin: 10px;
 }
 */
+
+
+
+
+

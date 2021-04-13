@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>Escher Annotation</title>
-
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/bootstrap.css" />
     <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
     <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="css/solid.min.css" />
     <link rel="stylesheet" href="css/regular.min.css" />
     <link rel="stylesheet" href="css/select2.min.css" />
-    <link rel="stylesheet" href="css/seed.css" />
     <link rel="stylesheet" href="css/builder.css" />
     <link rel="stylesheet" href="css/builder-bootstrap.css" />
+    <link rel="stylesheet" href="css/seed.css" />
     <link rel="stylesheet" href="css/escher-shadow.css" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
 
     <style>
       .omg {
@@ -24,6 +24,14 @@
         left: 3px;
         /*top: 5%;*/
         margin-top: 50px;
+        padding-left: 0;
+        z-index: 1;
+      }
+      .bar2 {
+        position: absolute;
+        left: 3px;
+        /*top: 5%;*/
+        margin-top: 100px;
         padding-left: 0;
         z-index: 1;
       }
@@ -130,6 +138,7 @@
       </div>
 
       <div id="left_panel" class="escher_right_panel"></div>
+
       <div class="escher-container omg">
         <ul class="nav nav-pills nav-space">
           <li>
@@ -160,6 +169,14 @@
             </label>
           </li>
           <li>
+            <label for="upload_model" class="btn btn-default simple-button" style="cursor: pointer">
+              <i class="fas fa-upload"></i>
+              <input type="file" id="upload_model" style="display:none">
+            </label>
+          </li>
+
+
+          <li>
             <button id="btn_test1"  class="btn btn-default simple-button" title="Download Map">
               <i class="fas fa-angry"></i>
             </button>
@@ -185,15 +202,19 @@
             </button>
           </li>
           <li>
-            <button class="btn btn-default simple-button" title="Download Map">
+            <button id="btn_test6"   class="btn btn-default simple-button" title="Download Map">
               <i class="fas fa-dna"></i>
             </button>
           </li>
           <li>
-            <button class="btn btn-default simple-button" title="Download Map">
+            <button id="btn_test7"   class="btn btn-default simple-button" title="Download Map">
               <i class="fas fa-microscope"></i>
             </button>
           </li>
+        </ul>
+      </div>
+      <div class="escher-container bar2">
+        <ul id="escher-seed-bar2" class="nav nav-pills nav-space">
         </ul>
       </div>
       <div id="map_container">Loading map ...</div>
@@ -590,6 +611,7 @@ Load Map
   <script src="js/map_adapter.js"></script>
   <script src="js/model_loader.js"></script>
   <script src="js/map_loader.js"></script>
+  <script src="js/escher_design.js"></script>
 
   <script>
     console.log('index.js');
@@ -621,14 +643,28 @@ Load Map
     };
 
 
-
     $('#upload').on('change', function() {
       console.log(this);
       let file = this.files[0];
       let reader = new FileReader();
       console.log(file);
       reader.onload = function(e) {
-        widget_escher.change_map(JSON.parse(e.target.result));
+        let escherMap = JSON.parse(e.target.result);
+        console.log('map', escherMap);
+        widget_escher.change_map(escherMap);
+      };
+      reader.readAsText(file);
+    });
+
+    $('#upload_model').on('change', function() {
+      console.log(this);
+      let file = this.files[0];
+      let reader = new FileReader();
+      console.log(file);
+      reader.onload = function(e) {
+        let escherModel = JSON.parse(e.target.result);
+        console.log('model', escherModel);
+        widget_escher.change_model(escherModel);
       };
       reader.readAsText(file);
     });

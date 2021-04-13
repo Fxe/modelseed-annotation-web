@@ -246,7 +246,7 @@
 
       let template_id = env.config['target_template'];
       let t = new EscherTooltipAnnotation(null, api, env, 'view_container');
-      console.log(rxn_id, seed_id, cmp_config, template_id);
+      console.log('rxn_id', rxn_id, 'seed_id', seed_id, 'cmp_config', cmp_config, 'template_id', template_id);
       t.ttt2(rxn_id, seed_id, cmp_config, template_id, env.config['genome_set'], true);
     } else {
       $('#view_container').html('Missing parameters: rxn_id=' + rxn_id +
