@@ -9,16 +9,18 @@ class WidgetEscherLeftPanel {
   }
 
   init_container() {
-    this.container.html("");
-    this.container.append($('<div>', {}).html('Pathways'));
-    this.section_pwy = $('<div>', {'class' : 'seed-escher-panel-right-content'});
-    this.container.append(this.section_pwy);
-    let section_rxn = $('<div>', {}).html('Reaction')
-    let section_met = $('<div>', {}).html('Metabolite')
-    this.metaboliteContainer = $('<div>', {'class' : 'seed-escher-panel-right-content'})
-    this.container.append(section_rxn)
-                  .append(section_met)
-                  .append(this.metaboliteContainer);
+    if (this.container) {
+      this.container.html("");
+      this.container.append($('<div>', {}).html('Pathways'));
+      this.section_pwy = $('<div>', {'class' : 'seed-escher-panel-right-content'});
+      this.container.append(this.section_pwy);
+      let section_rxn = $('<div>', {}).html('Reaction')
+      let section_met = $('<div>', {}).html('Metabolite')
+      this.metaboliteContainer = $('<div>', {'class' : 'seed-escher-panel-right-content'})
+      this.container.append(section_rxn)
+        .append(section_met)
+        .append(this.metaboliteContainer);
+    }
   }
 
   getMetaboliteContainer() {
@@ -26,19 +28,26 @@ class WidgetEscherLeftPanel {
   }
 
   refresh() {
-    this.section_pwy.html("");
-    let pwy_data = this.escher.get_map_pathway_data();
-    let pwy_depth = 0;
-    let that = this;
+    if (this.section_pwy) {
+      this.section_pwy.html("");
+      let pwy_data = this.escher.get_map_pathway_data();
+      let pwy_depth = 0;
+      let that = this;
 
-    _.each(pwy_data, function(pwy_data, pwy_id) {
-      that.add_pathway_option(pwy_id, pwy_data, pwy_depth, that.section_pwy);
-    });
+      _.each(pwy_data, function(pwy_data, pwy_id) {
+        that.add_pathway_option(pwy_id, pwy_data, pwy_depth, that.section_pwy);
+      });
+    }
   }
 
   paint_reaction_path(id, css) {
     let ct = $('#' + id);
     ct.children( "g" ).children('path').css(css);
+  }
+
+  paint_reaction_label(id, css) {
+    let ct = $('#' + id);
+    ct.children( "g" ).children('text').css(css);
   }
 
   update_paint() {

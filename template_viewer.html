@@ -50,19 +50,25 @@
 
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="base" role="tabpanel" aria-labelledby="base-tab">
-          <div class="container">
+          <div class="container-fluid">
             <div class="row">
               <div class="col-md-12">
-                <table>
-
+                <table id="table-template-base" class="table table-striped table-hover" style="margin-left: auto; margin-right: auto;">
                 </table>
-
               </div>
             </div>
           </div>
         </div>
         <div class="tab-pane fade" id="biomass" role="tabpanel" aria-labelledby="biomass-tab">biomass</div>
-        <div class="tab-pane fade" id="compartment" role="tabpanel" aria-labelledby="compartment-tab">compartment</div>
+        <div class="tab-pane fade" id="compartment" role="tabpanel" aria-labelledby="compartment-tab">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <table id="table-template-compartments" class="table table-striped"></table>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tab-pane fade" id="compound" role="tabpanel" aria-labelledby="compound-tab">
           <div class="container-fluid">
             <div class="row">
@@ -116,8 +122,64 @@
 <script src="js/curation_env.js"></script>
 <script src="js/kbase_api.js"></script>
 <script>
+  const init_table_base = function(ct_table, template_data) {
+    let body = $('<tbody>');
+    body.append($('<tr>').append($('<td>').text('ID')).append($('<td>').text(template_data['id'])));
+    body.append($('<tr>').append($('<td>').text('Name')).append($('<td>').text(template_data['name'])));
+    body.append($('<tr>').append($('<td>').text('Biochemistry')).append($('<td>').text(template_data['biochemistry_ref'])));
+    body.append($('<tr>').append($('<td>').text('Domain')).append($('<td>').text(template_data['domain'])));
+    body.append($('<tr>').append($('<td>').text('Type')).append($('<td>').text(template_data['type'])));
+    body.append($('<tr>').append($('<td>').text('Biochemistry')).append($('<td>').text(template_data['biochemistry_ref'])));
 
+    body.append($('<tr>').append($('<td>').text('Compartments')).append($('<td>').text(template_data['compartments'].length)));
+    body.append($('<tr>').append($('<td>').text('Compounds')).append($('<td>').text(template_data['compounds'].length)));
+    body.append($('<tr>').append($('<td>').text('Comp Compounds')).append($('<td>').text(template_data['compcompounds'].length)));
+    body.append($('<tr>').append($('<td>').text('Biomasses')).append($('<td>').text(template_data['biomasses'].length)));
+    body.append($('<tr>').append($('<td>').text('Reactions')).append($('<td>').text(template_data['reactions'].length)));
+    body.append($('<tr>').append($('<td>').text('Complexes')).append($('<td>').text(template_data['complexes'].length)));
+    body.append($('<tr>').append($('<td>').text('Roles')).append($('<td>').text(template_data['roles'].length)));
+    ct_table.append(body);
+  };
   const init_table = function(template_data) {
+    const dt_compartment_config = {
+      aoColumns : [
+        {
+          sTitle : 'ID',
+          sName : 'id',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'Name',
+          sName : 'name',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'pH',
+          sName : 'pH',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'index',
+          sName : 'index',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        },
+        {
+          sTitle : 'hierarchy',
+          sName : 'hierarchy',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true
+        }
+      ]
+    };
     const dt_compound_config = {
       aoColumns : [
         {
@@ -229,13 +291,11 @@
           let role_badge = render_complex_role(complex_role);
           html += '<div class="row"><div class="col-sm-12 text-left" style="margin: 1px">' + role_badge + '</div></div>'
         });
-        html += '</div>'
+        html += '</div>';
         return html;
       } else {
         return '<div class="badge badge-dark"><div>' + complex_ref + '</div></div>';
       }
-
-
     };
 
     const dt_complex_config = {
@@ -313,6 +373,9 @@
           bVisible : true,
           bSearchable : true,
           bSortable : true,
+          "mRender": function (data) {
+            return data[0] + ' (Direction), ' + data[1] + ' (Gapfill)'
+          }
         },
         {
           sTitle : 'Penalty',
@@ -342,6 +405,13 @@
           bSortable : true,
         },
         {
+          sTitle : 'Type',
+          sName : 'type',
+          bVisible : true,
+          bSearchable : true,
+          bSortable : true,
+        },
+        {
           sTitle : 'Complex',
           sName : 'complex',
           bVisible : true,
@@ -358,6 +428,8 @@
         }
       ]
     };
+    init_table_base($('#table-template-base'), template_data);
+    init_compartment_table(template_data, $("#table-template-compartments").DataTable(dt_compartment_config));
     init_compound_table(template_data, $("#table-template-compounds").DataTable(dt_compound_config));
     init_role_table(template_data, $("#table-template-roles").DataTable(dt_role_config));
     init_complex_table(template_data, $("#table-template-complexes").DataTable(dt_complex_config));
@@ -380,7 +452,19 @@
 
 
   //
-
+  const init_compartment_table = function(template_data, table) {
+    let rows = [];
+    _.each(template_data['compartments'], function(o) {
+      rows.push([
+        o['id'],
+        o['name'],
+        o['pH'],
+        o['index'],
+        o['hierarchy']
+      ])
+    });
+    table.rows.add(rows).draw();
+  };
   const init_compound_table = function(template_data, table) {
     let rows = [];
     _.each(template_data['compounds'], function(o_compound) {
@@ -400,15 +484,17 @@
   const init_reaction_table = function(template_data, table) {
     let rows = [];
     _.each(template_data['reactions'], function(o_reaction) {
+
       rows.push([
         o_reaction['id'],
         [o_reaction['name'], o_reaction['templateReactionReagents']],
-        o_reaction['direction'],
+        [o_reaction['direction'], o_reaction['GapfillDirection']],
         [o_reaction['forward_penalty'], o_reaction['reverse_penalty']],
         [o_reaction['maxrevflux'], o_reaction['maxforflux']],
         o_reaction['templatecompartment_ref'],
+        o_reaction['type'],
         o_reaction['templatecomplex_refs'],
-      ])
+      ]);
     });
     table.rows.add(rows).draw();
   };
@@ -446,8 +532,13 @@
   const example_eq = [{"coefficient":-1,"templatecompcompound_ref":"~/compcompounds/id/cpd00067_e"},{"coefficient":-1,"templatecompcompound_ref":"~/compcompounds/id/cpd00182_e"},{"coefficient":1,"templatecompcompound_ref":"~/compcompounds/id/cpd00067_c"},{"coefficient":1,"templatecompcompound_ref":"~/compcompounds/id/cpd00182_c"}]
   const render_eq_compound_block = function(o) {
     let block = $('<div>', {'class' : 'float-left'});
-    block.append(o['coefficient']);
+    if (Math.abs(o['coefficient']) !== 1) {
+      block.append(Math.abs(o['coefficient']));
+      block.append(" ")
+    }
     block.append(o['templatecompcompound_ref'].split('/').slice(-1)[0]);
+    //block.append(o['coefficient']);
+    //block.append();
     return block;
   };
   const render_eq = function(reaction_reagents) {
@@ -474,17 +565,17 @@
     }
     for (let i = 1; i < lhs.length; i++) {
       let o = lhs[i];
-      ct.append($('<div>', {'class' : 'float-left'}).append($('<i>', {'class' : 'fas fa-plus-square'})));
+      ct.append($('<div>', {'class' : 'float-left', 'style': 'margin: 0px 4px 0px 4px;'}).append($('<i>', {'class' : 'fas fa-plus-square'})));
       ct.append(render_eq_compound_block(o));
     }
-    ct.append($('<div>', {'class' : 'float-left'}).append($('<i>', {'class' : 'fas fa-equals'})));
+    ct.append($('<div>', {'class' : 'float-left', 'style': 'margin: 0px 4px 0px 4px;'}).append($('<i>', {'class' : 'fas fa-equals'})));
     if (rhs.length > 0) {
       let o = rhs[0];
       ct.append(render_eq_compound_block(o));
     }
     for (let i = 1; i < rhs.length; i++) {
       let o = rhs[i];
-      ct.append($('<div>', {'class' : 'float-left'}).append($('<i>', {'class' : 'fas fa-plus-square'})));
+      ct.append($('<div>', {'class' : 'float-left', 'style': 'margin: 0px 4px 0px 4px;'}).append($('<i>', {'class' : 'fas fa-plus-square'})));
       ct.append(render_eq_compound_block(o));
     }
     return ct;

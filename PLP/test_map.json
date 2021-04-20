@@ -1,0 +1,87 @@
+[
+  {
+    "map_name":"new_map","map_id":"5EZZvVG7caKa",
+    "map_description":"\nLast Modified Mon Apr 19 2021 02:10:42 GMT-0500 (Central Daylight Time)",
+    "homepage":"https://escher.github.io","schema":"https://escher.github.io/escher/jsonschema/1-0-0#"
+  },
+  {
+    "reactions": {
+      "1835":{
+        "name":"Cysteine transaminase","bigg_id":"CYSTA",
+        "reversibility":false,"label_x":12076.303958892822,"label_y":5670.805410385132,
+        "gene_reaction_rule":"b0077 and b0078","genes":[
+          {
+            "name":"Modulator of drug activity B",
+            "notes":{"original_bigg_ids":["b0077"]},
+            "annotation":{},
+            "bigg_id":"b0077"
+          },
+          {
+            "name":"Modulator of drug activity B",
+            "notes":{"original_bigg_ids":["b0078"]},
+            "annotation":{},
+            "bigg_id":"b0078"
+          }
+        ],
+        "metabolites":[
+          {"bigg_id":"akg_c","coefficient":-1},
+          {"bigg_id":"cys__L_c","coefficient":-1},
+          {"bigg_id":"glu__L_c","coefficient":1},
+          {"bigg_id":"mercppyr_c","coefficient":1}
+        ],
+        "segments":{
+          "1829":{"from_node_id":"905","to_node_id":"906","b1":null,"b2":null},
+          "1830":{"from_node_id":"907","to_node_id":"906","b1":null,"b2":null},
+          "1831":{"from_node_id":"905","to_node_id":"908","b1":{"x":12173.179264068604,"y":5714.586538314819},"b2":{"x":12216.085819244385,"y":5754.288808822632}},
+          "1832":{"from_node_id":"905","to_node_id":"916","b1":{"x":12458.875858306885,"y":5712.696035385132},"b2":{"x":12546.035678863525,"y":5739.728078842163}},
+          "1833":{"from_node_id":"907","to_node_id":"909","b1":{"x":12060.303958892822,"y":5710.805410385132},"b2":{"x":12055.053958892822,"y":5728.805410385132}},
+          "1834":{"from_node_id":"907","to_node_id":"904","b1":{"x":12064.303958892822,"y":5710.805410385132},"b2":{"x":11743.481998443604,"y":5710.805471420288}}
+        }
+      },
+      "2246":{
+        "name":"3-mercaptopyruvate sulfurtransferase","bigg_id":"MCPST","reversibility":false,
+        "label_x":11471.648014068604,"label_y":5766.136037826538,
+        "gene_reaction_rule":"b0077 or b0078",
+        "genes":[
+          {
+            "name":"Modulator of drug activity B",
+            "notes":{"original_bigg_ids":["b0077"]},
+            "annotation":{},
+            "bigg_id":"b0077"
+          },
+          {
+            "name":"Modulator of drug activity B",
+            "notes":{"original_bigg_ids":["b0078"]},
+            "annotation":{},
+            "bigg_id":"b0078"
+          }
+        ],
+        "metabolites":[
+          {"bigg_id":"cyan_c","coefficient":-1},
+          {"bigg_id":"h_c","coefficient":1},
+          {"bigg_id":"mercppyr_c","coefficient":-1},
+          {"bigg_id":"pyr_c","coefficient":1},
+          {"bigg_id":"tcynt_c","coefficient":1}
+        ],
+        "segments":{
+          "2239":{"from_node_id":"1276","to_node_id":"1277","b1":null,"b2":null},
+          "2240":{"from_node_id":"1278","to_node_id":"1277","b1":null,"b2":null},
+          "2241":{"from_node_id":"1276","to_node_id":"1279","b1":{"x":11575.731998443604,"y":5710.805471420288},"b2":{"x":11580.981998443604,"y":5692.805471420288}},
+          "2242":{"from_node_id":"1278","to_node_id":"1280","b1":{"x":11443.731998443604,"y":5710.805471420288},"b2":{"x":11438.481998443604,"y":5728.805471420288}},
+          "2243":{"from_node_id":"1276","to_node_id":"904","b1":{"x":11571.731998443604,"y":5710.805471420288},"b2":{"x":11625.981998443604,"y":5710.805471420288}},
+          "2244":{"from_node_id":"1278","to_node_id":"903","b1":{"x":11447.731998443604,"y":5710.805471420288},"b2":{"x":11149.198795318604,"y":5702.861379623413}},
+          "2245":{"from_node_id":"1278","to_node_id":"1281","b1":{"x":11443.731998443604,"y":5710.805471420288},"b2":{"x":11438.481998443604,"y":5692.805471420288}}
+        }
+      },
+      "2254":{"name":"Cysteine Desulfhydrase","bigg_id":"CYSDS","reversibility":false,
+        "label_x":11502.298679351807,"label_y":5406.907583236694,
+        "gene_reaction_rule":"","genes":[],
+        "metabolites":[
+          {"bigg_id":"cys__L_c","coefficient":-1},
+          {"bigg_id":"h2o_c","coefficient":-1},
+          {"bigg_id":"h2s_c","coefficient":1},
+          {"bigg_id":"nh4_c","coefficient":1},
+          {"bigg_id":"pyr_c","coefficient":1}
+        ],
+        "segments":{
+          "2247":{"from_node_id":"1282","to_node_id":"1283","b1":null,"b2":null},"2248":{"from_node_id":"1284","to_node_id":"1283","b1":null,"b2":null},"2249":{"from_node_id":"1282","to_node_id":"916","b1":{"x":11596.423679351807,"y":5363.493276596069},"b2":{"x":12478.859226226807,"y":5381.367788314819}},"2250":{"from_node_id":"1282","to_node_id":"1285","b1":{"x":11600.423679351807,"y":5363.493276596069},"b2":{"x":11605.673679351807,"y":5345.493276596069}},"2251":{"from_node_id":"1284","to_node_id":"1286","b1":{"x":11468.423679351807,"y":5363.493276596069},"b2":{"x":11463.173679351807,"y":5381.493276596069}},"2252":{"from_node_id":"1284","to_node_id":"1287","b1":{"x":11468.423679351807,"y":5363.493276596069},"b2":{"x":11463.173679351807,"y":5345.493276596069}},"2253":{"from_node_id":"1284","to_node_id":"903","b1":{"x":11035.492038726807,"y":5351.577016830444},"b2":{"x":11108.349460601807,"y":5522.377309799194}}}}},"nodes":{"903":{"node_type":"metabolite","x":11077.297061920166,"y":5707.565908432007,"bigg_id":"pyr_c","name":"Pyruvate","label_x":10927.565201568603,"label_y":5716.354848861694,"node_is_primary":true},"904":{"node_type":"metabolite","x":11684.731998443604,"y":5710.805471420288,"bigg_id":"mercppyr_c","name":"Mercaptopyruvate","label_x":11737.188858795165,"label_y":5751.468008041382,"node_is_primary":true},"905":{"node_type":"multimarker","x":12146.303958892822,"y":5710.805410385132},"906":{"node_type":"midmarker","x":12126.303958892822,"y":5710.805410385132},"907":{"node_type":"multimarker","x":12106.303958892822,"y":5710.805410385132},"908":{"node_type":"metabolite","x":12257.820560455322,"y":5795.881582260132,"bigg_id":"akg_c","name":"2-Oxoglutarate","label_x":12214.620560455322,"label_y":5835.881582260132,"node_is_primary":false},"909":{"node_type":"metabolite","x":12021.303958892822,"y":5790.805410385132,"bigg_id":"glu__L_c","name":"L-Glutamate","label_x":11978.103958892822,"label_y":5830.805410385132,"node_is_primary":false},"916":{"node_type":"metabolite","x":12541.375807762146,"y":5372.709707260132,"bigg_id":"cys__L_c","name":"L-Cysteine","label_x":12567.860053825378,"label_y":5471.092763900757,"node_is_primary":true},"1276":{"node_type":"multimarker","x":11529.731998443604,"y":5710.805471420288},"1277":{"node_type":"midmarker","x":11509.731998443604,"y":5710.805471420288},"1278":{"node_type":"multimarker","x":11489.731998443604,"y":5710.805471420288},"1279":{"node_type":"metabolite","x":11614.731998443604,"y":5630.805471420288,"bigg_id":"cyan_c","name":"Hydrogen cyanide","label_x":11582.331998443602,"label_y":5610.805471420288,"node_is_primary":false},"1280":{"node_type":"metabolite","x":11404.731998443604,"y":5790.805471420288,"bigg_id":"h_c","name":"H+","label_x":11388.531998443603,"label_y":5830.805471420288,"node_is_primary":false},"1281":{"node_type":"metabolite","x":11404.731998443604,"y":5630.805471420288,"bigg_id":"tcynt_c","name":"Thiocyanate","label_x":11366.931998443604,"label_y":5610.805471420288,"node_is_primary":false},"1282":{"node_type":"multimarker","x":11554.423679351807,"y":5363.493276596069},"1283":{"node_type":"midmarker","x":11534.423679351807,"y":5363.493276596069},"1284":{"node_type":"multimarker","x":11514.423679351807,"y":5363.493276596069},"1285":{"node_type":"metabolite","x":11639.423679351807,"y":5283.493276596069,"bigg_id":"h2o_c","name":"H2O H2O","label_x":11612.423679351807,"label_y":5263.493276596069,"node_is_primary":false},"1286":{"node_type":"metabolite","x":11429.423679351807,"y":5443.493276596069,"bigg_id":"h2s_c","name":"Hydrogen sulfide","label_x":11402.423679351807,"label_y":5483.493276596069,"node_is_primary":false},"1287":{"node_type":"metabolite","x":11429.423679351807,"y":5283.493276596069,"bigg_id":"nh4_c","name":"Ammonium","label_x":11402.423679351807,"label_y":5263.493276596069,"node_is_primary":false}},"text_labels":{},"canvas":{"x":10771.337284088135,"y":5100.585397720337,"width":1966.8508110046387,"height":880.2012233734131}}]
