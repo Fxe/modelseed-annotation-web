@@ -204,7 +204,11 @@
             sName : 'ko',
             bVisible : true,
             bSearchable : false,
-            bSortable : false
+            bSortable : false,
+            "mRender": function (data, type, row) {
+              let url = 'https://www.kegg.jp/entry/' + data.join('+');
+              return '<a href="' + url + '" target="_blank">' + data.join('; ') + '</a>';
+            }
           },
           {
             sTitle : 'Version',

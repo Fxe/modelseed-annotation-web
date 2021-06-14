@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>PLP Title</title>
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+  <link rel="stylesheet" href="../css/builder.css" />
+  <link rel="stylesheet" href="../css/builder-bootstrap.css" />
+  <link rel="stylesheet" href="../css/fontawesome.min.css" />
+  <link rel="stylesheet" href="../css/solid.min.css" />
+  <link rel="stylesheet" href="../css/regular.min.css" />
+  <style>
+    .omg {
+      position: absolute;
+      left: 3px;
+      /*top: 5%;*/
+      margin-top: 50px;
+      padding-left: 0;
+      z-index: 1;
+    }
+    .bar2 {
+      position: absolute;
+      left: 3px;
+      /*top: 5%;*/
+      margin-top: 100px;
+      padding-left: 0;
+      z-index: 1;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+    #map_container{
+      /* background-color: black; */
+      flex-grow : 1;
+      height: 100%;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .bar {
+      fill: steelblue;
+    }
+
+    .x.axis path {
+      display: none;
+    }
+
+    .wutt {
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+    }
+
+    .nav-space > li {
+      margin: 1px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container-fluid wutt">
+    <div class="escher-container">
+
+    </div>
+    <div id="map_container">Loading map ...</div>
+  </div>
+</body>
+<script src="../js/d3-5.16.0.js"></script>
+<script src="../escher.js"></script>
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script src="../js/underscore-1.9.1.min.js"></script>
+<script src="../js/popper.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/widget_escher_modelseed.js"></script>
+<script src="../js/widget_escher_left_panel.js"></script>
+<script>
+
+  function processData(allText) {
+    let allTextLines = allText.split(/\r\n|\n/);
+    let headers = allTextLines[0].split(',');
+    let lines = [];
+
+    for (let i=1; i<allTextLines.length; i++) {
+      let data = allTextLines[i].split(',');
+      if (data.length == headers.length) {
+
+        let tarr = [];
+        for (let j=0; j<headers.length; j++) {
+          //tarr.push(headers[j]+":"+data[j]);
+          tarr.push(data[j]);
+        }
+        lines.push(tarr);
+      }
+    }
+    return lines;
+  }
+
+  let b = undefined;
+
+  function load_metabolite_data(url, cb) {
+    $.ajax({
+      type: "GET",
+      url: "pdxBJvWT_metabo_plus.csv",
+      dataType: "text",
+      success: function(data) {
+        let csv_data = processData(data);
+        let metab_data = {};
+        _.each(csv_data, function(p) {
+          metab_data[p[0]]= p[1];
+        });
+        b.set_metabolite_data(metab_data);
+        if (cb) {
+          cb(data);
+        }
+      }
+    });
+  }
+
+  function load_gene_data(url, cb) {
+    $.ajax({
+      type: "GET",
+      url: "pdxBJvWT_expression_plus.csv",
+      dataType: "text",
+      success: function(data) {
+        let csv_data = processData(data);
+        let dd = {};
+        _.each(csv_data, function(p) {
+          dd[p[0]]= p[1];
+        });
+        b.set_gene_data(dd);
+        if (cb) {
+          cb(data);
+        }
+      }
+    });
+  }
+
+  var w_escher = undefined;
+
+  const color_compartment_config = {
+    "[\"c0\",\"m0\"]": 'rgb(255, 0, 0)',
+    "[\"c0\",\"e0\"]": 'rgb(255,162,10)',
+    "[\"c0\",\"r0\"]": 'rgb(184,123,255)',
+    "[\"c0\"]": 'rgb(0,102,0)',
+    "[\"m0\"]": 'rgb(153, 0, 0)',
+    "[\"e0\"]": 'rgb(204, 204, 0)',
+    "[\"r0\"]": 'rgb(105,11,204)',
+  };
+
+  const color_compartment = function(widget_escher, w_panel) {
+    let rxn_cmp = {};
+    let met_cmp = {};
+    let rxn_is_transport = {};
+    _.each(widget_escher.escher_model.metabolites, function(met) {
+      if (met && met.id && met.compartment) {
+        met_cmp[met.id] = met.compartment;
+      }
+    });
+    _.each(widget_escher.escher_model.reactions, function(rxn) {
+      rxn_cmp[rxn.id] = {};
+      _.each(rxn.metabolites, function(stoich_val, met_id) {
+        if (met_cmp[met_id]) {
+          rxn_cmp[rxn.id][met_cmp[met_id]] = true;
+        }
+      });
+      rxn_is_transport[rxn.id] = _.size(rxn_cmp[rxn.id]) > 1
+    });
+    let rxn_to_uid = widget_escher.get_rxn_to_uid();
+    _.each(widget_escher.escher_map[1].reactions, function(escher_rxn, rxn_uid) {
+
+      let rxn_id = escher_rxn['bigg_id'];
+      if (rxn_cmp[rxn_id]) {
+        let is_transport = rxn_is_transport[rxn_id];
+        if (rxn_to_uid[rxn_id]) {
+          _.each(rxn_to_uid[rxn_id], function(v, uid) {
+            let svg_uid = 'r' + uid;
+            if (is_transport) {
+              w_panel.paint_reaction_path(svg_uid, {'stroke-dasharray' : '30 10'});
+            }
+            let m = JSON.stringify(_.keys(rxn_cmp[rxn_id]).sort());
+            if (color_compartment_config[m]) {
+              w_panel.paint_reaction_path(svg_uid, {'stroke' : color_compartment_config[m]});
+              w_panel.paint_reaction_label(svg_uid, {'fill': color_compartment_config[m]})
+            } else {
+              console.log(m);
+            }
+             //== "[\"c0\",\"m0\"]"
+
+            //
+          });
+        }
+      }
+
+
+    });
+  };
+
+  $(function() {
+    let escher_builder = undefined;
+    let w_panel = new WidgetEscherLeftPanel();
+    const e_options = {
+      menu: '',
+      fill_screen: true
+      //tooltip_component: tooltip,
+    };
+    const widget_escher = new WidgetEscherModelseed(undefined, d3.select('#map_container'), e_options, false, true,
+      [w_panel]);
+    //w_escher = widget_escher;
+    $.getJSON("model.json", function(model) {
+      widget_escher.change_model(model);
+      $.getJSON("escher_map_fit.json", function(map_data) {
+        widget_escher.change_map(map_data);
+        b = widget_escher.escher_builder;
+        b.options.show_gene_reaction_rules = true;
+        b.map.draw_everything();
+        color_compartment(widget_escher, w_panel);
+        /*
+        $.ajax({
+          type: "GET",
+          url: "pdxBJvWT_metabo_plus.csv",
+          dataType: "text",
+          success: function(data) {
+            let csv_data = processData(data);
+            let metab_data = {};
+            _.each(csv_data, function(p) {
+              metab_data[p[0]]= p[1];
+            });
+            b.set_metabolite_data(metab_data);
+            b.options.show_gene_reaction_rules = true;
+            b.map.draw_everything();
+            load_metabolite_data(function() {
+              load_gene_data(function() {
+                _.each(toggle, function(v, k) {
+                  w_panel.paint_reaction_path(k, {'stroke-dasharray' : '10 10'});
+                  w_panel.paint_reaction_label(k, {'fill': 'teal', 'font-size': '60px'})
+                });
+              });
+            });
+
+          }
+        });
+        */
+
+        //escher_builder = escher.Builder(map_data, null, null, map_container, e_options);
+
+      });
+    });
+
+  });
+</script>
+</html>
