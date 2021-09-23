@@ -34,11 +34,13 @@ class WidgetEscherModelseed {
   constructor(container, map_container, e_options, has_modelselect = true, has_display_toggle = true, plugins = []) {
 
     this.escher_map = null;
+    this.maps = [];
     this.model = null;
     this.escher_model = null;
-    this.submodels = {}
+    this.submodels = {};
     this.biochem = null;
     this.toggle_escher_label = null;
+    this.fn_draw_underlay = undefined;
     this.escher_builder = escher.Builder(null, null, null, map_container, e_options);
     this.escher_builder.options.cofactors = [
       "atp", "adp", "nad", "nadh", "nadp", "nadph", "gtp", "gdp", "h", "coa", "ump", "h2o", "ppi", "akg",
@@ -50,9 +52,9 @@ class WidgetEscherModelseed {
       "cpd00010", //coa
       "cpd00015", "cpd00982", //fad, fadh2
       "cpd11620", "cpd11621", //red, ox ferredoxin
-    ]
+    ];
     this.container = container;
-    this.escher_display = "bigg_id"
+    this.escher_display = "bigg_id";
     this.options = {
       'z' : 'Generic',
       'c' : 'Cytosol',
@@ -93,7 +95,7 @@ class WidgetEscherModelseed {
       'gene' : {
         'default' : default_tooltip
       }
-    }
+    };
 
     this.tooltip = {
       'fn_tooltip_cpd': default_tooltip,
@@ -102,7 +104,35 @@ class WidgetEscherModelseed {
     };
   }
 
+  load_map_to_layer(map, layer_number) {
+    this.maps[layer_number] = map
+  }
 
+  flip(layer_number) {
+    if (this.maps[layer_number]) {
+      let t = this.maps[layer_number];
+      this.maps[layer_number] = widget_escher.escher_map;
+      this.escher_map = t;
+      this.render()
+    }
+
+  }
+
+  render() {
+    if (this.escher_map) {
+      let that = this;
+      this.change_map(this.escher_map);
+      if (that.fn_draw_underlay)
+      _.each(this.maps, function(escher_map) {
+        if (escher_map) {
+          that.fn_draw_underlay(escher_map, 0, 0);
+        }
+      });
+
+    } else {
+      alert('no map loaded')
+    }
+  }
 
   get_map_pathway_data() {
     if (this.escher_map && this.escher_map[0].metadata && this.escher_map[0].metadata.pathways) {

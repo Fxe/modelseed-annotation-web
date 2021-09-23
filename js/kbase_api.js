@@ -12,10 +12,15 @@ class KBaseAPI {
 
   get_object(id, workspace_id, token, fn_success, fn_always, fn_error) {
     let url = '/ws/' + workspace_id + '/' + id;
-    let p = id.split('/')
-    if (p.length == 3) {
+    let p = id.split('/');
+    if (p.length === 3) {
       url = '/ws/' + p[0] + '/' + p[1] + '/' + p[2];
     }
+    return this.get(url, fn_success, fn_always, fn_error, 30000, token);
+  }
+
+  get_object_escher_map(id, workspace_id, token, fn_success, fn_always, fn_error) {
+    let url = '/ws/' + workspace_id + '/' + id + '/escher_map';
     return this.get(url, fn_success, fn_always, fn_error, 30000, token);
   }
 
@@ -58,24 +63,24 @@ class KBaseAPI {
       timeout: timeout,
 
       complete: function(o) {
-        console.log('complete!')
+        console.log('complete!');
         if (fn_always) {
           fn_always(o);
         }
       },
       success: function(o) {
-        console.log('success!')
+        console.log('success!');
         if (fn_success) {
           fn_success(o);
         }
       },
       error: function(o) {
-        console.log('error!')
+        console.log('error!');
         if (fn_error) {
           fn_error(o);
         }
       },
-    }
+    };
     if (body) {
       ajax.data = JSON.stringify(body)
     }

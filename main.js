@@ -1,7 +1,7 @@
 /* global d3, escher */
 
-var tinier = escher.libs.tinier
-var tooltip_style = {
+let tinier = escher.libs.tinier
+let tooltip_style = {
   'min-width': '40px',
   'min-height': '10px',
   'border-radius': '2px',

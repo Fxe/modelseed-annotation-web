@@ -275,6 +275,10 @@ class CurationAPI {
     return this.post("/escher/merge", params, fn_success, fn_always, fn_error);
   }
 
+  post_escher_merge_map(params, fn_success, fn_always, fn_error) {
+    return this.post("/escher/merge2", params, fn_success, fn_always, fn_error);
+  }
+
   post_template_reaction_gene(template_id, rxn_id, params, fn_success, fn_always, fn_error) {
     return this.post("/template/" + template_id + "/reaction/" + rxn_id + "/gene", params, fn_success, fn_always, fn_error);
   }
