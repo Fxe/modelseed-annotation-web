@@ -104,8 +104,16 @@ class WidgetEscherModelseed {
     };
   }
 
+  load_map(fn_load, layer_number) {
+    let that = this;
+    fn_load(function(escher_map) {
+      that.load_map_to_layer(escher_map, layer_number);
+      that.render()
+    })
+  }
+
   load_map_to_layer(map, layer_number) {
-    this.maps[layer_number] = map
+    this.maps[layer_number] = JSON.parse(JSON.stringify(map))
   }
 
   flip(layer_number) {

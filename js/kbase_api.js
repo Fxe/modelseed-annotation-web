@@ -10,6 +10,15 @@ class KBaseAPI {
     return this.get(url, fn_success, fn_always, fn_error, 30000, token);
   }
 
+  save_object_escher_map(id, workspace_id, escher_map, token, fn_success, fn_always, fn_error) {
+    let url = '/ws/' + workspace_id + '/' + id;
+    let body = {
+      'kbase_type': 'KBaseFBA.EscherMap',
+      'data': escher_map
+    };
+    return this.put(url, body, fn_success, fn_always, fn_error, 600000, token)
+  }
+
   get_object(id, workspace_id, token, fn_success, fn_always, fn_error) {
     let url = '/ws/' + workspace_id + '/' + id;
     let p = id.split('/');
@@ -42,7 +51,7 @@ class KBaseAPI {
       clear_roles: clear_roles,
       clear_complexes: clear_complexes,
       rxn_ids: rxn_ids
-    }
+    };
     return this.put("/export/template", body, fn_success, fn_always, fn_error, 600000, token);
   }
 
