@@ -152,7 +152,12 @@
             </a>
           </li>
           <li>
-            <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-default simple-button" title="Map Catalog">
+            <a href="#" data-toggle="modal" data-target="#modal-model-select" class="btn btn-default simple-button" title="Model Select">
+              <i class="fas fa-file-code"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-default simple-button" title="Map Select">
               <i class="fas fa-map"></i>
             </a>
           </li>
@@ -231,6 +236,128 @@
         </button>
       </div>
       <div class="modal-body">
+        <ul class="nav nav-tabs" id="tab-group-map-load" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="ms-tab" data-toggle="tab" href="#tab-group-map-load-ms" role="tab" aria-controls="home" aria-selected="true">ModelSEED</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="kb-tab" data-toggle="tab" href="#tab-group-map-load-kb" role="tab" aria-controls="home" aria-selected="true"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="fl-tab" data-toggle="tab" href="#tab-group-map-load-fl" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-file-code"></i> File</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="hi-tab" data-toggle="tab" href="#tab-group-map-load-hi" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-history"></i> History</a>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="tab-content-map-load">
+          <div class="tab-pane fade show active" id="tab-group-map-load-ms" role="tabpanel" aria-labelledby="ms-tab">
+            Dataset: ModelSEED
+          </div>
+          <div class="tab-pane fade" id="tab-group-map-load-kb" role="tabpanel" aria-labelledby="kb-tab">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-1">
+                  <label for="s2-load-map-source">Workspace:</label>
+                </div>
+                <div class="col-md-9">
+                  <select style="width: 100%" id="s2-load-map-source"></select>
+                </div>
+                <div class="col-md-2">
+                  <button id="x"  class="btn btn-default simple-button" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                  </button>
+                  <button id="y"  class="btn btn-default simple-button" title="Load">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab-group-map-load-fl" role="tabpanel" aria-labelledby="fl-tab">
+            <div>
+              <form class="dropzone" id="demo-upload" action="/upload">
+                <div class="dz-message needsclick">
+                  Drop files here or click to upload.<br>
+                  <span class="note needsclick">(This is just a demo dropzone. Selected
+          files are <strong>not</strong> actually uploaded.)</span>
+                </div>
+              </form>
+              <div id="preview-template" style="display: none;">
+                <div class="dz-preview dz-file-preview">
+                  <div class="dz-image"><IMG data-dz-thumbnail=""></div>
+                  <div class="dz-details">
+                    <div class="dz-size"><SPAN data-dz-size=""></SPAN></div>
+                    <div class="dz-filename"><SPAN data-dz-name=""></SPAN></div></div>
+                  <div class="dz-progress"><SPAN class="dz-upload"
+                                                 data-dz-uploadprogress=""></SPAN></div>
+                  <div class="dz-error-message"><SPAN data-dz-errormessage=""></SPAN></div>
+                  <div class="dz-success-mark">
+                    lol
+                  </div>
+                  <div class="dz-error-mark">
+                    lol
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab-group-map-load-hi" role="tabpanel" aria-labelledby="kb-tab">
+            <div>
+              History table
+              <table class="table table-sm">
+                <thead class="thead-light">
+                <tr>
+                  <th scope="col">Map Name</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">#compounds</th>
+                  <th scope="col">#reactions</th>
+                  <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>new_map (20).json</td>
+                  <td><i class="fas fa-file-code"></i> new_map (20).json</td>
+                  <td>23</td>
+                  <td>23</td>
+                  <td>999</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Bio kb_escher</td>
+                  <td>23</td>
+                  <td>2</td>
+                  <td>1</td>
+                  <td><span class="oi oi-eye"></span></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Deg kb_escher</td>
+                  <td>23</td>
+                  <td>1</td>
+                  <td>2</td>
+                  <td><span class="oi oi-eye"></span></td>
+                </tr>
+                <tr>
+                  <td>Amino Acid Degradation</td>
+                  <td>ModelSEED</td>
+                  <td>23</td>
+                  <td>-1</td>
+                  <td>-2</td>
+                  <td><span class="oi oi-eye"></span></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+
           <!-- 
     <button type="button" class="btn btn-primary" onclick="test()">test</button>
 -->
@@ -256,6 +383,156 @@
     </div>
   </div>
 </div>
+
+    <!-- Modal Model Select-->
+    <div class="modal fade" id="modal-model-select" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-model-select-label">Model Select</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs" id="tab-group-model-load" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="model-load-ms-tab" data-toggle="tab" href="#tab-group-model-load-ms" role="tab" aria-controls="home" aria-selected="true">ModelSEED</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="model-load-kb-tab" data-toggle="tab" href="#tab-group-model-load-kb" role="tab" aria-controls="home" aria-selected="true"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="model-load-fl-tab" data-toggle="tab" href="#tab-group-model-load-fl" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-file-code"></i> File</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="model-load-hi-tab" data-toggle="tab" href="#tab-group-model-load-hi" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-history"></i> History</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="tab-content-model-load">
+              <div class="tab-pane fade show active" id="tab-group-model-load-ms" role="tabpanel" aria-labelledby="ms-tab">
+                <div><h5>Load ModelSEED Biochemistry as model:</h5></div>
+                <div>
+                  <label for="settings-biochem-config">Compartment Config</label>
+                  <input type="text" class="form-control" id="settings-biochem-config" value="0:c" required>
+                  <button id="settings-biochem-build" class="btn btn-success">Set</button>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-group-model-load-kb" role="tabpanel" aria-labelledby="kb-tab">
+                <div>
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12"><h5>Load KBase FBAModel:</h5></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-1">
+                        <label for="s2-load-map-source">Workspace:</label>
+                      </div>
+                      <div class="col-md-9">
+                        <select style="width: 100%" id="s2-load-model-kb"></select>
+                      </div>
+                      <div class="col-md-2">
+                        <button id="xx"  class="btn btn-default simple-button" title="Refresh">
+                          <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button id="yx"  class="btn btn-default simple-button" title="Load">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <table id="table-models" class="table table-sm">
+                          <thead class="thead-light">
+                          <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">#compounds</th>
+                            <th scope="col">#reactions</th>
+                            <th scope="col"></th>
+                          </tr>
+                          </thead>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-group-model-load-fl" role="tabpanel" aria-labelledby="fl-tab">
+                <div>
+
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-group-model-load-hi" role="tabpanel" aria-labelledby="kb-tab">
+                <div>
+                  History table
+                  <table class="table table-sm">
+                    <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Map Name</th>
+                      <th scope="col">Source</th>
+                      <th scope="col">Time</th>
+                      <th scope="col">#compounds</th>
+                      <th scope="col">#reactions</th>
+                      <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>new_map (20).json</td>
+                      <td><i class="fas fa-file-code"></i> new_map (20).json</td>
+                      <td>23</td>
+                      <td>23</td>
+                      <td>999</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Bio kb_escher</td>
+                      <td>23</td>
+                      <td>2</td>
+                      <td>1</td>
+                      <td><span class="oi oi-eye"></span></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Deg kb_escher</td>
+                      <td>23</td>
+                      <td>1</td>
+                      <td>2</td>
+                      <td><span class="oi oi-eye"></span></td>
+                    </tr>
+                    <tr>
+                      <td>Amino Acid Degradation</td>
+                      <td>ModelSEED</td>
+                      <td>23</td>
+                      <td>-1</td>
+                      <td>-2</td>
+                      <td><span class="oi oi-eye"></span></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!--
+      <button type="button" class="btn btn-primary" onclick="test()">test</button>
+  -->
+
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <!--
+          <button type="button" class="btn btn-primary">Save changes</button>
+  -->
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 
@@ -307,7 +584,6 @@ Load Map
             </button>
           </div>
           <div class="modal-body">
-
             <ul class="nav nav-tabs" id="tab-group-settings" role="tablist">
               <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
@@ -332,7 +608,9 @@ Load Map
                 <a class="nav-link" id="cpd-map-tab" data-toggle="tab" href="#settings-cpd-map" role="tab" aria-controls="contact" aria-selected="false">Compound Map</a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link" id="kbase-tab" data-toggle="tab" href="#settings-kbase" role="tab" aria-controls="contact" aria-selected="false"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+                <a class="nav-link" id="kbase-tab" data-toggle="tab" href="#settings-kbase" role="tab" aria-controls="contact" aria-selected="false">
+                  <img src="media/k-base_logo.svg" alt="KBase" height="20px">
+                </a>
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="data-tab" data-toggle="tab" href="#settings-data" role="tab" aria-controls="contact" aria-selected="false">
@@ -342,15 +620,12 @@ Load Map
             </ul>
             <div class="tab-content" id="tab-content-settings">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <iframe src="config.html" style="width: 100%; height: 500px"></iframe>
+                <!--
+                <iframe src="config.html" style="width: 100%; height: 500px"></iframe>-->
               </div>
 
               <div class="tab-pane fade" id="settings-biochem" role="tabpanel" aria-labelledby="biochem-tab">
-                <div>
-                <label for="settings-biochem-config">Compartment Config</label>
-                <input type="text" class="form-control" id="settings-biochem-config" value="0:c" required>
-                <button id="settings-biochem-build" class="btn btn-success">Set</button>
-                </div>
+
 
                 <div>
                 <label for="select_model">SBML Model</label>
@@ -403,7 +678,6 @@ Load Map
 
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div id="fn-tooltip-options">
-
                 </div>
                 <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
                 <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
@@ -612,6 +886,7 @@ Load Map
   <script src="js/model_loader.js"></script>
   <script src="js/map_loader.js"></script>
   <script src="js/escher_design.js"></script>
+  <script src="js/app.js"></script>
 
   <script>
     console.log('index.js');
@@ -682,19 +957,8 @@ Load Map
     });
 
 
-
-    $('#exampleModal').on('hide.bs.modal', function (e) {
-      widget_escher.escher_builder.map.key_manager.toggle(true)
-    });
-    $('#exampleModal').on('show.bs.modal', function (e) {
-      widget_escher.escher_builder.map.key_manager.toggle(false)
-    });
-    $('#modal-settings').on('hide.bs.modal', function (e) {
-      widget_escher.escher_builder.map.key_manager.toggle(true)
-    });
-    $('#modal-settings').on('show.bs.modal', function (e) {
-      widget_escher.escher_builder.map.key_manager.toggle(false)
-    });
+    //let widget_escher = undefined;
+    //let app = new ModelSEEDEscherApp(widget_escher, $('#exampleModal'), undefined, $('#modal-settings'))
       
     Dropzone.autoDiscover = false;
    var myDropzone = new Dropzone("#dropzone_load_map", { url: "/file/post", autoProcessQueue: false, maxFiles:1});
@@ -720,6 +984,7 @@ var myDropzone = this;
     }});
     
   </script>
+
   <script src="js/annotation.js"></script>
   <script src="js/annotation_config.js"></script>
 

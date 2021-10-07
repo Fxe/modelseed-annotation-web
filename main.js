@@ -998,6 +998,3 @@ $('#btn_test6').click(function() {
   let escherDesign = new EscherDesign(widget_escher.escher_builder);
   escherDesign.init_ui();
 });
-
-
-

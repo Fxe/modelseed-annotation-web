@@ -3,12 +3,226 @@
 <head>
   <meta charset="UTF-8">
   <title>Model Viewer</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/scroller.bootstrap4.min.css" />
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.min.css" />
+  <link rel="stylesheet" href="css/solid.min.css" />
+  <link rel="stylesheet" href="css/regular.min.css" />
+  <link rel="stylesheet" href="css/select2.min.css" />
+  <link rel="stylesheet" href="css/builder.css" />
+  <link rel="stylesheet" href="css/builder-bootstrap.css" />
+  <link rel="stylesheet" href="css/seed.css" />
+  <link rel="stylesheet" href="css/escher-shadow.css" />
+
+  <style>
+    .dropzone {
+      background: white;
+      border-radius: 5px;
+      border: 2px dashed rgb(0, 135, 247);
+      border-image: none;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .narrative-select-element {
+    }
+
+    .narrative-select-option {
+      border-bottom: 2px solid black;
+    }
+    .narrative-select-element i,
+    .narrative-select-option i{
+      color: #817F81;
+      font-size: medium;
+    }
+  </style>
 </head>
 <body>
 <div>
   <table>
 
   </table>
+  <div>
+  <div>
+    <div class="narrative-select-option">
+      <div class="clearfix">
+        <div class="float-left"><h6>Microbiome (Mix-isolate) Modeling in KBase, - Mix-isolate annotation, modeling and an example of omics data representation on metabolic maps</h6></div>
+        <div class="float-left" style="margin-left: 5px"><i>55494</i></div>
+        <div class="float-right"><i>janakakbase</i></div>
+      </div>
+    </div>
+    <div class="narrative-select-option">
+      <div class="clearfix">
+        <div class="float-left"><h6>Microbiome (Mix-isolate) Modeling in KBase, - Mix-isolate annotation, modeling and an example of omics data representation on metabolic maps</h6></div>
+        <div class="float-right"><i>55494</i></div>
+      </div>
+      <div class="clearfix">
+        <div class="float-left">janakakbase</div>
+        <div class="float-left">w r<i class="fas fa-user"></i><i class="fas fa-user-shield"></i><i class="fas fa-user-edit"></i><i class="fas fa-user-times"></i></div>
+        <div class="float-right"><i>2021-07-07T11:40:12+0000</i> <i class="fas fa-lock"></i><i class="fas fa-lock-open"></i></i></div>
+      </div>
+    </div>
+
+
+
+
+    <ul class="nav nav-tabs" id="tab-group-map-load" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="ms-tab" data-toggle="tab" href="#tab-group-map-load-ms" role="tab" aria-controls="home" aria-selected="true">ModelSEED</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="kb-tab" data-toggle="tab" href="#tab-group-map-load-kb" role="tab" aria-controls="home" aria-selected="true"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="fl-tab" data-toggle="tab" href="#tab-group-map-load-fl" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-file-code"></i> File</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="hi-tab" data-toggle="tab" href="#tab-group-map-load-hi" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-history"></i> History</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="tab-content-map-load">
+      <div class="tab-pane fade show active" id="tab-group-map-load-ms" role="tabpanel" aria-labelledby="ms-tab">
+        Dataset: ModelSEED
+      </div>
+      <div class="tab-pane fade" id="tab-group-map-load-kb" role="tabpanel" aria-labelledby="kb-tab">
+        <div id="aaa">
+
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-1">
+              <label for="s2-load-map-source">Workspace:</label>
+            </div>
+            <div class="col-md-9">
+              <select style="width: 100%" id="s2-load-map-source"></select>
+            </div>
+            <div class="col-md-2">
+              <button id="x"  class="btn btn-default simple-button" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button id="y"  class="btn btn-default simple-button" title="Load">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style="width: 100%">
+
+        </div>
+        <div>
+
+          <button>refresh</button> <button>sdsd</button>
+        </div>
+
+      </div>
+      <div class="tab-pane fade" id="tab-group-map-load-fl" role="tabpanel" aria-labelledby="fl-tab">
+        <div>
+          <form class="dropzone" id="demo-upload" action="/upload">
+            <div class="dz-message needsclick">
+              Drop files here or click to upload.<br>
+              <span class="note needsclick">(This is just a demo dropzone. Selected
+          files are <strong>not</strong> actually uploaded.)</span>
+            </div>
+          </form>
+          <div id="preview-template" style="display: none;">
+            <div class="dz-preview dz-file-preview">
+              <div class="dz-image"><IMG data-dz-thumbnail=""></div>
+              <div class="dz-details">
+                <div class="dz-size"><SPAN data-dz-size=""></SPAN></div>
+                <div class="dz-filename"><SPAN data-dz-name=""></SPAN></div></div>
+              <div class="dz-progress"><SPAN class="dz-upload"
+                                             data-dz-uploadprogress=""></SPAN></div>
+              <div class="dz-error-message"><SPAN data-dz-errormessage=""></SPAN></div>
+              <div class="dz-success-mark">
+                lol
+              </div>
+              <div class="dz-error-mark">
+                lol
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="tab-group-map-load-hi" role="tabpanel" aria-labelledby="kb-tab">
+        <div>
+          History table
+          <table class="table table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Map Name</th>
+              <th scope="col">Source</th>
+              <th scope="col">Time</th>
+              <th scope="col">#compounds</th>
+              <th scope="col">#reactions</th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>new_map (20).json</td>
+                <td><i class="fas fa-file-code"></i> new_map (20).json</td>
+                <td>23</td>
+                <td>23</td>
+                <td>999</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Bio kb_escher</td>
+                <td>23</td>
+                <td>2</td>
+                <td>1</td>
+                <td><span class="oi oi-eye"></span></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Deg kb_escher</td>
+                <td>23</td>
+                <td>1</td>
+                <td>2</td>
+                <td><span class="oi oi-eye"></span></td>
+              </tr>
+              <tr>
+                <td>Amino Acid Degradation</td>
+                <td>ModelSEED</td>
+                <td>23</td>
+                <td>-1</td>
+                <td>-2</td>
+                <td><span class="oi oi-eye"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+    <label>map 1
+    <input type="radio" name="a">
+    </label>
+    <label>map 2
+    <input type="radio" name="a">
+    </label>
+
+  <div>
+    <table id="table-escher-maps" class="table table-sm">
+      <thead class="thead-light">
+      <tr>
+        <th scope="col">Dataset</th>
+        <th scope="col">Map</th>
+        <th scope="col">#compounds</th>
+        <th scope="col">#reactions</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+    </table>
+  </div>
+  </div>
 </div>
 </body>
 <script src="js/jquery-3.4.1.min.js"></script>
@@ -19,7 +233,129 @@
 <script src="js/dataTables.bootstrap4.min.js"></script>
 <script src="js/dataTables.scroller.min.js"></script>
 <script src="js/dropzone.js"></script>
+<script src="js/select2.min.js"></script>
 <script>
+  //import Dropzone from "dropzone";
+
+  // Make sure Dropzone doesn't try to attach itself to the
+  // element automatically.
+  // This behaviour will change in future versions.
+  Dropzone.autoDiscover = false;
+  var dropzone = new Dropzone('#demo-upload', {
+    previewTemplate: document.querySelector('#preview-template').innerHTML,
+    parallelUploads: 2,
+    thumbnailHeight: 120,
+    thumbnailWidth: 120,
+    maxFilesize: 3,
+    filesizeBase: 1000,
+    thumbnail: function(file, dataUrl) {
+      if (file.previewElement) {
+        file.previewElement.classList.remove("dz-file-preview");
+        var images = file.previewElement.querySelectorAll("[data-dz-thumbnail]");
+        for (var i = 0; i < images.length; i++) {
+          var thumbnailElement = images[i];
+          thumbnailElement.alt = file.name;
+          thumbnailElement.src = dataUrl;
+        }
+        setTimeout(function() { file.previewElement.classList.add("dz-image-preview"); }, 1);
+      }
+    }
+
+  });
+  var minSteps = 6,
+    maxSteps = 60,
+    timeBetweenSteps = 100,
+    bytesPerStep = 100000;
+  dropzone.uploadFiles = function(files) {
+    var self = this;
+
+    for (var i = 0; i < files.length; i++) {
+
+      var file = files[i];
+      console.log(file)
+      totalSteps = Math.round(Math.min(maxSteps, Math.max(minSteps, file.size / bytesPerStep)));
+
+      for (var step = 0; step < totalSteps; step++) {
+        var duration = timeBetweenSteps * (step + 1);
+        setTimeout(function(file, totalSteps, step) {
+          return function() {
+            file.upload = {
+              progress: 100 * (step + 1) / totalSteps,
+              total: file.size,
+              bytesSent: (step + 1) * file.size / totalSteps
+            };
+
+            self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
+            if (file.upload.progress == 100) {
+              file.status = Dropzone.SUCCESS;
+              self.emit("success", file, 'success', null);
+              self.emit("complete", file);
+              self.processQueue();
+              //document.getElementsByClassName("dz-success-mark").style.opacity = "1";
+            }
+          };
+        }(file, totalSteps, step), duration);
+      }
+    }
+  };
+
+
+  $.getJSON('data/mock_list_narratives.json', function(narrative_list) {
+    console.log(narrative_list);
+    let data = [];
+    _.each(narrative_list, function(o) {
+      data.push({
+        "id": o[0],
+        "text": o[8]['narrative_nice_name'],
+        //"name": "Option 1"
+        "owner": o[2],
+        "mod_data": o[3],
+        "permission": o[5]
+      })
+    });
+
+    let elementId = '#s2-load-map-source';
+
+    let select2Config = {
+      theme: "classic",
+      placeholder: 'select workspace',
+      data: data,
+      templateResult: formatOption,
+      templateSelection: formatSelection,
+    };
+    $(elementId).select2(select2Config);
+    $(elementId).on('select2:select', function (e) {
+      var data = e.params.data;
+      //$(elementId).select2(select2Config);
+      $(elementId).val(data.id).trigger('change');
+      console.log(data);
+    });
+
+    function formatSelection (d) {
+      if (!d.id) {
+        return d.text;
+      }
+
+      return $('<div class="narrative-select-element"><div class="clearfix">\n' +
+        '        <div class="float-left"><h6>' + d['text'] + '</h6></div>\n' +
+        '        <div class="float-left" style="margin-left: 5px"><i>' + d['id'] + '</i></div>\n' +
+        '        <div class="float-right"><i>' + d['owner'] + '</i></div></div></div>');
+    }
+
+    function formatOption (d) {
+      if (!d.id) {
+        return d.text;
+      }
+      return $('<div class="narrative-select-option"><div class="clearfix">' +
+        '<div class="float-left"><h6>' + d['text'] + '</h6></div>' +
+        '<div class="float-right"><i>' + d['id'] + '</i></div></div><div class="clearfix">' +
+        '<div class="float-left">' + d['owner'] + '</div><div class="float-left">w r<i class="fas fa-user"></i><i class="fas fa-user-shield"></i><i class="fas fa-user-edit"></i><i class="fas fa-user-times"></i></div>' +
+        '<div class="float-right"><i>' + d['mod_data'] + '</i> <i class="fas fa-lock"></i><i class="fas fa-lock-open"></i></i></div></div></div>');
+    }
+  });
+
+  let table = $("#table-escher-maps").DataTable();
+
 $.urlParam = function(name){
   let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
   if (results == null) {
