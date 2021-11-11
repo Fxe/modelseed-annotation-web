@@ -39,9 +39,112 @@
       color: #817F81;
       font-size: medium;
     }
+
+    /* The switch - the box around the slider */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 24px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 17px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(16px);
+      -ms-transform: translateX(16px);
+      transform: translateX(16px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
   </style>
 </head>
 <body>
+
+<div>
+  <!-- Rectangular switch -->
+  <label class="switch">
+    <input type="checkbox">
+    <span class="slider"></span>
+  </label>
+
+  <!-- Rounded switch -->
+  <label class="switch">
+    <input type="checkbox">
+    <span class="slider round"></span>
+  </label>
+</div>
+<div id="controls">
+  <div>
+    <input type="radio" id="html1" name="fav_language" value="HTML">
+    <i class="fas fa-eye"></i>
+    <label class="switch">
+      <input type="checkbox">
+      <span class="slider round"></span>
+    </label>
+    <i class="fas fa-save"></i>
+    <i class="fas fa-trash-alt"></i>
+    <label for="html1">HTML</label>
+  </div>
+
+  <div>
+    <input type="radio" id="html2" name="fav_language" value="HTML">
+    <i class="fas fa-eye"></i>
+    <label class="switch">
+      <input type="checkbox">
+      <span class="slider round"></span>
+    </label>
+    <i class="fas fa-save"></i>
+    <i class="fas fa-trash-alt"></i>
+    <label for="html2">HTML</label>
+  </div>
+</div>
+
 <div>
   <table>
 
@@ -235,7 +338,36 @@
 <script src="js/dropzone.js"></script>
 <script src="js/select2.min.js"></script>
 <script>
-  //import Dropzone from "dropzone";
+  let ct = $('#controls');
+
+  let fn_add = function($, ct) {
+    let control_group = $('<div>');
+
+    let radio = $('<input>', {type: 'radio', id: 'radio1', name: 'escher-map-radio'});
+
+    let icon_eye = $('<i>', {class: 'fas fa-eye'});
+
+    let icon_delete = $('<i>', {class: 'fas fa-trash-alt'});
+    let icon_save = $('<i>', {class: 'fas fa-save'});
+    let label = $('<label>', {for: 'radio1'}).html('this map name');
+
+    let toggle_visible = $('<label>', {'class': 'switch'});
+    toggle_visible.append($('<input>', {'type': 'checkbox'}));
+    toggle_visible.append($('<span>', {'class': 'slider round'}));
+
+    control_group.append(radio).append(' ')
+                 .append(icon_eye).append(' ')
+                 .append(toggle_visible).append(' ')
+                 .append(icon_save).append(' ')
+                 .append(icon_delete).append(' ')
+                 .append(label);
+
+    ct.append(control_group);
+
+    return control_group;
+  };
+
+  fn_add($, ct);
 
   // Make sure Dropzone doesn't try to attach itself to the
   // element automatically.

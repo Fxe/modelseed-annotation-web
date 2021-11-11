@@ -1,12 +1,34 @@
 
+
+class KBaseObject {
+
+  constructor(data, info) {
+    this.data = data;
+    this.info = info;
+  }
+}
+
 class KBaseAPI {
 
   constructor() {
     this.base = '/annotation/api/kbase';
   }
 
-  get_object_list(workspace_id, token, fn_success, fn_always, fn_error) {
+  getInfo(objectIdentity, token, fn_success, fn_always, fn_error) {
+    let url = '/reference_info/' + objectIdentity;
+    return this.get(url, fn_success, fn_always, fn_error, 30000, token);
+  }
+
+  getWorkspaceList(token, fn_success, fn_always, fn_error) {
+    let url = '/ws';
+    return this.get(url, fn_success, fn_always, fn_error, 30000, token);
+  }
+
+  get_object_list(workspace_id, token, fn_success, fn_always, fn_error, object_type) {
     let url = '/ws/' + workspace_id;
+    if (object_type) {
+      url += "?type=" + object_type
+    }
     return this.get(url, fn_success, fn_always, fn_error, 30000, token);
   }
 
@@ -28,14 +50,63 @@ class KBaseAPI {
     return this.get(url, fn_success, fn_always, fn_error, 30000, token);
   }
 
-  get_object_escher_map(id, workspace_id, token, fn_success, fn_always, fn_error) {
-    let url = '/ws/' + workspace_id + '/' + id + '/escher_map';
-    return this.get(url, fn_success, fn_always, fn_error, 30000, token);
+  getObjectEscherMap(id, workspace_id, token, fn_success, fn_always, fn_error) {
+    let that = this;
+    let p = id.split('/');
+    if (p.length === 3) {
+      return that.getInfo(id, token, function(info) {
+        let url = '/ws/' + info[7] + '/' + info[1] + '/escher_map';
+        that.getObject(url, info, token, function (data) {
+          let o = new KBaseObject(data, info);
+          fn_success(o);
+        }, fn_always, fn_error);
+      }, fn_always, fn_error);
+    } else {
+      if (p.length === 2) {
+        workspace_id = p[0];
+        id = p[1];
+      }
+      return that.getInfo(workspace_id + '/' + id, token, function(info) {
+        let url = '/ws/' + info[7] + '/' + info[1] + '/escher_map';
+        that.getObject(url, info, token,function (data) {
+          let o = new KBaseObject(data, info);
+          fn_success(o);
+        }, fn_always, fn_error);
+      }, fn_always, fn_error);
+    }
   }
 
-  get_kbase_cobra_model(id, workspace_id, token, fn_success, fn_always, fn_error) {
+  getObjectCobraModel(id, workspace_id, token, fn_success, fn_always, fn_error) {
+    let that = this;
+    let p = id.split('/');
+    if (p.length === 3) {
+      that.getInfo(id, token, function(info) {
+        let url = '/cobra/' + info[7] + '/' + info[1];
+        that.getObject(url, info, token, function (data) {
+          let o = new KBaseObject(data, info);
+          fn_success(o);
+        }, fn_always, fn_error);
+      }, fn_always, fn_error)
+    } else {
+      if (p.length === 2) {
+        workspace_id = p[0];
+        id = p[1];
+      }
+      that.getInfo(workspace_id + '/' + id, token, function(info) {
+        let url = '/cobra/' + info[7] + '/' + info[1];
+        that.getObject(url, info, token,function (data) {
+          let o = new KBaseObject(data, info);
+          fn_success(o);
+        }, fn_always, fn_error);
+      }, fn_always, fn_error)
+    }
+
+/*
     let url = '/cobra/' + workspace_id + '/' + id;
-    return this.get(url, fn_success, fn_always, fn_error, 30000, token);
+    if (id.indexOf('/') >= 0) {
+      url = '/cobra/none/' + id.replaceAll('/', '_');
+    }
+    return this.get(url, fn_success, fn_always, fn_error, 30000, token);*/
   }
 
   post_export_template(annotation_namespace, input_id, input_workspace, output_id, output_workspace, token,
@@ -55,6 +126,10 @@ class KBaseAPI {
     return this.put("/export/template", body, fn_success, fn_always, fn_error, 600000, token);
   }
 
+  getObject(url, info, token, fn_success, fn_always, fn_error, timeout=30000) {
+    return this.post(url, undefined, fn_success, fn_always, fn_error, 'GET', timeout, token)
+  }
+
   get(url, fn_success, fn_always, fn_error, timeout=30000, auth=undefined) {
     return this.post(url, undefined, fn_success, fn_always, fn_error, 'GET', timeout, auth)
   }
@@ -64,6 +139,7 @@ class KBaseAPI {
   }
 
   post(url, body, fn_success, fn_always, fn_error, t="POST", timeout=30000, auth=undefined) {
+    console.debug(t, 'url', url);
     let ajax = {
       url: this.base + url,
       type: t,
@@ -72,19 +148,19 @@ class KBaseAPI {
       timeout: timeout,
 
       complete: function(o) {
-        console.log('complete!');
+        console.debug(t, 'url', url, 'complete!');
         if (fn_always) {
           fn_always(o);
         }
       },
       success: function(o) {
-        console.log('success!');
+        console.debug(t, 'url', url, 'success!');
         if (fn_success) {
           fn_success(o);
         }
       },
       error: function(o) {
-        console.log('error!');
+        console.debug(t, 'url', url, 'error!');
         if (fn_error) {
           fn_error(o);
         }

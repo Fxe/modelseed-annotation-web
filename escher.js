@@ -15,7 +15,7 @@
  * my_behavior.reaction_label_drag, my_behavior.node_label_drag,
  *
  */
-
+console.log('ModelSEEDpy-Escher');
 var utils = require('./utils')
 var build = require('./build')
 var d3_drag = require('d3-drag').drag

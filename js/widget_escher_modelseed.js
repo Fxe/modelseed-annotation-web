@@ -35,6 +35,8 @@ class WidgetEscherModelseed {
 
     this.escher_map = null;
     this.maps = [];
+    this.layer = [];
+    this.activeLayer = undefined;
     this.model = null;
     this.escher_model = null;
     this.submodels = {};
@@ -104,6 +106,66 @@ class WidgetEscherModelseed {
     };
   }
 
+  colorCompartment(w_panel, colorConfig) {
+    const colorCompartmentConfig = {
+      "[\"c0\",\"m0\"]": 'rgb(255, 0, 0)',
+      "[\"c0\",\"e0\"]": 'rgb(255,162,10)',
+      "[\"c0\",\"r0\"]": 'rgb(184,123,255)',
+      "[\"c0\",\"x0\"]": 'rgb(108,108,108)',
+      "[\"c0\"]": 'rgb(0,102,0)',
+      "[\"x0\"]": 'rgb(59,59,59)',
+      "[\"m0\"]": 'rgb(153, 0, 0)',
+      "[\"e0\"]": 'rgb(204, 204, 0)',
+      "[\"r0\"]": 'rgb(105,11,204)',
+    };
+    if (!colorConfig) {
+      colorConfig = colorCompartmentConfig
+    }
+    let rxn_cmp = {};
+    let met_cmp = {};
+    let rxn_is_transport = {};
+    _.each(this.escher_model.metabolites, function(met) {
+      if (met && met.id && met.compartment) {
+        met_cmp[met.id] = met.compartment;
+      }
+    });
+    _.each(this.escher_model.reactions, function(rxn) {
+      rxn_cmp[rxn.id] = {};
+      _.each(rxn.metabolites, function(stoich_val, met_id) {
+        if (met_cmp[met_id]) {
+          rxn_cmp[rxn.id][met_cmp[met_id]] = true;
+        }
+      });
+      rxn_is_transport[rxn.id] = _.size(rxn_cmp[rxn.id]) > 1
+    });
+    let rxn_to_uid = this.get_rxn_to_uid();
+    _.each(this.escher_map[1].reactions, function(escher_rxn, rxn_uid) {
+      let rxn_id = escher_rxn['bigg_id'];
+      if (rxn_cmp[rxn_id]) {
+        let is_transport = rxn_is_transport[rxn_id];
+        if (rxn_to_uid[rxn_id]) {
+          _.each(rxn_to_uid[rxn_id], function(v, uid) {
+            let svg_uid = 'r' + uid;
+            if (is_transport) {
+              w_panel.paint_reaction_path(svg_uid, {'stroke-dasharray' : '30 10'});
+            }
+            let m = JSON.stringify(_.keys(rxn_cmp[rxn_id]).sort());
+            if (colorConfig[m]) {
+              w_panel.paint_reaction_path(svg_uid, {'stroke' : colorConfig[m]});
+              w_panel.paint_reaction_label(svg_uid, {'fill': colorConfig[m]})
+            } else {
+              console.log(m);
+            }
+            //== "[\"c0\",\"m0\"]"
+
+            //
+          });
+        }
+      }
+    });
+  };
+
+
   load_map(fn_load, layer_number) {
     let that = this;
     fn_load(function(escher_map) {
@@ -112,8 +174,106 @@ class WidgetEscherModelseed {
     })
   }
 
-  load_map_to_layer(map, layer_number) {
-    this.maps[layer_number] = JSON.parse(JSON.stringify(map))
+  getGlobalCanvas() {
+    let xs = [];
+    let ys = [];
+    _.each(this.maps, function(em) {
+      let x = em[1]['canvas']['x'];
+      let y = em[1]['canvas']['y'];
+      let w = em[1]['canvas']['width'];
+      let h = em[1]['canvas']['height'];
+      xs.push(x);
+      xs.push(x + w);
+      ys.push(y);
+      ys.push(y + h);
+    });
+
+    let xMin = Math.min(...xs);
+    let xMax = Math.max(...xs);
+    let yMin = Math.min(...ys);
+    let yMax = Math.max(...ys);
+    return {x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin}
+  }
+
+  build_map_layer_control($, ct, layer_index, label_value, fnSave) {
+    let that = this;
+    let control_group = $('<div>');
+
+    let radio = $('<input>', {type: 'radio', id: 'radio1', name: 'escher-map-radio'});
+    radio.change(
+      function(){
+        if ($(this).is(':checked')) {
+          that.activeLayer = layer_index;
+          that.escher_map[1].canvas = {
+            height: that.escher_builder.map.canvas.height,
+            width: that.escher_builder.map.canvas.width,
+            x: that.escher_builder.map.canvas.x,
+            y: that.escher_builder.map.canvas.y
+          };
+          that.escher_map = undefined;
+          that.render();
+          //console.log(layer_index);
+        }
+      });
+    let icon_eye = $('<i>', {class: 'fas fa-eye'});
+
+    let icon_delete = $('<i>', {class: 'fas fa-trash-alt'});
+    icon_delete.click(function() {
+      if (confirm('Remove layer: ' + label_value)) {
+        if (that.activeLayer === layer_index) {
+          alert('cannot remove active layer');
+        } else {
+          that.maps[layer_index] = undefined;
+          that.render();
+          control_group.remove();
+        }
+      }
+    });
+    let icon_save = $('<i>', {class: 'fas fa-save'});
+    if (fnSave) {
+      icon_save.click(fnSave);
+    }
+
+    let label = $('<label>', {for: 'radio1'}).html(label_value);
+
+    let toggle_visible = $('<label>', {'class': 'switch'});
+    toggle_visible.append($('<input>', {'type': 'checkbox', checked: 'checked'}));
+    toggle_visible.append($('<span>', {'class': 'slider round'}));
+
+    control_group.append(layer_index).append(radio).append(' ')
+      .append(icon_eye).append(' ')
+      .append(toggle_visible).append(' ')
+      .append(icon_save).append(' ')
+      .append(icon_delete).append(' ')
+      .append(label);
+
+    ct.append(control_group);
+    control_group.label = label_value;
+    control_group.fnSave = fnSave;
+
+    return control_group;
+  };
+
+  deleteLayer(layerNumber) {
+    if (this.layer[layerNumber]) {
+      this.layer[layerNumber].remove();
+      this.layer[layerNumber] = undefined;
+    }
+    if (this.maps[layerNumber]) {
+      this.maps[layerNumber] = undefined;
+    }
+  }
+
+  load_map_to_layer(map, layer_number, label_value, fnSave, render=false) {
+    if (!this.activeLayer) {
+      this.activeLayer = layer_number;
+    }
+    let controlGroup = this.build_map_layer_control($, $('#left_panel'), layer_number, label_value, fnSave);
+    this.layer[layer_number] = controlGroup;
+    this.maps[layer_number] = JSON.parse(JSON.stringify(map));
+    if (render) {
+      this.render();
+    }
   }
 
   flip(layer_number) {
@@ -123,19 +283,29 @@ class WidgetEscherModelseed {
       this.escher_map = t;
       this.render()
     }
-
   }
 
   render() {
+
+    console.log('render', this.escher_map);
+
+    if (!this.escher_map) {
+      console.log('render check active layer', this.activeLayer);
+      if (this.maps[this.activeLayer]) {
+        this.escher_map = this.maps[this.activeLayer]
+      }
+    }
     if (this.escher_map) {
-      let that = this;
+      console.log('render', this.escher_map);
       this.change_map(this.escher_map);
-      if (that.fn_draw_underlay)
-      _.each(this.maps, function(escher_map) {
-        if (escher_map) {
-          that.fn_draw_underlay(escher_map, 0, 0);
+      if (this.fn_draw_underlay) {
+        for (let i=0; i<this.maps.length; i++) {
+          if (i !== this.activeLayer && this.maps[i]) {
+            console.log('draw underlay', i);
+            this.fn_draw_underlay(this.maps[i], 0, 0);
+          }
         }
-      });
+      }
 
     } else {
       alert('no map loaded')

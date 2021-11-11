@@ -275,7 +275,7 @@ class CurationAPI {
     return this.post("/escher/merge", params, fn_success, fn_always, fn_error);
   }
 
-  post_escher_merge_map(params, fn_success, fn_always, fn_error) {
+  postEscherMergeMap(params, fn_success, fn_always, fn_error) {
     return this.post("/escher/merge2", params, fn_success, fn_always, fn_error);
   }
 

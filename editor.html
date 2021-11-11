@@ -90,10 +90,453 @@
     <div class="container-fluid wutt">
       <div id="top_bar" class="top-bar-seed"></div>
       <div id="left_panel" class="escher_right_panel"></div>
+
+      <div class="escher-container omg">
+        <ul class="nav nav-pills nav-space">
+          <li>
+            <a href="#" data-toggle="modal" data-target="#modal-settings" class="btn btn-default simple-button" title="Settings">
+              <i class="fas fa-cog"> </i>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#model_annotation_help" class="btn btn-default simple-button" title="Help">
+              <i class="fas fa-question-circle"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#modal-model-select" class="btn btn-default simple-button" title="Model Select">
+              <i class="fas fa-file-code"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#exampleModal" class="btn btn-default simple-button" title="Map Select">
+              <i class="fas fa-map"></i>
+            </a>
+          </li>
+          <li>
+            <label for="upload" class="btn btn-default simple-button" style="cursor: pointer">
+              <i class="fas fa-upload"></i>
+              <input type="file" id="upload" style="display:none">
+            </label>
+          </li>
+          <li>
+            <label for="downloadx" class="btn btn-default simple-button" style="cursor: pointer">
+              <i class="fas fa-download"></i>
+              <input type="file" id="downloadx" style="display:none">
+            </label>
+          </li>
+          <li>
+            <label for="upload_model" class="btn btn-default simple-button" style="cursor: pointer">
+              <i class="fas fa-upload"></i>
+              <input type="file" id="upload_model" style="display:none">
+            </label>
+          </li>
+
+
+          <li>
+            <button id="btn_test1"  class="btn btn-default simple-button" title="Test 1">
+              <i class="fas fa-angry"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test2"   class="btn btn-default simple-button" title="Test 2">
+              <i class="fas fa-flask"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test3" class="btn btn-default simple-button" title="Test 3">
+              <i class="fas fa-vial"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test4" class="btn btn-default simple-button" title="Test 4">
+              <i class="fas fa-seedling"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test5"  class="btn btn-default simple-button" title="Test 5">
+              <i class="fas fa-route"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test6"   class="btn btn-default simple-button" title="Test 6">
+              <i class="fas fa-dna"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test7"   class="btn btn-default simple-button" title="Test 7">
+              <i class="fas fa-microscope"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test8"   class="btn btn-default simple-button" title="Color Compartment">
+              <i class="fas fa-palette"></i>
+            </button>
+          </li>
+          <li>
+            <button id="btn_test9"   class="btn btn-default simple-button" title="Merge">
+              <i class="far fa-object-group"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+
       <div id="map_container">Loading map ...</div>
     </div>
+
+    <!-- Modal Map Select-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModal_Label">Metabolic Maps</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-9">
+                  <ul class="nav nav-tabs" id="tab-group-map-load" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link active" id="ms-tab" data-toggle="tab" href="#tab-group-map-load-ms" role="tab" aria-controls="home" aria-selected="true">ModelSEED</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link" id="kb-tab" data-toggle="tab" href="#tab-group-map-load-kb" role="tab" aria-controls="home" aria-selected="true"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link" id="fl-tab" data-toggle="tab" href="#tab-group-map-load-fl" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-file-code"></i> File</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link" id="hi-tab" data-toggle="tab" href="#tab-group-map-load-hi" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-history"></i> History</a>
+                    </li>
+                  </ul>
+
+                  <div class="tab-content" id="tab-content-map-load">
+                    <div class="tab-pane fade show active" id="tab-group-map-load-ms" role="tabpanel" aria-labelledby="ms-tab">
+                      <div>Dataset: <label for="table-escher-maps">ModelSEED</label></div>
+                      <div>
+                        <table id="table-escher-maps" class="table table-sm">
+                          <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Dataset</th>
+                            <th scope="col">Map</th>
+                            <th scope="col">#compounds</th>
+                            <th scope="col">#reactions</th>
+                            <th scope="col"></th>
+                          </tr>
+                          </thead>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-group-map-load-kb" role="tabpanel" aria-labelledby="kb-tab">
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col-md-1">
+                            <label for="s2-load-map-source">Workspace:</label>
+                          </div>
+                          <div class="col-md-9">
+                            <select style="width: 100%" id="s2-load-map-source"></select>
+                          </div>
+                          <div class="col-md-2">
+                            <button id="x"  class="btn btn-default simple-button" title="Refresh">
+                              <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button id="y"  class="btn btn-default simple-button" title="Load">
+                              <i class="fas fa-eye"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <table id="table-escher-maps-kbase" class="table table-sm">
+                              <thead class="thead-light">
+                              <tr>
+                                <th scope="col">Object ID</th>
+                                <th scope="col">Workspace</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Modified</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Version</th>
+                                <th scope="col"></th>
+                              </tr>
+                              </thead>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-group-map-load-fl" role="tabpanel" aria-labelledby="fl-tab">
+                      <div>
+                        <label for="upload" class="btn btn-default simple-button" style="cursor: pointer">
+                          <i class="fas fa-upload"></i> Upload Map from File (JSON)
+                          <input type="file" id="upload-map" style="display:none">
+                        </label>
+                      </div>
+                      <div>
+                        <hr>
+                        Testing another upload widget ... (controls bellow not working)
+                        <hr>
+                        <form class="dropzone" id="demo-upload" action="/upload">
+                          <div class="dz-message needsclick">
+                            Drop files here or click to upload.<br>
+                            <span class="note needsclick">(This is just a demo dropzone. Selected
+          files are <strong>not</strong> actually uploaded.)</span>
+                          </div>
+                        </form>
+                        <div id="preview-template" style="display: none;">
+                          <div class="dz-preview dz-file-preview">
+                            <div class="dz-image"><IMG data-dz-thumbnail=""></div>
+                            <div class="dz-details">
+                              <div class="dz-size"><SPAN data-dz-size=""></SPAN></div>
+                              <div class="dz-filename"><SPAN data-dz-name=""></SPAN></div></div>
+                            <div class="dz-progress"><SPAN class="dz-upload"
+                                                           data-dz-uploadprogress=""></SPAN></div>
+                            <div class="dz-error-message"><SPAN data-dz-errormessage=""></SPAN></div>
+                            <div class="dz-success-mark">
+                              lol
+                            </div>
+                            <div class="dz-error-mark">
+                              lol
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-group-map-load-hi" role="tabpanel" aria-labelledby="kb-tab">
+                      <div>
+                        History table
+                        <table class="table table-sm">
+                          <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Map Name</th>
+                            <th scope="col">Source</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">#compounds</th>
+                            <th scope="col">#reactions</th>
+                            <th scope="col"></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr>
+                            <td>new_map (20).json</td>
+                            <td><i class="fas fa-file-code"></i> new_map (20).json</td>
+                            <td>23</td>
+                            <td>23</td>
+                            <td>999</td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Bio kb_escher</td>
+                            <td>23</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td><span class="oi oi-eye"></span></td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Deg kb_escher</td>
+                            <td>23</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td><span class="oi oi-eye"></span></td>
+                          </tr>
+                          <tr>
+                            <td>Amino Acid Degradation</td>
+                            <td>ModelSEED</td>
+                            <td>23</td>
+                            <td>-1</td>
+                            <td>-2</td>
+                            <td><span class="oi oi-eye"></span></td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">a
+                  Solo
+                  Layered
+                  Fit to model
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <!--
+          <button type="button" class="btn btn-primary">Save changes</button>
+  -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Model Select-->
+    <div class="modal fade" id="modal-model-select" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-model-select-label">Model Select</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs" id="tab-group-model-load" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="model-load-ms-tab" data-toggle="tab" href="#tab-group-model-load-ms" role="tab" aria-controls="home" aria-selected="true">ModelSEED</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="model-load-kb-tab" data-toggle="tab" href="#tab-group-model-load-kb" role="tab" aria-controls="home" aria-selected="true"><img src="media/k-base_logo.svg" alt="KBase" height="20px"></a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="model-load-fl-tab" data-toggle="tab" href="#tab-group-model-load-fl" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-file-code"></i> File</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="model-load-hi-tab" data-toggle="tab" href="#tab-group-model-load-hi" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-history"></i> History</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="tab-content-model-load">
+              <div class="tab-pane fade show active" id="tab-group-model-load-ms" role="tabpanel" aria-labelledby="ms-tab">
+                <div><h5>Load ModelSEED Biochemistry as model:</h5></div>
+                <div>
+                  <label for="settings-biochem-config">Compartment Config</label>
+                  <input type="text" class="form-control" id="settings-biochem-config" value="0:c" required>
+                  <button id="settings-biochem-build" class="btn btn-success">Set</button>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-group-model-load-kb" role="tabpanel" aria-labelledby="kb-tab">
+                <div>
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12"><h5>Load KBase FBAModel:</h5></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-1">
+                        <label for="s2-load-map-source">Workspace:</label>
+                      </div>
+                      <div class="col-md-9">
+                        <select style="width: 100%" id="s2-load-model-kb"></select>
+                      </div>
+                      <div class="col-md-2">
+                        <button id="xx"  class="btn btn-default simple-button" title="Refresh">
+                          <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button id="yx"  class="btn btn-default simple-button" title="Load">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <table id="table-models-kbase" class="table table-sm">
+                          <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Object ID</th>
+                            <th scope="col">Workspace</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Modified</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Version</th>
+                            <th scope="col"></th>
+                          </tr>
+                          </thead>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-group-model-load-fl" role="tabpanel" aria-labelledby="fl-tab">
+                <div>
+                  <label for="upload" class="btn btn-default simple-button" style="cursor: pointer">
+                    <i class="fas fa-upload"></i> Upload Model from File (COBRApy JSON)
+                    <input type="file" id="upload-model" style="display:none">
+                  </label>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-group-model-load-hi" role="tabpanel" aria-labelledby="kb-tab">
+                <div>
+                  History table
+                  <table class="table table-sm">
+                    <thead class="thead-light">
+                    <tr>
+                      <th scope="col">Map Name</th>
+                      <th scope="col">Source</th>
+                      <th scope="col">Time</th>
+                      <th scope="col">#compounds</th>
+                      <th scope="col">#reactions</th>
+                      <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>new_map (20).json</td>
+                      <td><i class="fas fa-file-code"></i> new_map (20).json</td>
+                      <td>23</td>
+                      <td>23</td>
+                      <td>999</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Bio kb_escher</td>
+                      <td>23</td>
+                      <td>2</td>
+                      <td>1</td>
+                      <td><span class="oi oi-eye"></span></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td><img src="media/k-base_logo.svg" alt="KBase" height="20px"> Lysine_Deg kb_escher</td>
+                      <td>23</td>
+                      <td>1</td>
+                      <td>2</td>
+                      <td><span class="oi oi-eye"></span></td>
+                    </tr>
+                    <tr>
+                      <td>Amino Acid Degradation</td>
+                      <td>ModelSEED</td>
+                      <td>23</td>
+                      <td>-1</td>
+                      <td>-2</td>
+                      <td><span class="oi oi-eye"></span></td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!--
+      <button type="button" class="btn btn-primary" onclick="test()">test</button>
+  -->
+
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <!--
+          <button type="button" class="btn btn-primary">Save changes</button>
+  -->
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
-    
+
   <!-- Escher requires D3.js -->
   <script src="js/d3-5.16.0.js"></script>
   <script src="escher.js"></script>
@@ -129,6 +572,363 @@
   <script src="js/escher_design.js"></script>
   <script src="js/app.js"></script>
   <script>
+
+    class ModelSEEDEscherIOWidget {
+
+      constructor(mapSelectMSTab, mapSelectKBaseTab, selectKBaseWorkspace, selectKBaseWorkspaceModel,
+                  tableMSEscherMaps, tableKBaseFBAModels, tableKBaseEscherMaps, widgetEscher,
+                  env, curationApi, kbaseApi) {
+        this.env = env;
+        this.curationApi = curationApi;
+        this.kbaseApi = kbaseApi;
+
+        this.widgetEscher = widgetEscher;
+
+        this.tableMSEscherMaps = tableMSEscherMaps;
+        this.tableKBaseFBAModels = tableKBaseFBAModels;
+        this.tableKBaseEscherMaps = tableKBaseEscherMaps;
+
+        this.selectKBaseWorkspace = selectKBaseWorkspace;
+        this.selectKBaseWorkspaceModel = selectKBaseWorkspaceModel;
+        this.mapSelectMSTab = mapSelectMSTab;
+        this.mapSelectKBaseTab = mapSelectKBaseTab;
+        this.kbaseNarrativeSelect = undefined;
+        this.msMapTableData = undefined;
+
+        this.adaptToModel = false;
+        this.selectedLayer = 4;
+
+        let that = this;
+        this.mapSelectMSTab.on('shown.bs.tab', function () {
+          that.loadMSCatalog(['ModelSEED', 'Test'])
+        });
+
+        function formatSelection (d) {
+          if (!d.id) {
+            return d.text;
+          }
+
+          return $('<div class="narrative-select-element"><div class="clearfix">\n' +
+            '        <div class="float-left"><h6>' + d['label'] + '</h6></div>\n' +
+            '        <div class="float-left" style="margin-left: 5px"><i>' + d['id'] + '</i></div>\n' +
+            '        <div class="float-right"><i>' + d['owner'] + '</i></div></div></div>');
+        }
+
+        function formatOption (d) {
+          if (!d.id) {
+            return d.text;
+          }
+          return $('<div class="narrative-select-option"><div class="clearfix">' +
+            '<div class="float-left"><h6>' + d['label'] + '</h6></div>' +
+            '<div class="float-right"><i>' + d['id'] + '</i></div></div><div class="clearfix">' +
+            '<div class="float-left">' + d['owner'] + '</div><div class="float-left">w r<i class="fas fa-user"></i><i class="fas fa-user-shield"></i><i class="fas fa-user-edit"></i><i class="fas fa-user-times"></i></div>' +
+            '<div class="float-right"><i>' + d['mod_data'] + '</i> <i class="fas fa-lock"></i><i class="fas fa-lock-open"></i></i></div></div></div>');
+        }
+
+        this.mapSelectKBaseTab.on('shown.bs.tab', function () {
+          if (!that.kbaseNarrativeSelect) {
+            that.kbaseApi.getWorkspaceList(that.getToken(), function(wsList) {
+              that.kbaseNarrativeSelect = wsList;
+              let data = [];
+              _.each(wsList, function(o) {
+                data.push({
+                  "id": o[0],
+                  "id2": o[1],
+                  "text": o[8] && o[8]['narrative_nice_name'] ? o[8]['narrative_nice_name'] + " " + o[0]:o[0],
+                  "label": o[8] && o[8]['narrative_nice_name'] ? o[8]['narrative_nice_name']:o[0],
+                  "owner": o[2],
+                  "mod_data": o[3],
+                  "permission": o[5]
+                })
+              });
+              let s2config = {
+                theme: "classic",
+                placeholder: 'select workspace',
+                data: data,
+                /*
+                matcher: function(params, data) {
+                  if (!params.term) {
+                    return true;
+                  }
+                  return data.text.toUpperCase().indexOf(params.term.toUpperCase()) >= 0 ||
+                    data.id.toUpperCase().indexOf(params.term.toUpperCase()) >= 0;
+                },*/
+                templateResult: formatOption,
+                templateSelection: formatSelection,
+              };
+              that.selectKBaseWorkspace.select2(s2config);
+              that.selectKBaseWorkspaceModel.select2(s2config);
+              that.selectKBaseWorkspaceModel.on('select2:select', function (e) {
+                let data = e.params.data;
+                that.selectKBaseWorkspaceModel.val(data.id).trigger('change');
+
+                that.kbaseApi.get_object_list(data.id, that.getToken(), function(os) {
+                  if (!that.isDataTable(that.tableKBaseFBAModels)) {
+                    let g = that.tableKBaseFBAModels.DataTable();
+                    that.enableKBaseTableFn(that.tableKBaseFBAModels.find("tbody"), g, function(data) {
+                      alert(JSON.stringify(data));
+                    });
+                    that.tableKBaseFBAModels = g;
+                  }
+                  let table = that.tableKBaseFBAModels;
+                  let rows = [];
+                  _.each(os, function(o) {
+                    //let button_html = '<a href="#" onclick="load_escher_map(\'' + '?' +'\', \'' + '?' + '\');"><span class="oi oi-eye"></span></a>';
+                    let buttonHtml = '<button>Load</button>';
+                    rows.push([
+                      o[0],
+                      data.id2,
+                      o[1],
+                      o[2],
+                      o[3],
+                      o[5],
+                      o[4],
+                      buttonHtml
+                    ]);
+                  });
+                  console.log('tableKBaseFBAModels', rows.length);
+                  table.clear();
+                  table.rows.add(rows).draw();
+                }, undefined, undefined, 'KBaseFBA.FBAModel');
+              });
+              that.selectKBaseWorkspace.on('select2:select', function (e) {
+                let data = e.params.data;
+                that.selectKBaseWorkspace.val(data.id).trigger('change');
+
+                that.kbaseApi.get_object_list(data.id, that.getToken(), function(os) {
+                  if (!that.isDataTable(that.tableKBaseEscherMaps)) {
+                    let g = that.tableKBaseEscherMaps.DataTable();
+                    that.enableKBaseTableFn(that.tableKBaseEscherMaps.find("tbody"), g, function(data) {
+                      that.loadKBaseMap(data[2], data[1], that.selectedLayer);
+                      that.selectedLayer += 1;
+                    });
+                    that.tableKBaseEscherMaps = g;
+                  }
+                  let table = that.tableKBaseEscherMaps;
+                  let rows = [];
+                  _.each(os, function(o) {
+                    //let button_html = '<a href="#" onclick="load_escher_map(\'' + '?' +'\', \'' + '?' + '\');"><span class="oi oi-eye"></span></a>';
+                    let buttonHtml = '<button>Load</button>';
+                    rows.push([
+                      o[0],
+                      data.id2,
+                      o[1],
+                      o[2],
+                      o[3],
+                      o[5],
+                      o[4],
+                      buttonHtml
+                    ]);
+                  });
+                  table.clear();
+                  table.rows.add(rows).draw();
+                }, undefined, undefined, 'KBaseFBA.EscherMap');
+              });
+            });
+          }
+        });
+      }
+
+      getToken() {
+        return this.env.config.kbase_token;
+      }
+
+      fnDownloadJson(exportObj, exportName) {
+        //https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+        let downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", exportName + ".json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+
+      s2selectKBaseLoadTableData(table, os, ws) {
+        let rows = [];
+        _.each(os, function(o) {
+          //let button_html = '<a href="#" onclick="load_escher_map(\'' + '?' +'\', \'' + '?' + '\');"><span class="oi oi-eye"></span></a>';
+          let buttonHtml = '<button>Load</button>';
+          rows.push([
+            o[0],
+            ws,
+            o[1],
+            o[2],
+            o[3],
+            o[5],
+            o[4],
+            buttonHtml
+          ]);
+        });
+        table.clear();
+        table.rows.add(rows).draw();
+      }
+
+      fnLoadMapPostProcess(mapData) {
+        if (this.adaptToModel && this.widgetEscher.escher_model) {
+          let DEBUG_adapt_cmp = 'c0';
+          let ema = new EscherMapAdapter(mapData);
+          let uid = ema.adaptToModel(this.widgetEscher.escher_model, DEBUG_adapt_cmp);
+          let uidNodes = uid[0];
+          let uidReactions = uid[1];
+          this.widgetEscher.escher_builder.map.delete_node_data(uidNodes);
+          this.widgetEscher.escher_builder.map.delete_reaction_data(uidReactions);
+          this.widgetEscher.escher_builder.map.convert_map();
+          this.widgetEscher.escher_builder.map.draw_everything();
+        }
+      }
+
+      enableKBaseTableFn(o, dt, fn) {
+        o.on( 'click', 'button', function () {
+          let data = dt.row($(this).parents('tr')).data();
+          fn(data);
+        });
+      }
+
+      fnSaveKBaseMap(objectId, ws, layer) {
+        let that = this;
+        return function() {
+          if (confirm('Save ' + objectId + ' to ' + ws)) {
+            that.kbaseApi.save_object_escher_map(objectId, ws, that.widgetEscher.maps[layer], that.getToken(),
+              function(e) {
+                alert('map saved to new version: v' + e[0][4])
+              }, undefined,
+              function(e) {
+                alert('error unable to save ' + e);
+              });
+          }
+        }
+      }
+
+      loadMap(map, mapId, layer) {
+        this.widgetEscher.load_map_to_layer(map, layer, mapId, undefined);
+        this.widgetEscher.render();
+      }
+
+      loadKBaseMap(objectId, ws, layer) {
+        let that = this;
+        this.kbaseApi.getObjectEscherMap(objectId, ws, this.getToken(), function(res) {
+          console.log(res.data);
+          that.widgetEscher.load_map_to_layer(res.data, layer, objectId, that.fnSaveKBaseMap(objectId, ws, layer));
+          that.widgetEscher.render();
+        });
+        /*
+        this.kbaseApi.get_object_escher_map(objectId, ws, this.getToken(), function(res) {
+          that.widgetEscher.load_map_to_layer(res, layer, objectId, that.fnSaveKBaseMap(objectId, ws, layer));
+          that.widgetEscher.render();
+        });
+
+         */
+      }
+
+      loadMapFromFile() {
+        let that = this;
+        return function() {
+          console.log(this);
+          let file = this.files[0];
+          let reader = new FileReader();
+          console.log(file);
+          reader.onload = function(e) {
+            let escherMap = JSON.parse(e.target.result);
+            console.log('map', escherMap);
+            that.widgetEscher.change_map(escherMap);
+          };
+          reader.readAsText(file);
+        }
+      }
+
+      loadModelFromFile() {
+        let that = this;
+        return function() {
+          console.log(this);
+          let file = this.files[0];
+          let reader = new FileReader();
+          console.log(file);
+          reader.onload = function(e) {
+            let escherModel = JSON.parse(e.target.result);
+            console.log('model', escherModel);
+            that.widgetEscher.change_model(escherModel);
+          };
+          reader.readAsText(file);
+        }
+      }
+
+      loadEscherConfiguration(config) {
+        this.widgetEscher.maps = [];
+        this.widgetEscher.active_layer = 0;
+        let that = this;
+        this.loadEscherConfiguration__(config, undefined, function() {
+          that.widgetEscher.render();
+        });
+      }
+
+      loadEscherConfiguration__(config, model, fnDone, index=0) {
+        console.debug('load config', config, index);
+        let that = this;
+        if (!model && config['models_ref'][0]) {
+          console.debug('load config', config, 'model', config['models_ref'][0]);
+          this.kbaseApi.getObjectCobraModel(config['models_ref'][0], '',
+            that.env.config.kbase_token, function(d) {
+              that.widgetEscher.change_model(d.data);
+              that.loadEscherConfiguration__(config, d.data, fnDone, index);
+          }, undefined, function () {
+            alert('fail to load model');
+          });
+        } else if (config['maps_ref'][index]) {
+          this.kbaseApi.getObjectEscherMap(config['maps_ref'][index], '', that.env.config.kbase_token, function(o) {
+            let objectId = o.info[1];
+            let ws = o.info[7];
+            if (config['maps_options'][index] && config['maps_options'][index]['adapt_to_model']) {
+              let ema = new EscherMapAdapter(o.data);
+              o.data = ema.adaptToModel2(that.widgetEscher.escher_model);
+            }
+
+            that.widgetEscher.load_map_to_layer(o.data, index, objectId, that.fnSaveKBaseMap(objectId, ws, index));
+            that.loadEscherConfiguration__(config, model, fnDone, index + 1);
+          });
+        } else {
+          fnDone(model);
+        }
+      }
+
+      isDataTable(v) {
+        return $.fn.DataTable.isDataTable(v)
+      }
+
+      loadMSCatalog(catalogs) {
+        let that = this;
+        if (!that.msMapTableData) {
+          that.env.load_catalog(catalogs, function(catalog) {
+            if (!that.isDataTable(that.tableMSEscherMaps)) {
+              that.tableMSEscherMaps = that.tableMSEscherMaps.DataTable();
+            }
+            let table = that.tableMSEscherMaps;
+            let rows = [];
+            _.each(catalog, function(map_list, dataset_id) {
+              _.each(map_list, function(map_id) {
+                let button_html = '<a href="#" onclick="load_escher_map(\'' + dataset_id +'\', \'' + map_id + '\');"><span class="oi oi-eye"></span></a>';
+                let map_str = map_id;
+                if (map_id.indexOf(dataset_id) === 0) {
+                  map_str = map_id.substring(dataset_id.length + 1)
+                }
+                rows.push([
+                  dataset_id,
+                  map_str,
+                  '-',
+                  '-',
+                  button_html
+                ]);
+              });
+            });
+            that.msMapTableData = rows;
+            table.rows.add(rows).draw();
+          });
+        }
+      }
+    }
+
+
+
     const tinier = escher.libs.tinier;
     let tooltip_style = {
       'min-width': '40px',
@@ -160,6 +960,24 @@
         console.log(args.state.type)
       }
     };
+    const page_change_map = function(escher_map, dataset_id, map_id) {
+      widget_escher.change_map(escher_map);
+      widget_escher.toggle_display();
+      //$('#label_map').html(map_id);
+      env.set_config_property('default_map', dataset_id + '/' + map_id);
+    };
+    const load_escher_map = function(dataset_id, map_id) {
+      console.log('load_escher_map', dataset_id, map_id);
+      if (env['config'] && env['config']['biochem_config']) {
+        curationApi.post_get_refit_map(map_id, dataset_id, env['config']['biochem_config'], null, function(escher_map) {
+          page_change_map(escher_map, dataset_id, map_id);
+        })
+      } else {
+        curationApi.get_escher_map(dataset_id, map_id, function(escher_map) {
+          page_change_map(escher_map, dataset_id, map_id);
+        })
+      }
+    };
     const e_options = {
       //menu: '',
       fill_screen: false,
@@ -168,21 +986,137 @@
 
     const widget_escher_left_panel = new WidgetEscherLeftPanel($('#left_panel'));
     const widget_escher = new WidgetEscherModelseed(undefined, d3.select('#map_container'), e_options, false, true, [widget_escher_left_panel]);
+    widget_escher.fn_draw_underlay = draw_shadow_map;
     const kbaseApi = new KBaseAPI();
     const curationApi = new CurationAPI();
+
+    env = new CurationEnvironment(curationApi, [
+      new WidgetSystemStatus($('#top_bar')),
+      widget_escher]);
+    env.load_config();
+    env.init_ui();
+    const app = new ModelSEEDEscherApp(widget_escher, $('#exampleModal'), $('#modal-model-select'), undefined);
+
+    const msEscherIOWidget = new ModelSEEDEscherIOWidget($('#ms-tab'), $('#kb-tab'),
+      $('#s2-load-map-source'), $('#s2-load-model-kb'),
+      $("#table-escher-maps"), $('#table-models-kbase'), $('#table-escher-maps-kbase'),
+      widget_escher, env, curationApi, kbaseApi);
+
+    /*
+    $.getJSON('data/iAL1006_KBase3.json',function(d) {
+      widget_escher.change_model(d);
+      $.getJSON('data/iMM904.Test.json',function(d) {
+        let ema = new EscherMapAdapter(d);
+        let adaptedMap = ema.adaptToModel2(widget_escher.escher_model);
+        msEscherIOWidget.widgetEscher.active_layer = 0;
+        msEscherIOWidget.widgetEscher.load_map_to_layer(adaptedMap, 0, 'objectId', function() {
+          alert('no save option available');
+        }, false);
+        msEscherIOWidget.widgetEscher.load_map_to_layer(d, 1, 'objectId', function() {
+          alert('no save option available');
+        }, true);
+        console.info(d);
+      });
+    });
+    */
+
+    //msEscherIOWidget.loadKBaseMap('demo_merge_map1', 'filipeliu:1452618747692', 0);
+    //msEscherIOWidget.loadKBaseMap('demo_merge_map2', 'filipeliu:1452618747692', 1);
+  /*
+    $('#upload-map').on('change', function() {
+      console.log('!!!', this);
+    });
+
+    $('#upload-model').on('change', function() {
+      console.log('!!', this);
+    });
+
+    $('#upload').on('change', function() {
+      console.log('!', this);
+    });*/
+
     const token = 'DFRUIN7FNVSIYB6UFFTBCVS7OR76ZF7V';
     let map1 = undefined;
     let map2 = undefined;
-    kbaseApi.get_object_escher_map('demo_merge_map1', 'filipeliu:1452618747692', token, function(res) {
-      map1 = res;
-      widget_escher.change_map(res);
-      kbaseApi.get_object_escher_map('demo_merge_map2', 'filipeliu:1452618747692', token, function(res) {
-        map2 = res;
-        draw_shadow_map(res, 0, 0);
+    kbaseApi.getObjectEscherMap('demo_merge_map1', 'filipeliu:1452618747692', token, function(res) {
+      map1 = res.data;
+      widget_escher.activeLayer = 0;
+      widget_escher.load_map_to_layer(map1, 0, 'example1', function() {
+        msEscherIOWidget.fnDownloadJson(map1, 'example1.json');
+      });
+      //widget_escher.change_map(res);
+      kbaseApi.getObjectEscherMap('demo_merge_map2', 'filipeliu:1452618747692', token, function(res) {
+        map2 = res.data;
+        widget_escher.load_map_to_layer(map2, 1, 'example2');
+        widget_escher.render();
+        //draw_shadow_map(res, 0, 0);
+        //
+        /*
         curationApi.post_escher_merge_map({'maps': [map1, map2]}, function (res) {
           draw_shadow_map(res, 500, 0);
         })
+        */
       });
+    });
+
+    const getUrlParam = function(name){
+      let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+      if (results) {
+        return results[1] || 0;
+      } else {
+        return undefined;
+      }
+    };
+    $(function() {
+      let configParam = getUrlParam('config');
+      if (configParam) {
+        kbaseApi.get_object(configParam, 'none', env.config.kbase_token, function (d) {
+          msEscherIOWidget.loadEscherConfiguration(d);
+        }, undefined, function () {
+          alert('failed to load config param: ' + configParam)
+        });
+      }
+      $('#btn_test6').click(function() {
+        let escherDesign = new EscherDesign(widget_escher.escher_builder);
+        escherDesign.init_ui();
+      });
+      $('#btn_test8').click(function() {
+        widget_escher.colorCompartment(widget_escher_left_panel)
+      });
+      $('#btn_test9').click(function() {
+        let mergeIndexes = window.prompt('Map indexes to merge (example: 0;1):', '0;1');
+        console.log(mergeIndexes);
+        if (mergeIndexes) {
+          let indexes = mergeIndexes.split(';');
+          let params = {
+            maps: [],
+          };
+          let invalid = [];
+          for (const i of indexes) {
+            if (widget_escher.maps[i]) {
+              params.maps.push(widget_escher.maps[i])
+            } else {
+              invalid.push(i);
+            }
+          }
+          if (invalid.length > 0) {
+            alert('error bad index: ' + JSON.stringify(invalid));
+          } else {
+            curationApi.postEscherMergeMap(params, function(mergedMap) {
+              //
+              let layerLabel = widget_escher.layer[indexes[0]].label
+              _.each(indexes, function(i) {
+                widget_escher.deleteLayer(i);
+              });
+              console.log(layerLabel);
+
+              widget_escher.load_map_to_layer(mergedMap, indexes[0], layerLabel);
+              //msEscherIOWidget.loadMap(mergedMap, indexes[0], widget_escher.maps[indexes[0]][0]['map_name'])
+            });
+          }
+        }
+      });
+
     })
   </script>
 </html>

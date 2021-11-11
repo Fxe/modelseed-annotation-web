@@ -4,10 +4,21 @@ class EscherMapAdapter {
 
   constructor(map) {
     this.map = map;
-    this.nodeToReaction = {}
+    this.nodeToReaction = {};
     let that = this;
     _.each(this.map[1].reactions, function(r, reaction_uid) {
       _.each(r.segments, function(s, segment_uid) {
+
+          if (!that.nodeToReaction[s.from_node_id]) {
+            that.nodeToReaction[s.from_node_id] = {}
+          }
+          that.nodeToReaction[s.from_node_id][reaction_uid] = true;
+          if (!that.nodeToReaction[s.to_node_id]) {
+            that.nodeToReaction[s.to_node_id] = {}
+          }
+          that.nodeToReaction[s.to_node_id][reaction_uid] = true
+
+        /*
         if (that.map[1].nodes[s.from_node_id].node_type === 'metabolite') {
           if (!that.nodeToReaction[s.from_node_id]) {
             that.nodeToReaction[s.from_node_id] = {}
@@ -20,13 +31,14 @@ class EscherMapAdapter {
           }
           that.nodeToReaction[s.to_node_id][reaction_uid] = true
         }
+        */
       })
     });
-    console.log(this.nodeToReaction)
+    //console.log(this.nodeToReaction)
   }
 
   getProtonCompounds(model) {
-    let protons = {}
+    let protons = {};
     widget_escher.escher_model.metabolites.forEach(function(o) {
       if (o.annotation && o.annotation['seed.compound']) {
         if (Array.isArray(o.annotation['seed.compound'])) {
@@ -39,7 +51,7 @@ class EscherMapAdapter {
           }
         }
       }
-    })
+    });
     return protons;
   }
 
@@ -128,19 +140,55 @@ class EscherMapAdapter {
     return _.isEqual(m1, m2);
   }
 
+  adaptToModel2(model, deleteUnmapped=true) {
+    let adaptedMap = JSON.parse(JSON.stringify(this.map));
+    let modelReactions = {};
+    _.each(model.reactions, function(o) {
+      modelReactions[o.id] = o
+    });
+    let deletedReactions = {};
+    let keep = {};
+    _.each(this.map[1].reactions, function(r, uid) {
+      let id = r.bigg_id;
+      if (!modelReactions[id]) {
+        deletedReactions[uid] = r;
+        console.debug('delete', id);
+      } else {
+        keep[uid] = r;
+      }
+    });
+
+    let nodes = {};
+    let deletedReactionIds = _.keys(deletedReactions);
+    _.each(this.nodeToReaction, function(reactions, nodeId) {
+      let diff = _.difference(_.keys(reactions), deletedReactionIds);
+      //console.log(diff, nodeId, reactions, _.keys(reactions));
+      if (diff.length === 0) {
+        //console.log('delete', nodeId);
+      } else {
+        nodes[nodeId] = adaptedMap[1].nodes[nodeId];
+        //console.log('kegg', nodeId);
+      }
+    });
+
+    adaptedMap[1].reactions = keep;
+    adaptedMap[1].nodes = nodes;
+    return adaptedMap;
+  }
+
   adaptToModel(model, compartment='c0', deleteUnmapped=true) {
     let that = this;
     let targetReactionDatabase = 'seed.reaction';
     let targetCompoundDatabase = 'seed.compound';
-    let renameCompound = {}
-    let compoundObjects = {}
-    let reactionObjects = {}
-    let mappedCompounds = {}
-    let mappedReactions = {}
+    let renameCompound = {};
+    let compoundObjects = {};
+    let reactionObjects = {};
+    let mappedCompounds = {};
+    let mappedReactions = {};
     _.each(this.map[1].nodes, function(o, uid) {
       if (o.node_type === 'metabolite') {
         mappedCompounds[uid] = false;
-        let i = that.getCompoundAnnotation(o, targetCompoundDatabase)
+        let i = that.getCompoundAnnotation(o, targetCompoundDatabase);
         if (!compoundObjects[i]) {
           compoundObjects[i] = [];
         }
@@ -149,19 +197,19 @@ class EscherMapAdapter {
     });
     _.each(this.map[1].reactions, function(r, uid) {
       mappedReactions[uid] = false;
-      let i = that.getReactionAnnotation(r, targetReactionDatabase)
+      let i = that.getReactionAnnotation(r, targetReactionDatabase);
       if (!reactionObjects[i]) {
         reactionObjects[i] = [];
       }
       reactionObjects[i].push(uid);
     });
 
-    console.log('compoundObjects', compoundObjects)
-    console.log('reactionObjects', reactionObjects)
+    console.log('compoundObjects', compoundObjects);
+    console.log('reactionObjects', reactionObjects);
 
     _.each(model.metabolites, function(o) {
-      if (o.compartment == compartment) {
-        let compoundAnnotation = that.getCompoundAnnotation(o, targetCompoundDatabase)
+      if (o.compartment === compartment) {
+        let compoundAnnotation = that.getCompoundAnnotation(o, targetCompoundDatabase);
         if (compoundObjects[compoundAnnotation]) {
           _.each(compoundObjects[compoundAnnotation], function(node_uid) {
             //console.log(node_uid, that.map[1].nodes[node_uid].bigg_id, o.id)
@@ -170,22 +218,22 @@ class EscherMapAdapter {
           });
         }
       }
-    })
+    });
 
 
     let protons = this.getProtonCompounds(model);
-    let cpdUidKeep = {}
+    let cpdUidKeep = {};
     _.each(model.reactions, function(r) {
-      let reactionAnnotation = that.getReactionAnnotation(r, targetReactionDatabase)
+      let reactionAnnotation = that.getReactionAnnotation(r, targetReactionDatabase);
       //console.log(r.id, reactionAnnotation)
       if (reactionObjects[reactionAnnotation]) {
         _.each(reactionObjects[reactionAnnotation], function(reaction_uid) {
-          let mapReaction = that.map[1].reactions[reaction_uid]
-          let match = that.isMatchMetabolites(mapReaction, r, protons)
-          //console.log(r.id, reaction_uid, match)
+          let mapReaction = that.map[1].reactions[reaction_uid];
+          let match = that.isMatchMetabolites(mapReaction, r, protons);
+          //console.log(r.id, reaction_uid, match);
           if (match) {
-            that.renameReaction(reaction_uid, r.id)
-            mappedReactions[reaction_uid] = true
+            that.renameReaction(reaction_uid, r.id);
+            mappedReactions[reaction_uid] = true;
 
             _.each(mapReaction.segments, function(s, segment_uid) {
               cpdUidKeep[s.from_node_id] = true;
@@ -196,8 +244,8 @@ class EscherMapAdapter {
       }
     });
 
-    let toDelete = []
-    let toDeleteNodes = []
+    let toDelete = [];
+    let toDeleteNodes = [];
     _.each(mappedReactions, function(v, reaction_uid) {
       if (!v) {
         toDelete.push(reaction_uid);
@@ -212,7 +260,7 @@ class EscherMapAdapter {
         })
         //delete that.map[1].reactions[reaction_uid];
       }
-    })
+    });
 
 
     return [_.keys(toDeleteNodes), toDelete];
