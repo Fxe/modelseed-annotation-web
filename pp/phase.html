@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Phase Analysis</title>
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-9"><div id="plot" style="width:800px;height:450px;"></div></div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="reaction-select">Reaction</label>
+        <select id="reaction-select" class="form-control form-control-sm"></select>
+      </div>
+      <div class="form-group">
+        <label for="plot-trace-alias">Alias</label>
+        <input id="plot-trace-alias" class="form-control form-control-sm" type="text" placeholder="Example: glucose">
+      </div>
+      <div class="form-group">
+        <label for="plot-trace-color">Color</label>
+        <input id="plot-trace-color" class="form-control form-control-sm" type="text" placeholder="Example: red, blue, #ff7cdd">
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-mode" id="inlineRadio1" value="lines" checked="checked">
+          <label class="form-check-label" for="inlineRadio1">lines</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-mode" id="inlineRadio2" value="markers">
+          <label class="form-check-label" for="inlineRadio2">markers</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-mode" id="inlineRadio3" value="lines+markers">
+          <label class="form-check-label" for="inlineRadio2">lines+markers</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-dash" id="radio-plot-dash-none" value="none" checked="checked">
+          <label class="form-check-label" for="radio-plot-dash-none">none</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-dash" id="radio-plot-dash-dot" value="dot">
+          <label class="form-check-label" for="radio-plot-dash-dot">dot</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-dash" id="radio-plot-dash-dash" value="dash">
+          <label class="form-check-label" for="radio-plot-dash-dash">dash</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+          <label class="form-check-label" for="inlineCheckbox1">ABS</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <button id="trace-btn-add" class="btn btn-success">Add</button>
+        <button id="trace-btn-remove" class="btn btn-danger">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script src="../js/plotly-2.8.3.min.js"></script>
+<script src="../js/underscore-1.9.1.min.js"></script>
+<script>
+  /*
+  TESTER = document.getElementById('tester');
+  Plotly.newPlot( TESTER, [{
+    x: [1, 2, 3, 4, 5],
+    y: [1, 2, 4, 8, 16] }], {
+    margin: { t: 0 } } );
+
+   */
+  var DATA;
+
+  $(function() {
+    const plotTraceAlias = $('#plot-trace-alias');
+    const plotTraceColor = $('#plot-trace-color');
+    let selectReaction = $('#reaction-select');
+
+    $.getJSON("traces_deni.json", function(plotConfig) {
+      let plotVar = plotConfig['traces'] || {};
+      console.log(plotConfig);
+      $.getJSON("fba_results_deni2.json", function(fbaData) {
+        DATA = fbaData;
+        console.log(fbaData);
+        let x = fbaData.order;
+        let fbaArray = fbaData.fba;
+        _.each(_.keys(fbaArray[x[0]].fluxes), function(k) {
+          selectReaction.append($('<option>', {
+            value: k, text: k
+          }));
+        });
+
+        function updatePlot(fbaArray) {
+          let data = [];
+
+          _.each(plotVar, function(options, dataTraceId) {
+            console.log(options, dataTraceId);
+            if (options['visible']) {
+              let abs = options['abs'];
+              let trace = {
+                x: [],
+                y: [],
+                mode: options['mode'],
+                name: options['name'],
+              };
+
+              let lineStyle = {};
+              if (options['color']) {
+                lineStyle.color = options['color']
+              }
+              if (options['dash']) {
+                lineStyle.dash = options['dash']
+              }
+              trace.line = lineStyle;
+
+              _.each(x, function(x_) {
+                let v =fbaArray[x_]['fluxes'][dataTraceId];
+                if (abs) {
+                  v = Math.abs(v);
+                }
+                trace.x.push(x_);
+                trace.y.push(v);
+              });
+              data.push(trace);
+            }
+          });
+          Plotly.newPlot('plot', data, plotConfig['plot_params']);
+        }
+
+        updatePlot(fbaArray);
+
+        $('#trace-btn-remove').click(function () {
+          let traceId = selectReaction.val();
+          if (plotVar[traceId]) {
+            plotVar[traceId]['visible'] = false;
+          }
+          updatePlot(fbaArray);
+        });
+
+        $('#trace-btn-add').click(function() {
+          let traceId = selectReaction.val();
+          plotVar[traceId] = {
+            abs: true,
+            name: traceId,
+            visible: true,
+            mode: $("input[name='radio-plot-mode']:checked").val()
+          };
+
+          if (plotVar[traceId].mode === 'lines' || plotVar[traceId].mode === 'lines+markers') {
+            plotVar[traceId].dash = $("input[name='radio-plot-dash']:checked").val();
+          }
+
+          let alias = plotTraceAlias.val();
+          if (alias && alias.length > 0) {
+            plotVar[traceId].name = alias
+          }
+          let color = plotTraceColor.val();
+          if (color && color.length > 0) {
+            plotVar[traceId].color = color
+          }
+          console.log('add!', plotVar[traceId]);
+          updatePlot(fbaArray);
+        });
+
+      });
+    });
+
+
+  })
+</script>
+</html>

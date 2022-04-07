@@ -1,0 +1,22 @@
+{
+  "plot_params": {
+    "title": "Phase Plane Analysis"},
+  "traces": {
+    "EX_cpd00528_e0": {"mode": "line", "abs": false, "name": "N2 (e)", "color": "rgb(128,0,0)", "visible":  true},
+    "EX_cpd00659_e0": {"mode": "line", "abs": false, "name": "N2O (e)", "color": "rgb(255,0,248)", "visible":  true},
+    "EX_cpd00418_e0": {"mode": "line", "abs": false, "name": "NO (e)", "color": "rgb(255,150,7)", "visible":  true},
+    "EX_cpd00209_e0": {"mode": "line", "abs": false, "name": "Nitrate (e)", "color": "rgb(0,7,255)", "visible":  true},
+    "EX_cpd00075_e0": {"mode": "line", "abs": false, "name": "Nitrite (e)", "color": "rgb(65,120,255)", "visible":  true},
+
+    "rxn11937_cA": {"mode": "line", "abs": true, "name": "N2 (A)", "color": "rgb(128,0,0)", "visible":  true, "dash": "dot"},
+    "rxn11937_cR": {"mode": "line", "abs": true, "name": "N2 (R)", "color": "rgb(128,0,0)", "visible":  true, "dash": "dash"},
+    "rxn05488_cA": {"mode": "line", "abs": true, "name": "AC (A)", "color": "rgb(59,59,59)", "visible":  true, "dash": "dot"},
+    "rxn08063_cR": {"mode": "line", "abs": true, "name": "AC (R)", "color": "rgb(59,59,59)", "visible":  true, "dash": "dash"},
+    "rxn09004_cA": {"mode": "line", "abs": true, "name": "Nitrate (A)", "color": "rgb(0,7,255)", "visible":  true, "dash": "dot"},
+    "rxn09004_cR": {"mode": "line", "abs": true, "name": "Nitrate (R)", "color": "rgb(0,7,255)", "visible":  true, "dash": "dash"},
+
+    "rxn01806_cA": {"mode": "line", "abs": true, "name": "NO -> N2O (A)", "color": "rgb(255,0,248)", "visible":  true, "dash": "dot"},
+    "rxn01806_cR": {"mode": "line", "abs": true, "name": "NO -> N2O (R)", "color": "rgb(255,0,248)", "visible":  true, "dash": "dash"},
+    "rxn14428_cR": {"mode": "line", "abs": true, "name": "Nitrite -> NO (R)", "color": "rgb(255,150,7)", "visible":  true, "dash": "dash"}
+  }
+}
