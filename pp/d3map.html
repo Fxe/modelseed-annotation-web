@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Phase Analysis</title>
+  <link rel="stylesheet" href="../css/bootstrap.css" />
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div style="overflow: scroll; width: 200px">
+        <svg id="s" style="width: 10px; height: 50px"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div style="overflow: scroll; width: 20000px">
+        <svg id="plot" style="width: 19000px; height: 500px"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="reaction-select">Reaction</label>
+        <select id="reaction-select" class="form-control form-control-sm"></select>
+      </div>
+      <div class="form-group">
+        <label for="plot-trace-alias">Alias</label>
+        <input id="plot-trace-alias" class="form-control form-control-sm" type="text" placeholder="Example: glucose">
+      </div>
+      <div class="form-group">
+        <label for="plot-trace-color">Color</label>
+        <input id="plot-trace-color" class="form-control form-control-sm" type="text" placeholder="Example: red, blue, #ff7cdd">
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-mode" id="inlineRadio1" value="lines" checked="checked">
+          <label class="form-check-label" for="inlineRadio1">lines</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-mode" id="inlineRadio2" value="markers">
+          <label class="form-check-label" for="inlineRadio2">markers</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-mode" id="inlineRadio3" value="lines+markers">
+          <label class="form-check-label" for="inlineRadio2">lines+markers</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-dash" id="radio-plot-dash-none" value="none" checked="checked">
+          <label class="form-check-label" for="radio-plot-dash-none">none</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-dash" id="radio-plot-dash-dot" value="dot">
+          <label class="form-check-label" for="radio-plot-dash-dot">dot</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="radio-plot-dash" id="radio-plot-dash-dash" value="dash">
+          <label class="form-check-label" for="radio-plot-dash-dash">dash</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+          <label class="form-check-label" for="inlineCheckbox1">ABS</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <button id="trace-btn-add" class="btn btn-success">Add</button>
+        <button id="trace-btn-remove" class="btn btn-danger">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script src="d3.min.js"></script>
+<script src="../js/plotly-2.8.3.min.js"></script>
+<script src="../js/underscore-1.9.1.min.js"></script>
+<script>
+  /*
+  TESTER = document.getElementById('tester');
+  Plotly.newPlot( TESTER, [{
+    x: [1, 2, 3, 4, 5],
+    y: [1, 2, 4, 8, 16] }], {
+    margin: { t: 0 } } );
+
+   */
+  let DATA = undefined;
+
+  $(function() {
+
+
+    $.getJSON("modelseed_5k_atp_no_galfill.json", function(atp_data) {
+      let rows = 2;
+      let genomeOrder = ['GCF_000714675.1', 'GCF_000612055.1'];
+      //genomeOrder = _.keys(atp_data);
+      let yOrder = ['Glc/O2', 'Ac/O2', 'Glc', 'Ac'];
+      yOrder = _.keys(atp_data['GCF_000714675.1']);
+      let dlist = Object.entries(atp_data);
+       //_.keys(atp_data);
+      //console.log(dlist);
+      console.log(genomeOrder);
+
+      DATA = d3.range(3);
+      let boxSize = 9;
+      let boxSpacing = 1;
+      let el = d3.select("#plot");
+      let v = [];
+      for (let xIndex=0; xIndex<genomeOrder.length; xIndex++) {
+        let genomeId = genomeOrder[xIndex];
+        for (let yIndex=0; yIndex<yOrder.length; yIndex++) {
+          let yId = yOrder[yIndex];
+          let value = atp_data[genomeId][yId];
+          if (value !== 0) {
+            let color = value > 100 ? "red" : value > 20 ? "orange" : value > 10 ? "green" : "steelblue";
+            v.push({
+              x: 100 + xIndex * (boxSize + boxSpacing),
+              y: 10 + yIndex * (boxSize + boxSpacing),
+              color: color
+            });
+          }
+          //console.log(genomeId, yId, atp_data[genomeId][yId])
+        }
+      }
+      let k = 0;
+      let labels = el.selectAll("text").data(yOrder).enter()
+        .append("text")
+        .attr("x", function(d) { return 95})
+        .attr("y", function(d) { k++;  return 10 + 7 + (k - 1) * (9)})
+        .attr("text-anchor", function(d) { return "end"})
+        .attr("font-family", function(d) { return "monospace"})
+        .attr("font-size", function(d) { return "7px"})
+        .text(function (d) { return d});
+
+      let rects = el.selectAll("rect")
+        .data(v)
+        .enter()
+        .append("rect")
+        .attr("width", boxSize)
+        .attr("height", boxSize)
+        .attr("x", function(d) { return d.x})
+        .attr("y", function(d) { return d.y})
+        .attr("fill", function(d) { return d.color})
+      console.log('done!')
+
+      /*
+      let rects = el.selectAll("rect")
+        .data(dlist)
+        .enter()
+        .append("rect")
+        .attr("width",4)
+        .attr("height",4)
+        .attr("x", function(d) {
+
+          console.log(d[0], d[1]);
+          return d % (960/5) * 5; })
+        .attr("y", function(d) { return Math.floor (d/(960/5)) * 5; })
+        .attr("fill", "steelblue")
+
+       */
+    });
+
+
+
+
+  })
+</script>
+</html>

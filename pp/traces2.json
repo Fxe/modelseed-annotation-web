@@ -1,0 +1,30 @@
+{
+  "plot_params": {
+    "title": "GSP",
+    "xaxis": {"title":  "iterations"},
+    "yaxis": {"title":  "flux"}
+  },
+  "traces": {
+    "rxn10577_cR": {"mode": "lines", "abs": true, "name": "N2 (R)", "color": "rgb(128,0,0)", "dash": "dash", "visible":  true},
+    "rxn10577_cA": {"mode": "lines", "abs": true, "name": "N2 (A)", "color": "rgb(128,0,0)", "dash": "dot", "visible":  true},
+    "rxn08063_cR": {"mode": "lines", "abs": true, "name": "AC (R)", "color": "rgb(59,59,59)", "dash": "dash", "visible":  true},
+    "rxn05488_cA": {"mode": "lines", "abs": true, "name": "AC (A)", "color": "rgb(59,59,59)", "dash": "dot", "visible":  true},
+    "rxn05627_cR": {"mode": "lines", "abs": true, "name": "Nitrate (R)", "color": "rgb(0,7,255)", "dash": "dash"},
+    "rxn05627_cA": {"mode": "lines", "abs": false, "name": "Nitrate (A)", "color": "rgb(0,7,255)", "dash": "dot"},
+
+    "rxn05625_cR": {"mode": "lines", "abs": true, "name": "Nitrite (R)", "color": "rgb(65,120,255)", "dash": "dash"},
+    "rxn05625_cA": {"mode": "lines", "abs": false, "name": "Nitrite (A)", "color": "rgb(65,120,255)", "dash": "dot"},
+
+    "rxn09008_cR": {"mode": "lines", "abs": false, "name": "NO (R)", "color": "rgb(255,150,7)", "dash": "dash"},
+    "rxn09008_cA": {"mode": "lines", "abs": false, "name": "NO (A)", "color": "rgb(255,150,7)", "dash": "dot"},
+
+    "rxn08966_eR": {"mode": "lines", "abs": false, "name": "N2O (R)", "color": "rgb(255,0,248)", "dash": "dash"},
+    "rxn08966_cA": {"mode": "lines", "abs": false, "name": "N2O (A)", "color": "rgb(255,0,248)", "dash": "dot"},
+
+    "EX_cpd00029_e0": {"mode": "markers", "abs": false, "name": "AC (EX)", "color": "rgb(59,59,59)"},
+    "EX_cpd00659_e0": {"mode": "markers", "abs": false, "name": "N2O (EX)", "color": "rgb(255,0,248)"},
+    "EX_cpd00418_eA": {"mode": "markers", "abs": false, "name": "NO (EX)", "color": "rgb(255,150,7)"},
+    "EX_cpd00209_e0": {"mode": "markers", "abs": false, "name": "Nitrite (EX)", "color": "rgb(0,7,255)"},
+    "EX_cpd00075_e0": {"mode": "markers", "abs": false, "name": "Nitrite (EX)", "color": "rgb(65,120,255)"}
+  }
+}
