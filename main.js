@@ -726,9 +726,6 @@ $(function() {
     })
   });
 
-
-
-
   env = new CurationEnvironment(api, [
     new WidgetSystemStatus($('#top_bar')),
     widget_escher]);

@@ -35,9 +35,10 @@ class WidgetEscherModelseed {
 
     this.escher_map = null;
     this.maps = [];
-    this.layer = [];
+    this.layer = {};
     this.activeLayer = undefined;
     this.model = null;
+    this.renderBackground = true;
     this.escher_model = null;
     this.submodels = {};
     this.biochem = null;
@@ -174,6 +175,17 @@ class WidgetEscherModelseed {
     })
   }
 
+  getNextLayerId() {
+    let max = -1;
+    Object.keys(this.layer).forEach( function(v) {
+      let _v = parseInt(v)
+      if (_v >= max) {
+        max = _v
+      }
+    })
+    return max + 1;
+  }
+
   getGlobalCanvas() {
     let xs = [];
     let ys = [];
@@ -195,63 +207,15 @@ class WidgetEscherModelseed {
     return {x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin}
   }
 
-  build_map_layer_control($, ct, layer_index, label_value, fnSave) {
-    let that = this;
-    let control_group = $('<div>');
+  downloadActiveMap() {
+    let data = this.escher_builder.map.map_for_export();
+    escher.utils.download_json(this.escher_builder.map.map_for_export(), data[0]['map_name'])
+  }
 
-    let radio = $('<input>', {type: 'radio', id: 'radio1', name: 'escher-map-radio'});
-    radio.change(
-      function(){
-        if ($(this).is(':checked')) {
-          that.activeLayer = layer_index;
-          that.escher_map[1].canvas = {
-            height: that.escher_builder.map.canvas.height,
-            width: that.escher_builder.map.canvas.width,
-            x: that.escher_builder.map.canvas.x,
-            y: that.escher_builder.map.canvas.y
-          };
-          that.escher_map = undefined;
-          that.render();
-          //console.log(layer_index);
-        }
-      });
-    let icon_eye = $('<i>', {class: 'fas fa-eye'});
-
-    let icon_delete = $('<i>', {class: 'fas fa-trash-alt'});
-    icon_delete.click(function() {
-      if (confirm('Remove layer: ' + label_value)) {
-        if (that.activeLayer === layer_index) {
-          alert('cannot remove active layer');
-        } else {
-          that.maps[layer_index] = undefined;
-          that.render();
-          control_group.remove();
-        }
-      }
-    });
-    let icon_save = $('<i>', {class: 'fas fa-save'});
-    if (fnSave) {
-      icon_save.click(fnSave);
-    }
-
-    let label = $('<label>', {for: 'radio1'}).html(label_value);
-
-    let toggle_visible = $('<label>', {'class': 'switch'});
-    toggle_visible.append($('<input>', {'type': 'checkbox', checked: 'checked'}));
-    toggle_visible.append($('<span>', {'class': 'slider round'}));
-
-    control_group.append(layer_index).append(radio).append(' ')
-      .append(icon_eye).append(' ')
-      .append(toggle_visible).append(' ')
-      .append(icon_save).append(' ')
-      .append(icon_delete).append(' ')
-      .append(label);
-
-    ct.append(control_group);
-    control_group.label = label_value;
-    control_group.fnSave = fnSave;
-
-    return control_group;
+  build_map_layer_control($, ct, layer_index, label_value, mapData, fnSave, fnSaveAs) {
+    mapData[0]['map_name'] = label_value;
+    let control = new WidgetEscherLayerControl(mapData, layer_index, fnSave, fnSaveAs, this);
+    return control;
   };
 
   deleteLayer(layerNumber) {
@@ -264,12 +228,25 @@ class WidgetEscherModelseed {
     }
   }
 
+  loadLayer(layer, render=false) {
+    this.layer[layer.layerIndex] = layer;
+    $('#left_panel').append(layer.dom);
+    if (!this.activeLayer) {
+      this.activeLayer = layer.layerIndex;
+    }
+    if (render) {
+      this.render();
+    }
+  }
+
   load_map_to_layer(map, layer_number, label_value, fnSave, render=false) {
     if (!this.activeLayer) {
       this.activeLayer = layer_number;
     }
-    let controlGroup = this.build_map_layer_control($, $('#left_panel'), layer_number, label_value, fnSave);
+    let controlGroup = this.build_map_layer_control($, $('#left_panel'), layer_number, label_value, map, fnSave);
     this.layer[layer_number] = controlGroup;
+    $('#left_panel').append(controlGroup.dom);
+
     this.maps[layer_number] = JSON.parse(JSON.stringify(map));
     if (render) {
       this.render();
@@ -291,18 +268,18 @@ class WidgetEscherModelseed {
 
     if (!this.escher_map) {
       console.log('render check active layer', this.activeLayer);
-      if (this.maps[this.activeLayer]) {
-        this.escher_map = this.maps[this.activeLayer]
+      if (this.layer[this.activeLayer]) {
+        this.escher_map = this.layer[this.activeLayer].mapData
       }
     }
     if (this.escher_map) {
       console.log('render', this.escher_map);
       this.change_map(this.escher_map);
-      if (this.fn_draw_underlay) {
-        for (let i=0; i<this.maps.length; i++) {
-          if (i !== this.activeLayer && this.maps[i]) {
-            console.log('draw underlay', i);
-            this.fn_draw_underlay(this.maps[i], 0, 0);
+      if (this.fn_draw_underlay && this.renderBackground) {
+        for (const [index, layer] of Object.entries(this.layer)) {
+          if (parseInt(index) !== this.activeLayer) {
+            console.log('draw underlay', index, this.activeLayer, parseInt(index) !== this.activeLayer);
+            this.fn_draw_underlay(layer.mapData, 0, 0);
           }
         }
       }
