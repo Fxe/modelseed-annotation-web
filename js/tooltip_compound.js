@@ -9,7 +9,7 @@ const render_tooltip_compound = function(refs, data, svg_data, container, width 
   let top_right_label = $('<div>', {'class' : 'top-right'}).append(
     $('<div>', {'class' : 'type-label'}).html('Metabolite'));
 
-  container.html("")
+  container.html("");
   var base_container = $('<div>', {'style' : "width : " + width, 'class' : 'default-tooltip'})
   base_container.append('Metabolite').append($('<div>', {'class' : 'id'}).html(data.id))
     .append($('<div>', {'class' : 'name'}).html('name: ' + data.name))

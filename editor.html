@@ -17,6 +17,10 @@
     <link rel="stylesheet" href="css/seed.css" />
     <link rel="stylesheet" href="css/escher-shadow.css" />
     <style>
+      .janaka-ref-link {
+        margin-right: 5px;
+        background-color: #fff5c6;
+      }
       .omg {
         position: absolute;
         left: 3px;
@@ -559,6 +563,40 @@
         </div>
       </div>
     </div>
+    <!-- Modal Map Options-->
+    <div class="modal fade" id="modal-map-options" tabindex="-1" role="dialog" aria-labelledby="modal-map-options-label" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-map-options-label">Map Options</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="social_square_icons">
+              <ul>
+                <li><a href="#" class="gap" id="icon_1"><i class="fas fa-save" aria-hidden="true"></i></a> </li>
+                <li><a href="#" class="gap" id="icon_2"><i class="far fa-save"></i></a> </li>
+                <li><a href="#" class="gap" id="icon_3"><i class="fas fa-download"></i></a> </li>
+                <li><a href="#" class="gap" id="icon_4"><i class="fas fa-copy"></i></a> </li>
+                <li><a href="#" class="gap" id="icon_5"><i class="fas fa-pencil-alt"></i></a> </li>
+                <li><a href="#" class="gap" id="icon_6"><i class="fas fa-trash-alt" aria-hidden="true"></i></a> </li>
+                <li><a href="#" class="s_icons gap">hi</a> </li>
+                <li><span id="icon_label" style=""></span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <!--
+          <button type="button" class="btn btn-primary">Save changes</button>
+  -->
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Modal Settings-->
     <div class="modal fade" id="modal-settings" tabindex="-1" role="dialog" aria-labelledby="modal-settings-label" aria-hidden="true">
       <div class="modal-dialog mw-100 w-75" role="document">
@@ -577,14 +615,6 @@
                 </a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link" id="biochem-tab" data-toggle="tab" href="#settings-biochem" role="tab" aria-controls="profile" aria-selected="false">
-                  Biochemistry
-                </a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="map-tab" data-toggle="tab" href="#settings-map" role="tab" aria-controls="profile" aria-selected="false">Map</a>
-              </li>
-              <li class="nav-item" role="presentation">
                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Tooltip</a>
               </li>
               <li class="nav-item" role="presentation">
@@ -592,11 +622,6 @@
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="cpd-map-tab" data-toggle="tab" href="#settings-cpd-map" role="tab" aria-controls="contact" aria-selected="false">Compound Map</a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="kbase-tab" data-toggle="tab" href="#settings-kbase" role="tab" aria-controls="contact" aria-selected="false">
-                  <img src="media/k-base_logo.svg" alt="KBase" height="20px">
-                </a>
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link" id="data-tab" data-toggle="tab" href="#settings-data" role="tab" aria-controls="contact" aria-selected="false">
@@ -609,59 +634,6 @@
                 <!--
                 <iframe src="config.html" style="width: 100%; height: 500px"></iframe>-->
               </div>
-
-              <div class="tab-pane fade" id="settings-biochem" role="tabpanel" aria-labelledby="biochem-tab">
-
-
-                <div>
-                  <label for="select_model">SBML Model</label>
-                  <div id="select_model"></div>
-
-                  <label for="select_model_cmp">SBML Compartment</label>
-                  <div id="select_model_cmp"></div>
-                </div>
-                <div>
-                  <button id="load_sbml_model">Load Model</button>
-                </div>
-              </div>
-
-              <div class="tab-pane fade" id="settings-map" role="tabpanel" aria-labelledby="map-tab">
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12"></div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <form target="#">
-                        <div class="form-row">
-                          <label for="settings-map-meta-name">Map Name</label>
-                          <input type="text" class="form-control" id="settings-map-meta-name" required>
-                        </div>
-                        <div class="form-row">
-                          <label for="settings-map-meta-desc">Map Description</label>
-                          <input type="text" class="form-control" id="settings-map-meta-desc">
-                        </div>
-                        <div class="form-row">
-                          <label for="settings-map-meta-authors">Authors</label>
-                          <input type="text" class="form-control" id="settings-map-meta-authors">
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label for="download" class="badge-seed-large badge-seed" style="cursor: pointer">
-                        <i class="fas fa-download"></i> Download Map
-                        <input type="file" id="download" style="display:none">
-                      </label>
-                      <a href="#" class="badge-seed-large badge-seed">
-                        <i class="fas fa-save"></i> Save Map
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div id="fn-tooltip-options">
                 </div>
@@ -742,25 +714,6 @@
                 <button onclick="table_mapping_widget.button_fn_cluster_accept()">push mapping</button>
                 <button onclick="get_merge_model_test()">get merge model</button>
                 <button onclick="seed_model()">get seed model</button>
-              </div>
-              <div class="tab-pane fade" id="settings-kbase" role="tabpanel" aria-labelledby="kbase-tab">
-                kbase
-                <input id="narrative"><button id="show_narrative">list narrative</button>
-                <table id="table-kbase-narrative" class="table">
-                  <thead class="thead-light">
-                  <tr>
-                    <th scope="col">Object ID</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">v</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Size</th>
-                    <th scope="col">Metadata</th>
-                    <th scope="col">Reference</th>
-                    <th scope="col"></th>
-                  </tr>
-                  </thead>
-                </table>
               </div>
 
               <div class="tab-pane fade" id="settings-data" role="tabpanel" aria-labelledby="data-tab">
@@ -948,9 +901,19 @@
       console.log('!', this);
     });*/
 
-    const token = 'TQTZSDDJFYE5MX4RCD6BHP3LTMBE4YUY';
+    const token = '';
     let map1 = undefined;
     let map2 = undefined;
+    /*
+    kbaseApi.getObjectEscherMap('yeast_test', 'filipeliu:1452618747692', token, function(res) {
+      map1 = res.data;
+      widget_escher.activeLayer = 0;
+      widget_escher.load_map_to_layer(map1, 0, 'example1', function() {
+        msEscherIOWidget.fnDownloadJson(map1, 'example1.json');
+      });
+      widget_escher.render();
+    });
+    */
   /*
     $.getJSON('./data/demo_map1.json', function(map_data) {
       map1 = map_data;
@@ -970,7 +933,15 @@
 
 
     });
+
     */
+    /*
+    msEscherIOWidget.loadKBaseMap('demo_merge_map1', 'filipeliu:1452618747692', msEscherIOWidget.selectedLayer, function() {
+      msEscherIOWidget.selectedLayer += 1;
+      msEscherIOWidget.loadKBaseMap('demo_merge_map2', 'filipeliu:1452618747692', msEscherIOWidget.selectedLayer);
+    });
+    */
+
     /*
     kbaseApi.getObjectEscherMap('demo_merge_map1', 'filipeliu:1452618747692', token, function(res) {
       map1 = res.data;
@@ -1036,13 +1007,15 @@
         console.log(mergeIndexes);
         if (mergeIndexes) {
           let indexes = mergeIndexes.split(';');
+          msEscherIOWidget.mergeLayers(indexes);
+          /*
           let params = {
             maps: [],
           };
           let invalid = [];
           for (const i of indexes) {
-            if (widget_escher.maps[i]) {
-              params.maps.push(widget_escher.maps[i])
+            if (widget_escher.layer[i]) {
+              params.maps.push(widget_escher.layer[i].mapData)
             } else {
               invalid.push(i);
             }
@@ -1051,17 +1024,39 @@
             alert('error bad index: ' + JSON.stringify(invalid));
           } else {
             curationApi.postEscherMergeMap(params, function(mergedMap) {
-              //
-              let layerLabel = widget_escher.layer[indexes[0]].label
-              _.each(indexes, function(i) {
-                widget_escher.deleteLayer(i);
+              _.each(params.maps, function(m) {
+                console.log(m[0]['map_name'], _.size(m[1]['reactions']))
               });
-              console.log(layerLabel);
+              console.log(params);
+              mergedMap[0] = widget_escher.layer[indexes[0]].mapData[0]; // copy first merged map metadata
+              let layerLabel = mergedMap[0]['map_name'];
+              let workspaceId = widget_escher.layer[indexes[0]].kbaseWorkspace;
+              console.log('active layer', widget_escher.activeLayer);
+              _.each(indexes, function(i) {
+                console.log(i, widget_escher.activeLayer, i == widget_escher.activeLayer)
+                if (i == widget_escher.activeLayer) {
+                  console.log('merging active layer clearing active map');
+                  widget_escher.escher_map = undefined;
+                }
+                console.log('delete layer', i, widget_escher.layer[i].layerName());
+                widget_escher.layer[i].destroy(false);
 
-              widget_escher.load_map_to_layer(mergedMap, indexes[0], layerLabel);
+                //widget_escher.deleteLayer(i);
+              });
+              console.log('merge map', layerLabel, workspaceId, indexes[0]);
+              console.log('merge map', mergedMap[0]['map_name'], _.size(mergedMap[1]['reactions']));
+
+              //widget_escher.render()
+              //widget_escher.load_map_to_layer(mergedMap, indexes[0], layerLabel);
+              widget_escher.activeLayer = indexes[0];
+              msEscherIOWidget.loadMapLayer(mergedMap, layerLabel, indexes[0], workspaceId, msEscherIOWidget.fnSaveKBaseMap(layerLabel, workspaceId, indexes[0]))
+              //widget_escher.load_map_to_layer(mergedMap, 10, layerLabel);
               //msEscherIOWidget.loadMap(mergedMap, indexes[0], widget_escher.maps[indexes[0]][0]['map_name'])
+
             });
           }
+
+           */
         }
       });
 

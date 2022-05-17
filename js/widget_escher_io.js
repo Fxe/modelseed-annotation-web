@@ -227,8 +227,9 @@ class ModelSEEDEscherIOWidget {
     });
   }
 
-  fnSaveKBaseMap(ws) {
+  fnSaveKBaseMap(x, ws) {
     let that = this;
+    console.log('fnSaveKBaseMap', ws);
     return function(objectId, data) {
       if (confirm('Save ' + objectId + ' to ' + ws)) {
         that.kbaseApi.save_object_escher_map(objectId, ws, data, that.getToken(),
@@ -242,18 +243,26 @@ class ModelSEEDEscherIOWidget {
     }
   }
 
-  loadMap(map, mapId) {
+  loadMap(map, mapId, kbaseWorkspace, fnSave) {
     let layerId = this.widgetEscher.getNextLayerId();
-    this.widgetEscher.load_map_to_layer(map, layerId, mapId, undefined);
+    this.widgetEscher.load_map_to_layer(map, layerId, mapId, kbaseWorkspace, fnSave);
     this.widgetEscher.render();
   }
 
-  loadKBaseMap(objectId, ws, layer) {
+  loadMapLayer(map, mapId, layerId, kbaseWorkspace, fnSave) {
+    this.widgetEscher.load_map_to_layer(map, layerId, mapId, kbaseWorkspace, fnSave);
+    this.widgetEscher.render();
+  }
+
+  loadKBaseMap(objectId, ws, layer, fnSuccess) {
     let that = this;
     this.kbaseApi.getObjectEscherMap(objectId, ws, this.getToken(), function(res) {
-      console.log(res.data);
-      that.widgetEscher.load_map_to_layer(res.data, layer, objectId, that.fnSaveKBaseMap(objectId, ws, layer));
+      console.log('loadKBaseMap', res, objectId, ws, layer);
+      that.widgetEscher.load_map_to_layer(res.data, layer, objectId, ws, that.fnSaveKBaseMap(objectId, ws, layer));
       that.widgetEscher.render();
+      if (fnSuccess) {
+        fnSuccess(res);
+      }
     });
     /*
     this.kbaseApi.get_object_escher_map(objectId, ws, this.getToken(), function(res) {
@@ -262,6 +271,46 @@ class ModelSEEDEscherIOWidget {
     });
 
      */
+  }
+
+  mergeLayers(indexes) {
+    let that = this;
+    let params = {
+      maps: [],
+    };
+    let invalid = [];
+    for (const i of indexes) {
+      if (this.widgetEscher.layer[i]) {
+        params.maps.push(this.widgetEscher.layer[i].mapData)
+      } else {
+        invalid.push(i);
+      }
+    }
+    if (invalid.length > 0) {
+      alert('error bad index: ' + JSON.stringify(invalid));
+    } else {
+      this.curationApi.postEscherMergeMap(params, function(mergedMap) {
+        mergedMap[0] = that.widgetEscher.layer[indexes[0]].mapData[0]; // copy first merged map metadata
+        let layerLabel = mergedMap[0]['map_name'];
+        let workspaceId = that.widgetEscher.layer[indexes[0]].kbaseWorkspace;
+        console.log('active layer', that.widgetEscher.activeLayer);
+        _.each(indexes, function(i) {
+          if (i == that.widgetEscher.activeLayer) {
+            console.log('merging active layer clearing active map');
+            that.widgetEscher.escher_map = undefined;
+          }
+          console.log('delete layer', i, widget_escher.layer[i].layerName());
+          that.widgetEscher.layer[i].destroy(false);
+
+          //widget_escher.deleteLayer(i);
+        });
+        console.log('merge map', layerLabel, workspaceId, indexes[0]);
+        console.log('merge map', mergedMap[0]['map_name'], _.size(mergedMap[1]['reactions']));
+
+        that.widgetEscher.activeLayer = indexes[0];
+        that.loadMapLayer(mergedMap, layerLabel, indexes[0], workspaceId, that.fnSaveKBaseMap(layerLabel, workspaceId, indexes[0]))
+      });
+    }
   }
 
   loadMapFromFile() {

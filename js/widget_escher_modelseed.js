@@ -212,15 +212,16 @@ class WidgetEscherModelseed {
     escher.utils.download_json(this.escher_builder.map.map_for_export(), data[0]['map_name'])
   }
 
-  build_map_layer_control($, ct, layer_index, label_value, mapData, fnSave, fnSaveAs) {
+  build_map_layer_control($, ct, layer_index, label_value, mapData, kbaseWorkspace, fnSave, fnSaveAs) {
     mapData[0]['map_name'] = label_value;
     let control = new WidgetEscherLayerControl(mapData, layer_index, fnSave, fnSaveAs, this);
+    control.kbaseWorkspace = kbaseWorkspace;
     return control;
   };
 
   deleteLayer(layerNumber) {
     if (this.layer[layerNumber]) {
-      this.layer[layerNumber].remove();
+      this.layer[layerNumber].destroy();
       this.layer[layerNumber] = undefined;
     }
     if (this.maps[layerNumber]) {
@@ -239,11 +240,11 @@ class WidgetEscherModelseed {
     }
   }
 
-  load_map_to_layer(map, layer_number, label_value, fnSave, render=false) {
+  load_map_to_layer(map, layer_number, label_value, kbaseWorkspace, fnSave, render=false) {
     if (!this.activeLayer) {
       this.activeLayer = layer_number;
     }
-    let controlGroup = this.build_map_layer_control($, $('#left_panel'), layer_number, label_value, map, fnSave);
+    let controlGroup = this.build_map_layer_control($, $('#left_panel'), layer_number, label_value, map, kbaseWorkspace, fnSave);
     this.layer[layer_number] = controlGroup;
     $('#left_panel').append(controlGroup.dom);
 

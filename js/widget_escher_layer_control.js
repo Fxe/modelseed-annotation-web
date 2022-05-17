@@ -9,6 +9,7 @@ class WidgetEscherLayerControl {
     this.labelName = undefined;
     this.dom = this.init();
     this.visible = true;
+    this.kbaseWorkspace = undefined;
   }
 
   download() {
@@ -62,16 +63,22 @@ class WidgetEscherLayerControl {
     }
   }
 
+  destroy(render=true) {
+    delete this.escherWidget.layer[this.layerIndex];
+    if (render) {
+      this.escherWidget.render();
+    }
+    this.escherWidget = undefined;
+    this.dom.remove();
+  }
+
   removeLayer() {
-    console.log('remove')
+    console.log('remove');
     if (this.escherWidget.activeLayer === this.layerIndex) {
       alert('cannot remove active layer');
     } else {
       if (confirm('Remove layer: ' + this.layerName())) {
-        delete this.escherWidget.layer[this.layerIndex]
-        this.escherWidget.render();
-        this.escherWidget = undefined;
-        this.dom.remove();
+        this.destroy();
       }
     }
   }
