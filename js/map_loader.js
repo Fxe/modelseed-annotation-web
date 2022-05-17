@@ -24,6 +24,7 @@ const get_shadow_grid_layout = function(canvas, config) {
 class MapLoader {
 
   constructor(widgetEscher, api, apiKbase, env) {
+    console.log("MapLoader", widgetEscher, api, apiKbase, env);
     this.widgetEscher = widgetEscher;
     this.api = api;
     this.apiKbase = apiKbase;

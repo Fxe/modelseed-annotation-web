@@ -92,12 +92,14 @@ class CurationAPI {
       }
     })
   }
-  get_modelseed_reaction(seed_id, fn_success) {
+  get_modelseed_reaction(seed_id, fn_success, fn_always, fn_error) {
+    return this.get("/biochem/rxn/" + seed_id, fn_success, fn_always, fn_error);
+    /*
     return $.getJSON(this.base + "/biochem/rxn/" + seed_id, function(ret_val) {
       if (fn_success) {
         fn_success(ret_val);
       }
-    })
+    })*/
   }
     
   get_escher_map_list(dataset_id, fn_success) {

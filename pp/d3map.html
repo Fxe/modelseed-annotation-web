@@ -180,7 +180,7 @@
     blocks.push(block);
     return blocks;
   };
-  const placeLabels = function(labelData, x, y, fontSize, autoFixXLabel=false) {
+  const placeLabels = function(labelData, x, y, fontSize, angle=-45, autoFixXLabel=false) {
     console.log('placeLabels labelData', labelData)
     let xOffset = 3;
     let yOffset = 2;
@@ -206,7 +206,7 @@
           }
         }
 
-        return "rotate(-45, " + x + ", " + y + ") translate(" + x + "," + y +")"
+        return "rotate(" + angle + ", " + x + ", " + y + ") translate(" + x + "," + y +")"
       })
       //.attr("x", function(d) { base += d.len * 8; return base - (d.len * 8)})
       //.attr("y", function(d) { return 40})
@@ -398,16 +398,17 @@
     let dataset2Color = getUrlParam("dataset2color");
     let filter = getUrlParam("filter");
     let xLabelDepth = getUrlParam("xLabelDepth");
-    let auxoDataset = getUrlParam("auxo", false);
-    let gapfillDataset = getUrlParam("gapfill", false);
+    let auxoDataset = parseBool(getUrlParam("auxo", false));
+    let gapfillDataset = parseBool(getUrlParam("gapfill", false));
     let rowSplit = parseInt(getUrlParam("rowSplit", 1));
     let subSampleSize = parseInt(getUrlParam("subSampleSize", 10000));
 
     let xLabelFontSize = getUrlParam("hideXLabel", "7px");
     let hideXLabel = parseBool(getUrlParam("hideXLabel", false));
+    let xLabelAngle = parseInt(getUrlParam("xLabelAngle", -45));
     let hideYLabel = parseBool(getUrlParam("hideYLabel", false));
     let autoFixXLabel = parseBool(getUrlParam("autoFixXLabel", false));
-
+    console.log('auxoDataset', auxoDataset);
     $('#plot').css('width', svgWidth).css('height', svgHeight);
     boxSize = getUrlParam("boxSize");
     if (!boxSize) {
@@ -438,7 +439,7 @@
       "Glc", "Ac", "Etho", "Pyr", "Glyc", "Fum", "Akg", "Llac", "Dlac", "For",
       "For/NO2", "For/NO3", "For/NO", "Pyr/NO2", "Pyr/NO3", "Pyr/NO", "Ac/NO2", "Ac/NO3", "Ac/NO",
       "Glc/DMSO", "Glc/TMAO", "Pyr/DMSO" ,"Pyr/TMAO",
-      "Pyr/SO4", "Pyr/SO3", "Light"];
+      "Pyr/SO4", "Pyr/SO3"];
     const yAuxo = [
       'trp/tyr/phe/fol', 'trp', 'tyr', 'phe', 'fol',
       'gly/ser', 'gly', 'ser',
@@ -461,8 +462,8 @@
       dataset1 = "auxotrophy_data.json"
     } else if (gapfillDataset) {
       yOrder = yOrderGapfill;
-      dataset1 = 'modelseed_5k_atp_with_galfill.json';
-      dataset2 = 'modelseed_5k_atp_with_galfill.json';
+      dataset1 = 'modelseed_5k_atp_with_galfill2.json';
+      dataset2 = 'modelseed_5k_atp_with_galfill2.json';
     }
 
     $.getJSON("5k_taxonomy_updated.json", function(labelX) {
@@ -493,7 +494,7 @@
 
         const chunkSize = genomeOrder.length / rowSplit;
         let rowChunk = [];
-        console.log("chunk slip", rowSplit, genomeOrder.length, chunkSize);
+        console.log("chunk split", rowSplit, genomeOrder.length, chunkSize);
         for (let i = 0; i < genomeOrder.length; i += chunkSize) {
           const chunk = genomeOrder.slice(i, i + chunkSize);
           if (chunk.length > 0) {
@@ -572,7 +573,7 @@
               if (!hideYLabel) {
                 placeYLabels(yOrder, gridY);
               }
-              placeLabels(get_blocks(genomeOrder, labelX, xLabelDepth), plotXOffset, gridY - 44, xLabelFontSize, autoFixXLabel);
+              placeLabels(get_blocks(genomeOrder, labelX, xLabelDepth), plotXOffset, gridY - 44, xLabelFontSize, xLabelAngle, autoFixXLabel);
 
               if (auxoDataset) {
                 placeGrid(atp_data, genomeOrder, yOrder, gridY, undefined, fnMouseOver, colorAuxo, fnMouseOut, function() {});

@@ -2,6 +2,7 @@
 class ModelSEEDEscherApp {
 
   constructor(widgetEscher, modalMapSelect, modalModelSelect, modalSettings, topBar) {
+    console.log("ModelSEEDEscherApp", widgetEscher, modalMapSelect, modalModelSelect, modalSettings, topBar);
     this.widgetEscher = widgetEscher;
     this.modalMapSelect = modalMapSelect;
     this.modalModelSelect = modalModelSelect;
