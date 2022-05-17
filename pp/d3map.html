@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Phase Analysis</title>
+  <title>Profiler Plot</title>
   <link rel="stylesheet" href="../css/bootstrap.css" />
+  <style>
+    .top-label {
+      outline: solid 0.1px blue;
+    }
+  </style>
 </head>
 <body>
 <div class="container-fluid">
+  <!--
   <div class="row">
     <div class="col-md-12">
       <div style="overflow: scroll; width: 200px">
@@ -14,10 +20,11 @@
       </div>
     </div>
   </div>
+  -->
   <div class="row">
     <div class="col-md-12">
-      <div style="overflow: scroll; width: 20000px">
-        <svg id="plot" style="width: 19000px; height: 500px"></svg>
+      <div style="overflow: scroll;">
+        <svg id="plot" style="width: 60000px; height: 1800px"></svg>
       </div>
     </div>
   </div>
@@ -70,20 +77,44 @@
         </div>
       </div>
       <div class="form-group">
-        <button id="trace-btn-add" class="btn btn-success">Add</button>
+        <button id="trace-btn-add" class="btn btn-success" onclick="downloadAsSVG()">Download SVG</button>
         <button id="trace-btn-remove" class="btn btn-danger">Remove</button>
       </div>
     </div>
   </div>
 </div>
-
+<div id="grid-element-tooltip" style="border: 1px solid #ccc; position: fixed; visibility: hidden; background-color: #fdd28b; font-size: 8px; font-family: sans-serif;">
+  hi!
+</div>
 
 </body>
 <script src="../js/jquery-3.4.1.min.js"></script>
 <script src="d3.min.js"></script>
+<script src="../js/modelseed_plot.js"></script>
 <script src="../js/plotly-2.8.3.min.js"></script>
 <script src="../js/underscore-1.9.1.min.js"></script>
 <script>
+  const tooltipElement = $('#grid-element-tooltip');
+  function downloadAsSVG() {
+    saveSvg(document.getElementById('plot'), "plot.svg")
+  }
+  function saveSvg(svgEl, name) {
+    /*
+      from stackoverflow :)
+      https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
+     */
+    svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    let svgData = svgEl.outerHTML;
+    let preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    let svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    let svgUrl = URL.createObjectURL(svgBlob);
+    let downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
   /*
   TESTER = document.getElementById('tester');
   Plotly.newPlot( TESTER, [{
@@ -94,53 +125,176 @@
    */
   let DATA = undefined;
 
-  $(function() {
+  let boxSize = 9;
+  let boxSpacing = 1;
+  let boxTotal = boxSize + boxSpacing;
+  let plotXOffset = 100;
+  let plotYOffset = 0;
+  let svg = d3.select("#plot");
 
+  const get_blocks = function(genomeOrder, labelX, index) {
+    let blocks = [];
+    let block = undefined;
+    let rowSections = 3;
+    let row = rowSections - 1;
 
-    $.getJSON("modelseed_5k_atp_no_galfill.json", function(atp_data) {
-      let rows = 2;
-      let genomeOrder = ['GCF_000714675.1', 'GCF_000612055.1'];
-      //genomeOrder = _.keys(atp_data);
-      let yOrder = ['Glc/O2', 'Ac/O2', 'Glc', 'Ac'];
-      yOrder = _.keys(atp_data['GCF_000714675.1']);
-      let dlist = Object.entries(atp_data);
-       //_.keys(atp_data);
-      //console.log(dlist);
-      console.log(genomeOrder);
+    _.each(genomeOrder, function (i) {
+      let v = '?';
+      let prevBlock = undefined;
+      if (labelX[i]) {
+        if (labelX[i].length > index) {
+          v = labelX[i][index]
+        } else {
+          v = labelX[i][labelX[i].length - 1]
+        }
+        if (block && block.value !== v) {
+          blocks.push(block);
+          //console.log('blocks', blocks);
+          for (let i = blocks.length - 1; i >= 0; i--) {
+            let b = blocks[i];
+            if (b.len < 3) {
+              b.row += 1;
+            } else {
+              break;
+            }
+          }
+          block = undefined;
+        }
+        if (block) {
+          block.len += 1;
+        } else {
+          block = {
+            'value': v,
+            'len': 1,
+            'row': 0,
+          };
 
-      DATA = d3.range(3);
-      let boxSize = 9;
-      let boxSpacing = 1;
-      let el = d3.select("#plot");
-      let v = [];
-      for (let xIndex=0; xIndex<genomeOrder.length; xIndex++) {
-        let genomeId = genomeOrder[xIndex];
-        for (let yIndex=0; yIndex<yOrder.length; yIndex++) {
-          let yId = yOrder[yIndex];
+          row -= 1;
+          if (row < 0) {
+            row = rowSections - 1;
+          }
+        }
+        //console.log(v)
+      }
+    });
+    blocks.push(block);
+    return blocks;
+  };
+  const placeLabels = function(labelData, x, y, fontSize, angle=-45, autoFixXLabel=false) {
+    console.log('placeLabels labelData', labelData)
+    let xOffset = 3;
+    let yOffset = 2;
+    let base = 0;
+    let labelSet = svg.append("g")
+      .attr("transform", "translate(" + (x + xOffset) + "," + (y + yOffset) + ")")
+      //.attr("x", 50)
+      //.attr("y", 50)
+      //.attr("stroke", "black")
+      //.attr("stroke-width", 1);
+    labelSet.selectAll("g")
+      .data(labelData).enter()
+      .append("g")
+      .attr("class", "top-label")
+      .attr("transform", function(d) {
+        base += d.len * boxTotal;
+        let x = base - (d.len * boxTotal);
+        let y = 40;
+        if (autoFixXLabel) {
+          y -= d.row * 10;
+          if (d.row > 0) {
+            labelSet.append("line").attr("x1", x).attr("y1", 40).attr("x2", x).attr("y2", y).attr("stroke", "black");
+          }
+        }
+
+        return "rotate(" + angle + ", " + x + ", " + y + ") translate(" + x + "," + y +")"
+      })
+      //.attr("x", function(d) { base += d.len * 8; return base - (d.len * 8)})
+      //.attr("y", function(d) { return 40})
+      .append("text")
+      .attr("font-weight", function(d) { return "bold"})
+      .attr("font-family", function(d) { return "monospace"})
+      .attr("font-size", function(d) { return fontSize ? fontSize : "7px"})
+      .text(function (d) { return d.value});
+  };
+  const placeYLabels = function(yOrder, gridY) {
+    let yLabelBlock = svg.append("g").attr("transform", "translate(" + (plotXOffset - 3) + ", " + gridY + ")");
+    let k = 0;
+    let labels = yLabelBlock.selectAll("g").data(yOrder).enter()
+      .append("g")
+      .attr("transform", function() {
+        let x = 0;
+        let y = boxTotal * k++;
+        return "translate(" + x + ", " + y + ")"
+      })
+      .append("text")
+      .attr("text-anchor", function(d) { return "end"})
+      .attr('y', 8)
+      .attr("font-family", function(d) { return "monospace"})
+      .attr("font-size", function(d) { return "7px"})
+      .text(function (d) { return d});
+  };
+  const trig1 = function(d) {
+    let x1 = 0 + d.x;
+    let y1 = 0 + d.y;
+    let x2 = boxSize + d.x;
+    let y2 = 0 + d.y;
+    let x3 = 0 + d.x;
+    let y3 = boxSize + d.y;
+    return [[x1, y1].join(), [x2, y2].join(), [x3, y3].join()].join(' ')
+  };
+  const diamond1 = function(d) {
+    let x1 = 0 + d.x + boxSize / 2;
+    let y1 = 0 + d.y;
+    let x2 = boxSize + d.x;
+    let y2 = 0 + d.y + boxSize / 2;
+    let x3 = 0 + d.x + boxSize / 2;
+    let y3 = boxSize + d.y;
+    let x4 = 0 + d.x;
+    let y4 = boxSize + d.y - boxSize / 2;
+    return [[x1, y1].join(), [x2, y2].join(), [x3, y3].join(), [x4, y4].join()].join(' ')
+  };
+  const trig2 = function(d) {
+    let x1 = 0 + d.x;
+    let y1 = boxSize + d.y;
+    let x2 = boxSize + d.x;
+    let y2 = 0 + d.y;
+    let x3 = boxSize + d.x;
+    let y3 = boxSize + d.y;
+    return [[x1, y1].join(), [x2, y2].join(), [x3, y3].join()].join(' ')
+  };
+  const placeGrid = function(atp_data, genomeOrder, yOrder, gridY, fnPolygon, fnMouseOver, fnColor, fnMouseOut, fnSquare) {
+    if (!fnMouseOut) {
+      fnMouseOut = function () {};
+    }
+    let yOffset = 0;
+    let v = [];
+    for (let xIndex=0; xIndex<genomeOrder.length; xIndex++) {
+      let genomeId = genomeOrder[xIndex];
+      for (let yIndex=0; yIndex<yOrder.length; yIndex++) {
+        let yId = yOrder[yIndex];
+        if (atp_data[genomeId] && atp_data[genomeId][yId]) {
           let value = atp_data[genomeId][yId];
-          if (value !== 0) {
+          if (value && value !== 0) {
             let color = value > 100 ? "red" : value > 20 ? "orange" : value > 10 ? "green" : "steelblue";
+            if (fnColor) {
+              color = fnColor(value)
+            }
             v.push({
-              x: 100 + xIndex * (boxSize + boxSpacing),
-              y: 10 + yIndex * (boxSize + boxSpacing),
+              rowId: yId,
+              colId: genomeId,
+              x: xIndex * (boxSize + boxSpacing),
+              y: yOffset + yIndex * (boxSize + boxSpacing),
+              v: value,
               color: color
             });
           }
-          //console.log(genomeId, yId, atp_data[genomeId][yId])
         }
+        //console.log(genomeId, yId, atp_data[genomeId][yId])
       }
-      let k = 0;
-      let labels = el.selectAll("text").data(yOrder).enter()
-        .append("text")
-        .attr("x", function(d) { return 95})
-        .attr("y", function(d) { k++;  return 10 + 7 + (k - 1) * (9)})
-        .attr("text-anchor", function(d) { return "end"})
-        .attr("font-family", function(d) { return "monospace"})
-        .attr("font-size", function(d) { return "7px"})
-        .text(function (d) { return d});
-
-      let rects = el.selectAll("rect")
-        .data(v)
+    }
+    let grid = svg.append("g").attr("transform", "translate(" + plotXOffset + ", " + gridY + ")");
+    if (fnSquare) {
+      let rects = grid.selectAll("rect").data(v)
         .enter()
         .append("rect")
         .attr("width", boxSize)
@@ -148,24 +302,337 @@
         .attr("x", function(d) { return d.x})
         .attr("y", function(d) { return d.y})
         .attr("fill", function(d) { return d.color})
-      console.log('done!')
-
-      /*
-      let rects = el.selectAll("rect")
-        .data(dlist)
+        .on('mouseover', fnMouseOver)
+        .on('mouseout', fnMouseOut);
+      return rects;
+    } else {
+      let rects = grid.selectAll("rect").data(v)
         .enter()
-        .append("rect")
-        .attr("width",4)
-        .attr("height",4)
-        .attr("x", function(d) {
+        .append("polygon").attr("points", fnPolygon)
 
-          console.log(d[0], d[1]);
-          return d % (960/5) * 5; })
-        .attr("y", function(d) { return Math.floor (d/(960/5)) * 5; })
-        .attr("fill", "steelblue")
+        .attr("fill", function(d) { return d.color})
+        .on('mouseover', fnMouseOver)
+        .on('mouseout', fnMouseOut);
+      return rects;
+    }
 
-       */
+  };
+  let el = $('#plot-trace-alias')
+
+  const filterTaxonomy = function(genomeOrder, labelX, taxa) {
+    let genomeOrder_ = [];
+    _.each(genomeOrder, function (i) {
+      //console.log(labelX[i]);
+      if (labelX[i] && labelX[i].indexOf(taxa) > 0) {
+        genomeOrder_.push(i);
+      }
     });
+    return genomeOrder_;
+  };
+
+  const getUrlParam = function(name, defaultValue){
+    let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results) {
+      return decodeURIComponent(results[1] || 0);
+    } else {
+      return defaultValue;
+    }
+  };
+
+  const colorLevel = function(value) {
+    let color = value > 100 ? "red" : value > 20 ? "orange" : value > 10 ? "green" : "steelblue";
+    return color;
+  };
+  const colorGapfillPositive = function(value) {
+    let color = value > 0 ? "green" : "#ffffff00";
+    return color;
+  };
+  const colorGapfillNegative = function(value) {
+    let color1 = 'green';
+    let color2 = 'yellow';
+    let color3 = 'orange';
+    let color4 = '#ff4d51';
+    let color = value > 0 ? "#ffffff00" : value === -1 ? color1 : value === -2 ? color2 : value === -3 ? color3 : value === -4 ? color4 : "#ffffff00";
+    return color;
+  };
+  const dist = {};
+  const colorAuxo = function(value) {
+    if (dist[value]) {
+      dist[value] += 1;
+    } else {
+      dist[value] = 1
+    }
+    const colors = {
+      1: '#c5cae9',
+      2: '#9fa8da',
+      3: '#7986cb',
+      4: '#5c6bc0',
+      5: '#3f51b5',
+      6: '#3949ab',
+      7: '#303f9f',
+      8: '#283593',
+      9: '#1a237e'
+    };
+    let color = "steelblue";
+    if (value === 50) {
+      color = "red";
+    } else {
+      color = value === -1000 ? "black" : value <= 0 ? "#ffffff00" : colors[value] ? colors[value] : "#000051";
+    }
+    return color;
+  };
+  const colorGreen = function() { return "green"};
+  const colorRed = function() { return "red"};
+  //width: 60000px; height:
+
+  const parseBool = function(v) {
+    return (v === 'true');
+  }
+
+  $(function() {
+    let svgWidth = getUrlParam("svgWidth", "60000px");
+    let svgHeight = getUrlParam("svgHeight", "600px");
+    let dataset1 = getUrlParam("dataset1");
+    let dataset2 = getUrlParam("dataset2");
+    let dataset1Color = getUrlParam("dataset1color");
+    let dataset2Color = getUrlParam("dataset2color");
+    let filter = getUrlParam("filter");
+    let xLabelDepth = getUrlParam("xLabelDepth");
+    let auxoDataset = parseBool(getUrlParam("auxo", false));
+    let gapfillDataset = parseBool(getUrlParam("gapfill", false));
+    let rowSplit = parseInt(getUrlParam("rowSplit", 1));
+    let subSampleSize = parseInt(getUrlParam("subSampleSize", 10000));
+
+    let xLabelFontSize = getUrlParam("hideXLabel", "7px");
+    let hideXLabel = parseBool(getUrlParam("hideXLabel", false));
+    let xLabelAngle = parseInt(getUrlParam("xLabelAngle", -45));
+    let hideYLabel = parseBool(getUrlParam("hideYLabel", false));
+    let autoFixXLabel = parseBool(getUrlParam("autoFixXLabel", false));
+    console.log('auxoDataset', auxoDataset);
+    $('#plot').css('width', svgWidth).css('height', svgHeight);
+    boxSize = getUrlParam("boxSize");
+    if (!boxSize) {
+      boxSize = 9;
+    } else {
+      boxSize = parseInt(boxSize);
+    }
+    boxTotal = boxSize + boxSpacing;
+    if (!xLabelDepth) {
+      xLabelDepth = 2;
+    }
+    let fnColor1 = colorLevel;
+    let fnColor2 = colorLevel;
+    if (dataset1Color) {
+      fnColor1 = function() { return dataset1Color};
+    }
+    if (dataset2Color) {
+      fnColor2 = function() { return dataset2Color};
+    }
+
+    let fnMouseOut = function () { tooltipElement.css("visibility", "hidden");};
+      //console.log(dataset1, dataset2);
+    const clost = {'GCF_000008765.1': true, 'GCF_000143685.1': true, 'GCF_000009205.2': true};
+    //labelSet.append("rect").attr("x", 0).attr("y", 0).attr("width", 50).attr("height", 50).attr("class", "top-label");
+    let yOrder = ['Glc/O2', 'Ac/O2', 'Glc', 'Ac'];
+    yOrder = [
+      "Glc/O2", "Ac/O2", "Etho/O2", "Pyr/O2", "Glyc/O2", "Fum/O2", "Akg/O2", "LLac/O2", "Dlac/O2", "For/O2",
+      "Glc", "Ac", "Etho", "Pyr", "Glyc", "Fum", "Akg", "Llac", "Dlac", "For",
+      "For/NO2", "For/NO3", "For/NO", "Pyr/NO2", "Pyr/NO3", "Pyr/NO", "Ac/NO2", "Ac/NO3", "Ac/NO",
+      "Glc/DMSO", "Glc/TMAO", "Pyr/DMSO" ,"Pyr/TMAO",
+      "Pyr/SO4", "Pyr/SO3"];
+    const yAuxo = [
+      'trp/tyr/phe/fol', 'trp', 'tyr', 'phe', 'fol',
+      'gly/ser', 'gly', 'ser',
+      'lys/thr', 'lys', 'thr',
+      'leu/ile/val', 'val', 'ile', 'leu',
+      'asn','met','cys','his','arg','pro',
+      'nac','ribflv','pnto','thm','pydx', 'ptrc/spmd','ptrc','spmd','heme/cob','pheme','sheme','cbl1'];
+    const yOrderGapfill = [
+      "Glc/O2", "Ac/O2", "Etho/O2", "Pyr/O2", "Glyc/O2", "Fum/O2", "Akg/O2", "LLac/O2", "Dlac/O2", "For/O2",
+      "Glc", "Ac", "Pyr", "Glyc", "Fum", "Akg", "Llac", "Dlac",
+      "For/NO3", "Pyr/NO2", "Pyr/NO3", "Pyr/NO",
+      //"Ac/NO2", "Ac/NO3", "Ac/NO",
+      //"Glc/DMSO", "Glc/TMAO", "Pyr/DMSO" ,"Pyr/TMAO",
+      "Pyr/SO4"];
+    //yOrder = [];
+    dataset1 = "modelseed_5k_atp_no_galfill.json";
+    dataset2 = "carve_me_no_gf.json";
+    if (auxoDataset) {
+      yOrder = yAuxo;
+      dataset1 = "auxotrophy_data.json"
+    } else if (gapfillDataset) {
+      yOrder = yOrderGapfill;
+      dataset1 = 'modelseed_5k_atp_with_galfill2.json';
+      dataset2 = 'modelseed_5k_atp_with_galfill2.json';
+    }
+
+    $.getJSON("5k_taxonomy_updated.json", function(labelX) {
+      $.getJSON("5k_taxonomy_order.json", function(genomeOrder) {
+        //genomeOrder = ['GCF_000714675.1', 'GCF_000612055.1'];
+        if (filter) {
+          console.log(filter);
+          genomeOrder = filterTaxonomy(genomeOrder, labelX, filter);
+          //genomeOrder = filterTaxonomy(genomeOrder, labelX, 'Clostridia');
+        }
+        console.log('genomeOrder.length', genomeOrder.length, subSampleSize);
+        if (genomeOrder.length > subSampleSize) {
+
+          let sampledOrder = [];
+          let step = genomeOrder.length / subSampleSize;
+          let rem = (genomeOrder.length / subSampleSize) % 1;
+          console.log("sample", subSampleSize, step, genomeOrder.length / subSampleSize, rem);
+          let remCount = 0;
+          for (let i = 0; i < genomeOrder.length; i+=step) {
+            if (sampledOrder.length < subSampleSize) {
+              sampledOrder.push(genomeOrder[Math.round(i)]);
+            }
+          }
+          console.log(genomeOrder.length, subSampleSize, step, sampledOrder.length);
+          genomeOrder = sampledOrder;
+        }
+        console.log('genomeOrder.length', genomeOrder.length);
+
+        const chunkSize = genomeOrder.length / rowSplit;
+        let rowChunk = [];
+        console.log("chunk split", rowSplit, genomeOrder.length, chunkSize);
+        for (let i = 0; i < genomeOrder.length; i += chunkSize) {
+          const chunk = genomeOrder.slice(i, i + chunkSize);
+          if (chunk.length > 0) {
+            rowChunk.push(chunk);
+          }
+        }
+
+
+
+        let fnMouseOver = function(e, d) {
+          tooltipElement.css("left", e.clientX + 5);
+          tooltipElement.css("top", e.clientY + 5);
+          tooltipElement.css("visibility", "visible");
+          tooltipElement.html(JSON.stringify(d) + '<br>' + labelX[d['colId']]);
+          //console.log(tooltipElement.css("left"), tooltipElement.css("top"), e.clientX, e.clientY);
+          $('#plot-trace-alias').val(JSON.stringify(d) + ' ' + labelX[d['colId']]);
+        };
+        //
+        //genomeOrder.splice(30, 1000);
+        //genomeOrder = _.keys(atp_data);
+        //placeLabels(get_blocks(genomeOrder, labelX, 1), plotXOffset, 10);
+        //placeLabels(get_blocks(genomeOrder, labelX, 2), plotXOffset, 18);
+        //placeLabels(get_blocks(genomeOrder, labelX, 3), plotXOffset, 26);
+        //placeLabels(get_blocks(genomeOrder, labelX, 4), plotXOffset, 16);
+
+        //placeLabels(get_blocks(genomeOrder, labelX, 5), plotXOffset, 100);
+
+        //modelseed_5k_atp_no_galfill
+        //carve_me_no_gf
+        //carve_me_gf
+
+
+        const placeBackground = function(boxTotal, plotXOffset, gridY, yLength, auxoDataset) {
+          let background = svg.append("g").attr("transform", "translate(" + plotXOffset + ", " + gridY + ")");
+          if (auxoDataset) {
+            background.append("rect").attr("x", 0).attr("y", 0).attr("width", boxTotal * yLength).attr("height", boxTotal * 11).attr("fill", "#fff5c6");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 5).attr("width", boxTotal * yLength).attr("height", boxTotal * 3).attr("fill", "#ffe4e8");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 11).attr("width", boxTotal * yLength).attr("height", boxTotal * 4).attr("fill", "#ffe4e8");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 15).attr("width", boxTotal * yLength).attr("height", boxTotal * 6).attr("fill", "#d0ffd1");
+
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 21).attr("width", boxTotal * yLength).attr("height", boxTotal * 5).attr("fill", "#fff5c6");
+
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 26).attr("width", boxTotal * yLength).attr("height", boxTotal * 3).attr("fill", "#fdd28b");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 29).attr("width", boxTotal * yLength).attr("height", boxTotal * 4).attr("fill", "#d3ead0");
+          } else if (gapfillDataset) {
+            background.append("rect").attr("x", 0).attr("y", 0).attr("width", boxTotal * yLength).attr("height", boxTotal * 10).attr("fill", "#dcfeff");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 10).attr("width", boxTotal * yLength).attr("height", boxTotal * 8).attr("fill", "#e6fde8");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 18).attr("width", boxTotal * yLength).attr("height", boxTotal * 4).attr("fill", "#6eb0fd");
+            //background.append("rect").attr("x", 0).attr("y", boxTotal * 22).attr("width", boxTotal * yLength).attr("height", boxTotal * 3).attr("fill", "#5d9ffd");
+            //background.append("rect").attr("x", 0).attr("y", boxTotal * 26).attr("width", boxTotal * yLength).attr("height", boxTotal * 3).attr("fill", "#6eb0fd");
+            //background.append("rect").attr("x", 0).attr("y", boxTotal * 29).attr("width", boxTotal * yLength).attr("height", boxTotal * 4).attr("fill", "#fda9ad");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 22).attr("width", boxTotal * yLength).attr("height", boxTotal * 1).attr("fill", "#fdd28b");
+          } else {
+            background.append("rect").attr("x", 0).attr("y", 0).attr("width", boxTotal * yLength).attr("height", boxTotal * 10).attr("fill", "#dcfeff");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 10).attr("width", boxTotal * yLength).attr("height", boxTotal * 10).attr("fill", "#e6fde8");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 20).attr("width", boxTotal * yLength).attr("height", boxTotal * 9).attr("fill", "#6eb0fd");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 23).attr("width", boxTotal * yLength).attr("height", boxTotal * 3).attr("fill", "#5d9ffd");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 26).attr("width", boxTotal * yLength).attr("height", boxTotal * 3).attr("fill", "#6eb0fd");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 29).attr("width", boxTotal * yLength).attr("height", boxTotal * 4).attr("fill", "#fda9ad");
+            background.append("rect").attr("x", 0).attr("y", boxTotal * 33).attr("width", boxTotal * yLength).attr("height", boxTotal * 2).attr("fill", "#fdd28b");
+          }
+        };
+
+
+
+        console.log('here!');
+        $.getJSON(dataset1, function(atp_data) {
+          console.log(atp_data);
+          $.getJSON(dataset2, function(data2) {
+            let gridY = 20 + 60 + 100;
+            let chunkYStep = 100 + (boxTotal * yOrder.length);
+            _.each(rowChunk, function(genomeOrder) {
+              placeBackground(boxTotal, plotXOffset, gridY, genomeOrder.length, auxoDataset);
+              console.log(genomeOrder.length);
+              //placeLabels(get_blocks(genomeOrder, labelX, xLabelDepth), plotXOffset, 44 + 60);
+              if (!hideYLabel) {
+                placeYLabels(yOrder, gridY);
+              }
+              placeLabels(get_blocks(genomeOrder, labelX, xLabelDepth), plotXOffset, gridY - 44, xLabelFontSize, xLabelAngle, autoFixXLabel);
+
+              if (auxoDataset) {
+                placeGrid(atp_data, genomeOrder, yOrder, gridY, undefined, fnMouseOver, colorAuxo, fnMouseOut, function() {});
+              } else if (gapfillDataset) {
+                placeGrid(atp_data, genomeOrder, yOrder, gridY, undefined, fnMouseOver, colorGapfillPositive, fnMouseOut, function() {});
+              } else {
+                placeGrid(atp_data, genomeOrder, yOrder, gridY, trig1, fnMouseOver, fnColor1, fnMouseOut, undefined);
+              }
+              if (gapfillDataset) {
+                placeGrid(atp_data, genomeOrder, yOrder, gridY, diamond1, fnMouseOver, colorGapfillNegative, fnMouseOut, undefined);
+              } else if (!auxoDataset) {
+                placeGrid(data2, genomeOrder, yOrder, gridY, trig2, fnMouseOver, fnColor2, fnMouseOut);
+              }
+              gridY += chunkYStep;
+            });
+          });
+
+
+          //console.log(atp_data);
+          let rows = 2;
+          //yOrder = _.keys(atp_data['GCF_000714675.1']);
+          //console.log(yOrder);
+          //let dlist = Object.entries(atp_data);
+          //_.keys(atp_data);
+          //console.log(dlist);
+
+
+
+          //placeGrid(atp_data, genomeOrder, yOrder, gridY);
+
+          //console.log(genomeOrder);
+          //console.log('done!')
+
+          /*
+          let rects = el.selectAll("rect")
+            .data(dlist)
+            .enter()
+            .append("rect")
+            .attr("width",4)
+            .attr("height",4)
+            .attr("x", function(d) {
+
+              console.log(d[0], d[1]);
+              return d % (960/5) * 5; })
+            .attr("y", function(d) { return Math.floor (d/(960/5)) * 5; })
+            .attr("fill", "steelblue")
+
+           */
+
+
+        });
+
+
+
+      });
+
+    });
+
+
 
 
 

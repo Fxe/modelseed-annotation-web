@@ -534,7 +534,139 @@
         </div>
       </div>
     </div>
+    <!-- Modal Settings-->
+    <div class="modal fade" id="modal-settings" tabindex="-1" role="dialog" aria-labelledby="modal-settings-label" aria-hidden="true">
+      <div class="modal-dialog mw-100 w-75" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-settings-label">Load Data</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs" id="tab-group-settings" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                  System
+                </a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Tooltip</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Export Template</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="cpd-map-tab" data-toggle="tab" href="#settings-cpd-map" role="tab" aria-controls="contact" aria-selected="false">Compound Map</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="data-tab" data-toggle="tab" href="#settings-data" role="tab" aria-controls="contact" aria-selected="false">
+                  Data
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content" id="tab-content-settings">
+              <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <!--
+                <iframe src="config.html" style="width: 100%; height: 500px"></iframe>-->
+              </div>
+              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div id="fn-tooltip-options">
+                </div>
+                <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.annotation">annotation</button>
+                <button onclick="widget_escher.fn_tooltip_rxn = widget_escher.fn_tooltip_options.reaction.default">default</button>
+              </div>
 
+              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <form target="#">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="export-namespace">Annotation Namespace</label>
+                      <input type="text" class="form-control" id="export-namespace" aria-describedby="export-namespace-help" required>
+                      <small id="export-namespace-help" class="form-text text-muted">Annotation Namespace to export</small>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <div style="margin: 20px">
+                        <div>
+                          <input id="filter_reactions_to_map" type="checkbox">
+                          <label for="filter_reactions_to_map">Export only reactions in current map</label>
+                        </div>
+                        <div>
+                          <input id="clear_template_reactions" type="checkbox">
+                          <label for="clear_template_reactions">Clear previous reactions</label>
+                        </div>
+                        <div>
+                          Clear previous roles and/or complexes:<br>
+                          <input type="radio" id="rad-clear_role_complex-none"
+                                 name="clear_role_complex" value="none" checked>
+                          <label for="rad-clear_role_complex-none">None</label>
+
+                          <input type="radio" id="rad-clear_role_complex-cpx"
+                                 name="clear_role_complex" value="cpx">
+                          <label for="rad-clear_role_complex-cpx">Complexes</label>
+
+                          <input type="radio" id="rad-clear_role_complex-ftr"
+                                 name="clear_role_complex" value="ftr">
+                          <label for="rad-clear_role_complex-ftr">Roles and Complexes</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="export-in-id">Input ID</label>
+                      <input type="text" class="form-control" id="export-in-id" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="export-in-ws">Input Workspace</label>
+                      <input type="text" class="form-control" id="export-in-ws" required>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="export-in-id">Output ID</label>
+                      <input type="text" class="form-control" id="export-out-id" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="export-in-ws">Output Workspace</label>
+                      <input type="text" class="form-control" id="export-out-ws" required>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label for="export-token">KBase TOKEN</label>
+                      <input type="password" class="form-control" id="export-token" aria-describedby="export-token-help" required>
+                      <small id="export-token-help" class="form-text text-muted">KBase Auth Token</small>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="export-button">Export</button>
+                </form>
+              </div>
+
+              <div class="tab-pane fade" id="settings-cpd-map" role="tabpanel" aria-labelledby="cpd-map-tab">
+                DO NOT TOUCH THIS ! (under dev)
+                <button onclick="table_mapping_widget.button_fn_cluster_report()">yay</button>
+                <div id="container-cpd-mapping-table"></div>
+                <button onclick="table_mapping_widget.button_fn_cluster_accept()">push mapping</button>
+                <button onclick="get_merge_model_test()">get merge model</button>
+                <button onclick="seed_model()">get seed model</button>
+              </div>
+
+              <div class="tab-pane fade" id="settings-data" role="tabpanel" aria-labelledby="data-tab">
+                <div id="data-tab-ui">
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 
   <!-- Escher requires D3.js -->
@@ -556,6 +688,7 @@
   <script src="js/biochem_api.js"></script>
   <script src="js/chemdust_api.js"></script>
   <script src="js/tooltip_compound.js"></script>
+  <script src="js/tooltip_janaka.js"></script>
   <script src="js/escher_shadow.js"></script>
   <script src="js/widget_system_status.js"></script>
   <script src="js/widget_escher_modelseed.js"></script>
@@ -571,6 +704,7 @@
   <script src="js/map_loader.js"></script>
   <script src="js/escher_design.js"></script>
   <script src="js/app.js"></script>
+  <script src="utils_temp.js"></script>
   <script>
 
     class ModelSEEDEscherIOWidget {
@@ -989,12 +1123,15 @@
     widget_escher.fn_draw_underlay = draw_shadow_map;
     const kbaseApi = new KBaseAPI();
     const curationApi = new CurationAPI();
-
+    const api = curationApi;
     env = new CurationEnvironment(curationApi, [
       new WidgetSystemStatus($('#top_bar')),
       widget_escher]);
     env.load_config();
     env.init_ui();
+    widget_escher.fn_tooltip_options['compound']['structure'] = tooltip_metabolite;
+    widget_escher.fn_tooltip_options['reaction']['janaka'] = tooltip_reaction_janaka;
+    ui_tooltip_options($('#fn-tooltip-options'), widget_escher, env);
     const app = new ModelSEEDEscherApp(widget_escher, $('#exampleModal'), $('#modal-model-select'), undefined);
 
     const msEscherIOWidget = new ModelSEEDEscherIOWidget($('#ms-tab'), $('#kb-tab'),
@@ -1035,7 +1172,7 @@
       console.log('!', this);
     });*/
 
-    const token = 'DFRUIN7FNVSIYB6UFFTBCVS7OR76ZF7V';
+    const token = 'TQTZSDDJFYE5MX4RCD6BHP3LTMBE4YUY';
     let map1 = undefined;
     let map2 = undefined;
     kbaseApi.getObjectEscherMap('demo_merge_map1', 'filipeliu:1452618747692', token, function(res) {
